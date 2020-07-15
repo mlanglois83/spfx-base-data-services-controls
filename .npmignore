@@ -6,3 +6,5 @@ tslint.json
 .vscode
 temp
 dist
+config
+language.csv

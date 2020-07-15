@@ -1,5 +1,5 @@
 import { SPFile } from "spfx-base-data-services";
-import { ICameraClasses } from "../Camera";
+import { ICameraClasses, IIcons } from "../Camera";
 
 export interface IMediaSelectorProps {  
     /**
@@ -12,10 +12,13 @@ export interface IMediaSelectorProps {
     title?: string;
     online: boolean;
     onFileAdded: (file: SPFile) => void;
+    onBeforeFileRemove?: (file: SPFile) => Promise<boolean> | boolean;
     onFileRemoved: (file: SPFile) => void;
-    cssClasses?: IMediaSelectorClasses;
+    cssClasses?: IMediaSelectorClassNames;
+    mediaTypes?: MediaType;
+    icons?: IIcons;
 }
-export interface IMediaSelectorClasses extends ICameraClasses {
+export interface IMediaSelectorClassNames extends ICameraClasses {
     container?: string;
     media?: string;
     uploaded?: string;
@@ -24,4 +27,11 @@ export interface IMediaSelectorClasses extends ICameraClasses {
     filePreview?: string;
     tileActions?: string;
     noTiles?: string;
+}
+export enum MediaType {
+    None = 0,
+    File = 1,
+    Photo = 2,
+    Video = 4,
+    All = 7
 }

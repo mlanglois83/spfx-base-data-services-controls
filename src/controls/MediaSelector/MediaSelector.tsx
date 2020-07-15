@@ -3,7 +3,7 @@ import { stringIsNullOrEmpty } from '@pnp/common';
 import * as strings from 'ControlsStrings';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import * as React from 'react';
-import { IMediaSelectorProps } from './interfaces/IMediaSelectorProps';
+import { IMediaSelectorProps, MediaType } from './interfaces/IMediaSelectorProps';
 import { IContentUrl, IMediaSelectorState } from './interfaces/IMediaSelectorState';
 import styles from './MediaSelector.module.scss';
 import { SPFile, UtilsService } from 'spfx-base-data-services';
@@ -63,27 +63,31 @@ export class MediaSelector extends React.Component<IMediaSelectorProps, IMediaSe
     }
 
     public render() {
-        const {cssClasses} = this.props;
+        const {cssClasses, mediaTypes, icons} = this.props;
         const attachments: JSX.Element = this.renderFiles();
 
         return <div className={css(styles.attachmentsSelector, cssClasses && cssClasses.container ? cssClasses.container : null)}>
             {this.props.editMode &&
                 <React.Fragment>
 
-                    {!this.props.disabled && <Camera onChanged={(newFile: SPFile) => {
-                        let filesCopy = cloneDeep(this.state.files);
-                        let existing = find(filesCopy, (f) => { return f.title === newFile.title; });
-                        if (existing) {
-                            existing = newFile;
-                        }
-                        else {
-                            filesCopy.push(newFile);
-                        }
+                    {!this.props.disabled && <Camera 
+                        onChanged={(newFile: SPFile) => {
+                            let filesCopy = cloneDeep(this.state.files);
+                            let existing = find(filesCopy, (f) => { return f.title === newFile.title; });
+                            if (existing) {
+                                existing = newFile;
+                            }
+                            else {
+                                filesCopy.push(newFile);
+                            }
 
-                        this.props.onFileAdded(newFile);
+                            this.props.onFileAdded(newFile);
 
-                    }}  
-                    cssClasses={cssClasses}></Camera>}
+                        }}  
+                        cssClasses={cssClasses} 
+                        mediaTypes={mediaTypes || MediaType.All}
+                        icons={icons}
+                    />}
 
                 </React.Fragment>
             }
@@ -141,7 +145,16 @@ export class MediaSelector extends React.Component<IMediaSelectorProps, IMediaSe
                             }
                         </div>
                         {this.props.editMode && <div className={css(styles.actions, cssClasses && cssClasses.tileActions ? cssClasses.tileActions : null)}>
-                            <IconButton disabled={this.props.disabled} iconProps={{ iconName: "StatusErrorFull" }} ariaLabel={strings.removeButtonLabel} onClick={(e) => { e.stopPropagation(); this.onFileRemove(i); }} />
+                            <IconButton disabled={this.props.disabled} iconProps={{ iconName: "StatusErrorFull" }} ariaLabel={strings.removeButtonLabel} onClick={async (e) => { 
+                                e.stopPropagation(); 
+                                let remove = false;
+                                if(this.props.onBeforeFileRemove) {
+                                    remove = await this.props.onBeforeFileRemove(this.state.files[i]);
+                                }
+                                if(remove) {
+                                    this.onFileRemove(i); 
+                                }
+                                }} />
                         </div>}
                     </div>
                 </div>);

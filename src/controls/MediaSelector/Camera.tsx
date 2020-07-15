@@ -11,6 +11,7 @@ import { cloneDeep, find, assign } from '@microsoft/sp-lodash-subset';
 import { IContentUrl } from '../MediaSelector/interfaces/IMediaSelectorState';
 import { ResponsiveMode } from 'office-ui-fabric-react/lib/utilities/decorators/withResponsiveMode';
 import * as strings from 'ControlsStrings';
+import { MediaType } from './interfaces/IMediaSelectorProps';
 
 
 export interface ICameraClasses {
@@ -21,6 +22,15 @@ export interface ICameraClasses {
     cameraActionsRow?: string;
     cameraActions?: string;
     videoView?: string;
+    cancelButton?: string;
+    primaryButton?: string;
+}
+export interface IIcons {
+    cancel?: string;
+    picture?: string;
+    startVideo?: string;
+    stopVideo?: string;
+    switchCamera?: string;
 }
 
 export enum CameraMode {
@@ -36,6 +46,8 @@ export enum CameraFacing {
 export interface ICameraProps {
     onChanged?: (file: SPFile) => void;
     cssClasses?: ICameraClasses;
+    mediaTypes: MediaType;
+    icons?: IIcons;
 }
 
 
@@ -173,12 +185,13 @@ export const Camera = (props: ICameraProps) => {
     let photoInput: HTMLInputElement;
     let fileInput: HTMLInputElement;
 
-    const {cssClasses} = props;
+    const {cssClasses, mediaTypes, icons} = props;
 
     return (
         <React.Fragment>
             {!RTC &&
                 <React.Fragment>
+                    {(mediaTypes & MediaType.File) === MediaType.File &&
                     <div className={css(styles.tile, cssClasses && cssClasses.tile ? cssClasses.tile: null)}>
                         <div className={css(styles.Addzone, cssClasses && cssClasses.addzone ? cssClasses.addzone: null)} onClick={() => {
                             fileInput.click();
@@ -186,8 +199,9 @@ export const Camera = (props: ICameraProps) => {
                         <input ref={(elt) => { fileInput = elt; }} type="file" accept=".doc,.docx,.csv,.xlsx,.xls,.ppt,.pptx,text/plain,.pdf" capture onChange={() => addFileMobile(this.fileInput)} />
                             <Icon iconName="Page" />
                         </div>
-                    </div>
+                    </div>}
 
+                    {(mediaTypes & MediaType.Photo) === MediaType.Photo &&
                     <div className={css(styles.tile, cssClasses && cssClasses.tile ? cssClasses.tile: null)}>
                         <div className={css(styles.Addzone, cssClasses && cssClasses.addzone ? cssClasses.addzone: null)} onClick={() => {
                             if (detectMobile.isMobile()) {
@@ -204,7 +218,8 @@ export const Camera = (props: ICameraProps) => {
                             />
                             <Icon iconName="Camera" />
                         </div>
-                    </div>
+                    </div>}
+                    {(mediaTypes & MediaType.Video) === MediaType.Video &&
                     <div className={css(styles.tile, cssClasses && cssClasses.tile ? cssClasses.tile: null)}>
                         <div className={css(styles.Addzone, cssClasses && cssClasses.addzone ? cssClasses.addzone: null)} onClick={() => {
                             if (detectMobile.isMobile()) {
@@ -219,7 +234,7 @@ export const Camera = (props: ICameraProps) => {
                                 addFileMobile(videoInput)} />
                             <Icon iconName="Video" />
                         </div>
-                    </div>
+                    </div>}
                 </React.Fragment>
             }
             {
@@ -261,18 +276,28 @@ export const Camera = (props: ICameraProps) => {
                             </div>
                             <div className={css(styles.cameraActionsRow, cssClasses && cssClasses.cameraActionsRow ? cssClasses.cameraActionsRow: null)}>                                
                                 <div className={css(styles.cameraActions, cssClasses && cssClasses.cameraActions ? cssClasses.cameraActions: null)}>
+                                    <DefaultButton 
+                                        className={cssClasses ? cssClasses.cancelButton : undefined} 
+                                        onClick={() => { setRTC(false); }} 
+                                        text={strings.cancelButtonLabel}
+                                        iconProps={ icons && icons.cancel ? {iconName: icons.cancel} : undefined}
+                                        />
                                     {
                                         mode == CameraMode.Picture &&
                                         <PrimaryButton
+                                            className={cssClasses ? cssClasses.primaryButton : undefined}
                                             text={strings.takePicture}
                                             onClick={capture}
+                                            iconProps={ icons && icons.picture ? {iconName: icons.picture} : undefined}
                                         />
                                     }
                                     {
                                         mode == CameraMode.Video &&
                                         <PrimaryButton
+                                            className={cssClasses ? cssClasses.primaryButton : undefined}
                                             text={!videoRecorder ? strings.startVideo : strings.stopVideo}
                                             onClick={capture}
+                                            iconProps={ !videoRecorder && icons && icons.startVideo ? {iconName: icons.startVideo} : (videoRecorder && icons && icons.stopVideo ? {iconName: icons.stopVideo} : undefined)}
                                         />
                                     }
 
@@ -280,6 +305,7 @@ export const Camera = (props: ICameraProps) => {
                                     {
                                         devices.length > 1 && <React.Fragment>
                                             <PrimaryButton
+                                                className={cssClasses ? cssClasses.primaryButton : undefined}
                                                 text="Switch camera"
                                                 onClick={() => {
                                                     if (camera == CameraFacing.Environnement) {
@@ -307,11 +333,11 @@ export const Camera = (props: ICameraProps) => {
                                                         });
                                                     }
                                                 }}
+                                                iconProps={ icons && icons.switchCamera ? {iconName: icons.switchCamera} : undefined}
                                             />
 
                                         </React.Fragment>
-                                    }
-                                    <DefaultButton onClick={() => { setRTC(false); }} >{strings.cancelButtonLabel}</DefaultButton>
+                                    }                                    
                                 </div>
                             </div>    
                         </div>
