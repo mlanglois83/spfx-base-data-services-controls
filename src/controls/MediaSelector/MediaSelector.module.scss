@@ -1,0 +1,142 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+
+.dialogOuter {  
+
+    width: 100%;
+    min-width: auto;
+    max-width: 100%;
+    :global(.ms-Modal-scrollableContent>div) {
+      height: 100%;
+      :global(.ms-Dialog-header) {
+        display: none;
+      }
+      :global(.ms-Dialog-inner) {
+        overflow-y: auto;
+        max-height: 100%;
+        padding: 20px 28px;        
+        box-sizing: border-box;
+      }
+    }
+    @media (min-width: 640px) {
+      max-width: 100%;
+      height: auto;
+      width: auto;
+    }
+  }  
+
+.cameraRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .videoView {
+    video {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+  .cameraActionsRow {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    .cameraActions {
+      margin: 0 -8px;
+      button {
+        margin: 0 8px;
+      }
+    }
+  }
+}
+
+.attachmentsSelector {
+    display: flex;
+    flex-direction: row;
+    margin: -6px;
+    flex-wrap: wrap;
+    .noTiles {
+        padding: 20px;
+        height: 92px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        color: $ms-color-neutralTertiary;
+        @include ms-font-xl;
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+    .tile {
+        padding: 6px;
+        width: 142px;
+        height: 92px;
+        .media {   
+            position: relative;     
+            border: 1px solid $ms-color-neutralTertiary;            
+            height: 100%;
+            box-sizing: border-box;
+            &.uploaded {
+                cursor: pointer;
+                border-color: $ms-color-themeLight;
+                &:hover {
+                    border-color: $ms-color-themePrimary;
+                }
+            }
+            &.disabled {
+                cursor: default;
+                border-color: $ms-color-neutralQuaternary; 
+            }
+            .preview {                
+                padding: 0;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 50px;
+                height: 100%;
+                img, video, .filePreview {
+                    max-width: 100%;
+                    max-height: 100%;
+                }
+
+                .filePreview{
+                    font-size: initial;
+                    text-align: center;
+                }
+            }
+            .actions {            
+                position: absolute;
+                top: 0;
+                right: 0;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+            }
+        }
+        .Addzone {        
+            font-size: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid;
+            border-color: $ms-color-neutralTertiary;
+            color: $ms-color-neutralTertiary;
+            height: 100%;
+            box-sizing: border-box;
+            &:hover {
+                background-color: $ms-color-neutralLighter;
+            }
+            &.disabled {
+                cursor: default;
+                border-color: $ms-color-neutralQuaternary;
+                color: $ms-color-neutralQuaternary;
+            }
+            input {
+                display: none;
+            }
+            
+        }
+    }
+    
+}

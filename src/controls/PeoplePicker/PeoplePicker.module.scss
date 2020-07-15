@@ -1,0 +1,46 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.peoplePicker {
+    .required{
+        &::after {
+            content: " *";
+            color: $ms-color-redDark;
+            padding-right: 12px;
+        }
+    }
+    .peopleContainer {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    
+        .picker {
+          width: calc(100% - 32px);
+    
+            :global(.ms-PickerPersona-container) {
+                max-width: 100%;
+                padding: 1px 2px;
+            }
+            :global(.ms-BasePicker-itemsWrapper) {
+                max-width: 100%;
+                box-sizing: border-box;
+                padding: 1px 2px;
+            }
+    
+          .errorMessage {
+                color: $ms-color-redDark;
+                @include ms-font-s;
+                @include ms-fontWeight-regular;
+            }
+        }
+        .invalid {
+            :global(.ms-BasePicker-text){
+                border-color: $ms-color-redDark;
+            }
+        }
+    
+        .pickerPeopleIcon {
+          width: 32px;
+          text-align: center;
+        }
+    }
+}

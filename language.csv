@@ -1,0 +1,16 @@
+﻿key;fr-fr;en-us;de-de;es-es;it-it;pl-pl;pt-br;ro-ro;ru-ru;sr-latn-rs;th-th;zh-cn
+TaxonomyPickerSuggestedTerms;Termes suggérés;Suggested terminology;Vorgeschlagene Begriffe;Términos sugeridos;Termini/parole suggeriti;Warunki sugerowane;Termos sugeridos;Termeni sugerați;Предлагаемые термины;Predloženi termini;แนะนำคำจำกัดความ;建议的术语
+TaxonomyPickerNoTerm;Aucun terme trouvé;No words found;Kein Begriff gefunden;Ningún termino encontrado;Nessun termine/parola trovato;Nie znaleziono warunku;Nenhum termo encontrado;Nici un termen gasit;Термины не найдены;Nije pronađen nijedan termin;ไม่เจอคำที่ค้นหา;找不到术语
+TaxonomyPickerTermLocationPrefix;Dans ; In;In ;En;In;W;Em;In;В;u;ใน;在…
+saveButtonLabel;Enregistrer;Save;Speichern;Guardar;Registrare;Zapisz;Salvar;Inregistrare;Сохранить;Sačuvaj;บันทึก;保存
+cancelButtonLabel;Annuler;Cancel;Annullieren;Anular;Annullare;Anuluj;Anular;Anulare;Отменить;Otkaži;ยกเลิก;取消
+selectTermLabel;Sélectionner un terme...;Select a Term...;Wählen Sie einen Begriff...;Selecciona un término...;Seleziona un termine...;Wybierz termin...;Selecione um termo...;Selectați un termen...;Выберите термин...;Izaberite termin...;เลือกคำ...;选择一个词...
+PeoplePickerSuggestion;Suggestions;Suggestions;Vorschläge;Sugerencias;Suggerimenti;Propozycja;Sugestões;Sugestii;Советы;Predlozi;คำแนะนำ;建议
+PeoplePickerNoResults;Aucun résultat.;No results.;kein Ergebnis;Ningún resultado;Nessun risultato.;Brak wyników.;Nenhum resultado;Nici un rezultat.;Нет результатов.;Nema rezultata.;ไม่มีผลลัพธ์;无结果
+PeoplePickerLoading;Chargement…;Loading…;Wird geladen…;Cargando ….;Caricamento in corso…;Ładowanie…;Carregando…;Incarcare….;Загрузка…;Učitava se ...;กำลังดำเนินการ;加载中
+EmptyPeoplePicker;Veuillez séléctionné un utilisateur.;Please select a user.;Bitte wählen Sie einen Benutzer;Por favor, seleccione un usuario;Selezionate un utilizzatore.;Proszę wybrać użytkownika;Por favor, selecionar um usuário;Vreti sa selectionati un utilizator;Выберите, пожалуйста, оператора;Izaberite korisnika;เลือกผู้ใช้งาน;请选择用户
+takePicture;Prendre photo;Take a picture;Foto aufnehmen;Take a picture;Take a picture;Zrób zdjęcie;Tirar a foto;Take a picture;Сделать фото;Take a picture;Take a picture;选择图片
+startVideo;Commencer l'enregistrement;Begin capture;Film beginnen;Begin capture;Begin capture;Rozpocznij zapis;Começar a gravar o vídeo;Begin capture;Начать запись;Begin capture;Begin capture;开始拍摄
+stopVideo;Terminer l'enregistrement;Stop capture;Film beenden;Stop capture;Stop capture;Zakończ zapis;Terminar de gravar o vídeo;Stop capture;Закончить запись;Stop capture;Stop capture;停止拍摄
+removeButtonLabel;Supprimer;Delete;Löschen;Suprimir;Cancellare;Usuń;Apagar;Sterge;Удалить;Obriši;ลบ;清除
+NoMediaMessage;Il n'y a aucun média à afficher;There is no media to display;Es gibt keine anzuzeigenden Medien;Ninguna foto ó vídeo que mostrar;Non c'é nessun media(foto/video) da visualizzare;Brak mediów do wyświetlenia;Não há fotos ou vídeos para mostrar;Nu există suporturi de afisat;Нет данных для отображения;Nema medija za prikaz;ไม่มีสื่อที่จะแสดง;无播放内容
