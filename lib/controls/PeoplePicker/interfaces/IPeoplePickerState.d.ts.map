@@ -1,0 +1,1 @@
+{"version":3,"file":"IPeoplePickerState.d.ts","sourceRoot":"","sources":["../../../../src/controls/PeoplePicker/interfaces/IPeoplePickerState.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,wBAAwB,CAAC;AAEvD,MAAM,WAAW,kBAAkB;IAC/B,aAAa,EAAE,aAAa,EAAE,CAAC;IAC/B,KAAK,CAAC,EAAE,MAAM,CAAC;CAClB"}

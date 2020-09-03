@@ -1,16 +1,16 @@
-import * as strings from 'SpfxBaseDataServicesControlsStrings';
+import * as strings from 'ControlsStrings';
 import { IconButton, Icon, css } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { IHeaderBarProps } from "./interfaces/IHeaderBarProps";
 import { IHeaderBarState } from "./interfaces/IHeaderBarState";
 import styles from './HeaderBar.module.scss';
 import { HashRouter, Switch, Route, WithRouter } from "react-router-dom";
-import SynchroNotifications from "./components/synchroNotifications/SynchroNotifications";
+import { SynchroNotifications } from "./components/synchroNotifications/SynchroNotifications";
 import { stringIsNullOrEmpty } from '@pnp/common';
 /**
  * Control to select disable state and associated dates of a risk
  */
-export default class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState> {
+export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState> {
 
   public static setTitle(newTitle: string){
     var event = new CustomEvent<string>('setHeaderTitle', {detail: newTitle});
@@ -60,7 +60,7 @@ export default class HeaderBar extends React.Component<IHeaderBarProps, IHeaderB
               return <Route
                 path={url}
                 component={() => <></>}
-              />
+              />;
             })}   
             <Route
               component={({ history }) => <div className={styles.panelItem}>

@@ -10,3 +10,10 @@ export { ITaxonomyFilterClassNames, ITaxonomyFilterProps } from "./controls/Taxo
 
 export { TaxonomyPicker } from "./controls/TaxonomyPicker/TaxonomyPicker";
 export { ITaxonomyPickerProps } from "./controls/TaxonomyPicker/interfaces/ITaxonomyPickerProps";
+
+export { HeaderBar } from "./controls/headerBar/HeaderBar";
+export { IHeaderBarProps } from "./controls/headerBar/interfaces/IHeaderBarProps";
+
+
+export { SynchroNotifications } from "./controls/headerBar/components/synchroNotifications/SynchroNotifications";
+export { ISynchroNotificationsProps } from "./controls/headerBar/components/synchroNotifications/interfaces/ISynchroNotificationsProps";

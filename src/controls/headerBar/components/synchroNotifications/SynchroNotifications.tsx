@@ -1,4 +1,4 @@
-import * as strings from 'SpfxBaseDataServicesControlsStrings';
+import * as strings from 'ControlsStrings';
 import * as React from 'react';
 
 import { IconButton, Icon, Callout, DirectionalHint, List, SelectionMode, DetailsListLayoutMode, DetailsList, IDetailsRowProps, IDetailsRowStyles, DetailsRow, css, CommandBar } from 'office-ui-fabric-react';
@@ -11,7 +11,7 @@ import { assign } from '@microsoft/sp-lodash-subset';
 /**
  * Control to select disable state and associated dates of a risk
  */
-export default class SynchroNotifications extends React.Component<ISynchroNotificationsProps, ISynchroNotificationsState> {
+export class SynchroNotifications extends React.Component<ISynchroNotificationsProps, ISynchroNotificationsState> {
     private calloutButtonElement: HTMLDivElement;
 
     private columns = [
