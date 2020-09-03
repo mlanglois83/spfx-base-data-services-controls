@@ -50,6 +50,7 @@
     "office-ui-fabric-react": "^7.123.0",
     "react": "16.8.5",
     "react-dom": "16.8.5",
+    "react-router-dom": "^5.2.0",
     "react-webcam": "^5.2.0",
     "recordrtc": "^5.6.1",
     "spfx-base-data-services": "^1.1.44",

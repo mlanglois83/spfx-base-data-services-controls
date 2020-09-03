@@ -1,0 +1,97 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+/*********************************************** Header *******************************************************/
+.stickyHeader {
+    display: flex;   
+    padding: 10px;
+    background: linear-gradient(90deg, $ms-color-themePrimary, #14284E);
+    flex-direction: row;
+    box-sizing: border-box;
+    * {       
+      @include ms-font-l;
+      @include ms-fontWeight-bold;
+      color: #FFFFFF;
+    }
+    .panelItem {    
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+    }
+    .headerLeftPanel {
+      margin: 0 -10px;
+      align-items: flex-start;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .titleBlock {
+          border-left: 2px solid white;
+          .headerTitle {
+              font-weight: $ms-font-weight-regular;
+              display: flex;
+          }
+      }
+    }
+    .headerRightPanel {
+      margin: 0 -10px;
+      display: flex;
+      margin-left: auto;
+    }
+  }
+  
+  .callout {
+    padding: 0 15px;
+  }
+  .calloutFooter {
+    margin: 15px 0;
+  }
+  /******************************* Sync icon *************************************/
+  @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+  @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+  @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+  .synchronizing {
+    -webkit-animation:spin 3s linear infinite;
+    -moz-animation:spin 3s linear infinite;
+    animation:spin 3s linear infinite;
+  }
+  .syncButtonContainer {
+    position: relative;
+  }
+  .transactionCount, .syncErrorsCount {
+      position: absolute;
+      border: 1px solid;
+      border-radius: 13px;
+      width: 11px;
+      height: 11px;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  .counterValue {  
+    font-size: 12px;
+  }
+  .transactionCount {
+    top: -4px;
+    right: -4px;
+    background-color: white;
+    border-color: white;
+    .counterValue {
+      color: $ms-color-themePrimary;
+    }
+  }
+  .syncErrorsCount {
+    bottom: -4px;
+    right: -4px;
+    background-color: $ms-color-red;
+    border-color: $ms-color-red;
+    .counterValue {
+      color: white;
+    }
+  }
+  .syncErrorRow {
+    padding: 8px 0;
+    color: $ms-color-red;
+    ul {
+      margin:0;
+    }
+  }
