@@ -1,10 +1,10 @@
 import * as strings from 'SpfxBaseDataServicesControlsStrings';
 import * as React from 'react';
 
-import { IconButton, Icon, Callout, DirectionalHint, List, SelectionMode, DetailsListLayoutMode, DetailsList, IDetailsRowProps, IDetailsRowStyles, DetailsRow, css } from 'office-ui-fabric-react';
+import { IconButton, Icon, Callout, DirectionalHint, List, SelectionMode, DetailsListLayoutMode, DetailsList, IDetailsRowProps, IDetailsRowStyles, DetailsRow, css, CommandBar } from 'office-ui-fabric-react';
 import { ISynchroNotificationsProps } from "./interfaces/ISynchroNotificationsProps";
 import { ISynchroNotificationsState } from "./interfaces/ISynchroNotificationsState";
-import styles from "../HeaderBar.module.scss";
+import styles from "../../HeaderBar.module.scss";
 import { OfflineTransaction, SPFile,  IBaseItem, TransactionType, ServicesConfiguration } from 'spfx-base-data-services';
 import { assign } from '@microsoft/sp-lodash-subset';
 
@@ -94,7 +94,8 @@ export default class SynchroNotifications extends React.Component<ISynchroNotifi
         super(props);
         // set initial state
         this.state = {
-            isCalloutVisible: false
+            isCalloutVisible: false,
+            syncErrors: props.syncErrors
         };
     }
 
@@ -102,13 +103,18 @@ export default class SynchroNotifications extends React.Component<ISynchroNotifi
     }
 
 
+    public componentDidUpdate(prevProps) {
+        if(prevProps.syncErrors !== this.props.syncErrors) {
+            this.setState({syncErrors: this.props.syncErrors});
+        }
+    }
 
     /**
      * Render control
      */
     public render(): React.ReactElement<ISynchroNotificationsProps> {        
-        const {isCalloutVisible} = this.state;
-        const {syncErrors, transactions, syncRunning} = this.props;
+        const {isCalloutVisible, syncErrors} = this.state;
+        const {transactions, syncRunning} = this.props;
         return <div>   
            <div ref={(elt) => { this.calloutButtonElement = elt; }} className={styles.syncButtonContainer}>
                 <IconButton iconProps={{iconName:"Sync"}} onClick={() => { this.setState({ isCalloutVisible: true }); }} className={syncRunning ? styles.synchronizing : ""} />
@@ -145,8 +151,19 @@ export default class SynchroNotifications extends React.Component<ISynchroNotifi
                         </div>                    
                         <h3 className={styles.formTitle}>{strings.TransactionErrorsLabel}</h3>
                         <div className={styles.formField} >
-                            {syncErrors && syncErrors.length ?
-                            <List items={syncErrors} onRenderCell={this.renderErrors} /> :
+                            {syncErrors && syncErrors.length ? <>
+                                <CommandBar items={[{
+                                    key: "clear",
+                                    iconOnly: false,
+                                    iconProps: {iconName:"ErrorBadge"},
+                                    title:strings.clearSyncErrors,
+                                    text:strings.clearSyncErrors,
+                                    onClick: () => {
+                                        this.setState({syncErrors: []});
+                                    }
+                                }]}/>
+                                <List items={syncErrors} onRenderCell={this.renderErrors} />
+                            </> :
                             <div className={styles.emptyMessage}>{strings.NoSyncErrorsLabel}</div> 
                             }
                         </div>

@@ -44,6 +44,9 @@
   .calloutFooter {
     margin: 15px 0;
   }
+
+
+  
   /******************************* Sync icon *************************************/
   @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
   @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
@@ -95,3 +98,58 @@
       margin:0;
     }
   }
+
+  .formTitle {
+    color: $ms-color-themePrimary;
+    @include ms-font-l;
+    @include ms-fontWeight-bold;
+    border-bottom: 1px solid $ms-color-neutralTertiary;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .formTitleActions {
+      margin-left: auto;
+    }
+  }
+  .formSubTitle {
+    font-style: italic;
+    color: $ms-color-themeTertiary;
+    @include ms-font-m-plus;
+    @include ms-fontWeight-semibold;
+  }
+  
+  .formField {
+    position: relative;
+    margin-top: 15px;
+    .spinButton > div:first-child {
+      margin: 0;
+    }
+    label {
+      @include ms-font-xs;
+      padding: 5px 0;
+      display: block;
+      &.requiredLabel {
+        &::after {
+          content: " *";
+          color: $ms-color-red;
+          padding-right: 12px;
+        }
+      }
+    }
+    .formValue {
+      @include ms-fontWeight-semibold;
+    }
+  }
+  
+.syncNotifCallout {
+  margin-bottom:15px;
+}
+.emptyMessage {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.alternateRow {
+  background-color: white;
+}

@@ -1,21 +1,31 @@
 /* tslint:disable */
 require("./HeaderBar.module.css");
 const styles = {
-  stickyHeader: 'stickyHeader_d04aac02',
-  panelItem: 'panelItem_d04aac02',
-  headerLeftPanel: 'headerLeftPanel_d04aac02',
-  titleBlock: 'titleBlock_d04aac02',
-  headerTitle: 'headerTitle_d04aac02',
-  headerRightPanel: 'headerRightPanel_d04aac02',
-  callout: 'callout_d04aac02',
-  calloutFooter: 'calloutFooter_d04aac02',
-  synchronizing: 'synchronizing_d04aac02',
-  spin: 'spin_d04aac02',
-  syncButtonContainer: 'syncButtonContainer_d04aac02',
-  transactionCount: 'transactionCount_d04aac02',
-  syncErrorsCount: 'syncErrorsCount_d04aac02',
-  counterValue: 'counterValue_d04aac02',
-  syncErrorRow: 'syncErrorRow_d04aac02'
+  stickyHeader: 'stickyHeader_a9218e96',
+  panelItem: 'panelItem_a9218e96',
+  headerLeftPanel: 'headerLeftPanel_a9218e96',
+  titleBlock: 'titleBlock_a9218e96',
+  headerTitle: 'headerTitle_a9218e96',
+  headerRightPanel: 'headerRightPanel_a9218e96',
+  callout: 'callout_a9218e96',
+  calloutFooter: 'calloutFooter_a9218e96',
+  synchronizing: 'synchronizing_a9218e96',
+  spin: 'spin_a9218e96',
+  syncButtonContainer: 'syncButtonContainer_a9218e96',
+  transactionCount: 'transactionCount_a9218e96',
+  syncErrorsCount: 'syncErrorsCount_a9218e96',
+  counterValue: 'counterValue_a9218e96',
+  syncErrorRow: 'syncErrorRow_a9218e96',
+  formTitle: 'formTitle_a9218e96',
+  formTitleActions: 'formTitleActions_a9218e96',
+  formSubTitle: 'formSubTitle_a9218e96',
+  formField: 'formField_a9218e96',
+  spinButton: 'spinButton_a9218e96',
+  requiredLabel: 'requiredLabel_a9218e96',
+  formValue: 'formValue_a9218e96',
+  syncNotifCallout: 'syncNotifCallout_a9218e96',
+  emptyMessage: 'emptyMessage_a9218e96',
+  alternateRow: 'alternateRow_a9218e96'
 };
 
 export default styles;

@@ -14,6 +14,21 @@ define([], function() {
         "startVideo": "Begin capture",
         "stopVideo": "Stop capture",
         "removeButtonLabel": "ลบ",
-        "NoMediaMessage": "ไม่มีสื่อที่จะแสดง"
+        "NoMediaMessage": "ไม่มีสื่อที่จะแสดง",
+        "NavHomeText": "กลับไปที่หน้าหลัก",
+        "FullscreenLabel": "โชว์เต็มหน้า",
+        "AbortFullScreenLabel": "ออกจากหน้าจอ",
+        "ElementTypeColumnLabel": "ชนิดข้อมูล",
+        "OperationColumnLabel": "การดำเนินการ",
+        "AddLabel": "เพิ่ม",
+        "UpdateLabel": "อัพเดท",
+        "DeleteLabel": "ลบ",
+        "UploadLabel": "นำเข้าข้อมูล",
+        "titleLabel": "เรื่อง",
+        "IdColumnLabel": "รหัส",
+        "PendingTransactionsLabel": "รอการดำเนินการ",
+        "TransactionErrorsLabel": "การดำเนินการเกิดข้อผิดพลาด",
+        "NoTransactionsLabel": "ไม่มีการส่งถ่ายข้อมูล",
+        "NoSyncErrorsLabel": "ไม่มีข้อผิดพลาดขณะดำเนินการ"
     }
 });

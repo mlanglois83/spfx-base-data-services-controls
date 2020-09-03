@@ -14,6 +14,21 @@ define([], function() {
         "startVideo": "Begin capture",
         "stopVideo": "Stop capture",
         "removeButtonLabel": "Cancellare",
-        "NoMediaMessage": "Non c'é nessun media(foto/video) da visualizzare"
+        "NoMediaMessage": "Non c'é nessun media(foto/video) da visualizzare",
+        "NavHomeText": "Andare alla pagina iniziale",
+        "FullscreenLabel": "Passare in modalità  schermo intero",
+        "AbortFullScreenLabel": "Uscire dalla  modalità  schermo intero",
+        "ElementTypeColumnLabel": "Tipo di elemento",
+        "OperationColumnLabel": "Operazione",
+        "AddLabel": "Aggiunta",
+        "UpdateLabel": "Aggiornamento",
+        "DeleteLabel": "Cancellazione",
+        "UploadLabel": "Caricare",
+        "titleLabel": "Titolo",
+        "IdColumnLabel": "ID",
+        "PendingTransactionsLabel": "Operazione in attesa di sincronizzazione",
+        "TransactionErrorsLabel": "Errori di sincronizzazione",
+        "NoTransactionsLabel": "Nessuna operazione in corso",
+        "NoSyncErrorsLabel": "Nessun errore durante l'ultima sincronizzazione"
     }
 });

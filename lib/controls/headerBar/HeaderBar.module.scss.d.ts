@@ -14,6 +14,16 @@ declare const styles: {
     syncErrorsCount: string;
     counterValue: string;
     syncErrorRow: string;
+    formTitle: string;
+    formTitleActions: string;
+    formSubTitle: string;
+    formField: string;
+    spinButton: string;
+    requiredLabel: string;
+    formValue: string;
+    syncNotifCallout: string;
+    emptyMessage: string;
+    alternateRow: string;
 };
 export default styles;
 //# sourceMappingURL=HeaderBar.module.scss.d.ts.map

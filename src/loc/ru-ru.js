@@ -14,6 +14,21 @@ define([], function() {
         "startVideo": "Начать запись",
         "stopVideo": "Закончить запись",
         "removeButtonLabel": "Удалить",
-        "NoMediaMessage": "Нет данных для отображения"
+        "NoMediaMessage": "Нет данных для отображения",
+        "NavHomeText": "Перейти на главную страницу",
+        "FullscreenLabel": "Переключиться в полноэкранный режим",
+        "AbortFullScreenLabel": "Выйти из полноэкранного режима",
+        "ElementTypeColumnLabel": "Тип элемента",
+        "OperationColumnLabel": "Операция",
+        "AddLabel": "Добавить",
+        "UpdateLabel": "Обновить",
+        "DeleteLabel": "Удалить",
+        "UploadLabel": "Загрузить",
+        "titleLabel": "Название",
+        "IdColumnLabel": "ID",
+        "PendingTransactionsLabel": "Операция ожидает синхронизации",
+        "TransactionErrorsLabel": "Ошибка синхронизации",
+        "NoTransactionsLabel": "Выполняющиеся транзакции отсутствуют",
+        "NoSyncErrorsLabel": "Ошибки синхронизации отсутствуют"
     }
 });
