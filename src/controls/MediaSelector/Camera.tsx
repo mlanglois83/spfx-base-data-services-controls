@@ -69,6 +69,7 @@ export const Camera = (props: ICameraProps) => {
 
     const [camera, setCamera] = React.useState<CameraFacing>(CameraFacing.User);
 
+    const [angle, setAngle]= React.useState<number>(window.screen.orientation.angle);
 
     const [RTC, setRTC] = React.useState<boolean>(false);
     const [videoRecorder, setVideoRecorder] = React.useState<any>(null);
@@ -84,11 +85,29 @@ export const Camera = (props: ICameraProps) => {
     );
 
     React.useEffect(
-        () => {
+        () => {           
             navigator.mediaDevices.enumerateDevices().then(handleDevices);
         },
         [handleDevices]
     );
+    React.useEffect(
+        () => {
+            if(!detectMobile.isMobile()) {
+                window.screen.orientation.addEventListener("change", handleOrientation,{passive: true});
+                return () => {
+                    window.screen.orientation.removeEventListener("change", handleOrientation);
+                };
+            }
+            
+        },
+        [angle]
+    );
+
+    const handleOrientation = (e: Event) => {
+        if(angle !== window.screen.orientation.angle) {
+            setAngle(window.screen.orientation.angle);
+        }
+    };  
 
     const addFileMobile = async (inputElement: HTMLInputElement) => {
         const file = inputElement.files[0];
@@ -252,27 +271,29 @@ export const Camera = (props: ICameraProps) => {
                     <React.Fragment>
 
                         <div className={css(styles.cameraRow, cssClasses && cssClasses.cameraRow ? cssClasses.cameraRow: null)}>
-                            <div className={css(styles.videoView, cssClasses && cssClasses.videoView ? cssClasses.videoView: null)}>
-                                <Webcam
-                                    audio={false}
-                                    height={(window.innerHeight
-                                        || document.documentElement.clientHeight
-                                        || document.body.clientHeight) - 150}
-                                    ref={webcamRef}
-                                    screenshotFormat="image/jpeg"
-                                    width={(window.innerWidth
-                                        || document.documentElement.clientWidth
-                                        || document.body.clientWidth) * 0.75}
-                                    videoConstraints={videoConstraints}
+                            <div className={css(styles.videoView, cssClasses && cssClasses.videoView ? cssClasses.videoView: null)} style={angle === 90 || angle === 180 ? {height: "80vh"}: undefined} >
+                                <div style={angle !== 0 ? {transform: `rotate(${angle}deg)`, height: "100%", width: "100%", alignItems: "center", justifyContent: "center", display: "flex" } : undefined}>
+                                    <Webcam
+                                        audio={false}
+                                        height={(window.innerHeight
+                                            || document.documentElement.clientHeight
+                                            || document.body.clientHeight) - 150}
+                                        ref={webcamRef}
+                                        screenshotFormat="image/jpeg"
+                                        width={(window.innerWidth
+                                            || document.documentElement.clientWidth
+                                            || document.body.clientWidth) * 0.75}
+                                        videoConstraints={videoConstraints}
 
-                                    forceScreenshotSourceSize={false}
-                                    imageSmoothing={true}
-                                    mirrored={false}
-
-                                    screenshotQuality={1}
-                                    onUserMedia={() => { }}
-                                    onUserMediaError={() => { }}
-                                />
+                                        forceScreenshotSourceSize={false}
+                                        imageSmoothing={true}
+                                        mirrored={false}
+    
+                                        screenshotQuality={1}
+                                        onUserMedia={() => { }}
+                                        onUserMediaError={() => { }}
+                                    />
+                                </div>
                             </div>
                             <div className={css(styles.cameraActionsRow, cssClasses && cssClasses.cameraActionsRow ? cssClasses.cameraActionsRow: null)}>                                
                                 <div className={css(styles.cameraActions, cssClasses && cssClasses.cameraActions ? cssClasses.cameraActions: null)}>
