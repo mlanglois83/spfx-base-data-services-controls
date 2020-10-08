@@ -203,7 +203,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
       }
       let banner = document.querySelector('[role=banner]');
       if (banner) {
-        banner['style'].display = 'block';
+        banner['style'].display = 'flex';
       }
       let nav = document.getElementById("SuiteNavPlaceHolder");
       if (nav) {
