@@ -57,9 +57,28 @@ export class TaxonomyFilter<T extends TaxonomyTerm> extends React.Component<ITax
         }
     }
 
-    private renderLevel = (terms: T[], idx: number) => {        
-        const { orderedTerms } = this.state;
-        const { placeholders, classNames, labels, overrideContainers } = this.props;
+    private renderLevel = (terms: T[], idx: number) => {     
+        const { classNames, overrideContainers } = this.props;        
+        if(overrideContainers) {
+            if(overrideContainers.dropdownContainer) {
+                return React.createElement(overrideContainers.dropdownContainer, {className: (classNames && classNames.dropdownContainerClassName ? classNames.dropdownContainerClassName : null)},
+                    this.renderDropdown(terms, idx)
+                );
+            }
+            else {
+                return this.renderDropdown(terms, idx);
+            }
+        }
+        else {
+            return  <div  className={css(styles.dropdownContainer, classNames && classNames.dropdownContainerClassName ? classNames.dropdownContainerClassName : null)}>
+                {this.renderDropdown(terms, idx)}
+            </div>;
+        }
+        
+    }
+
+    private renderDropdown = (terms: T[], idx: number) => {        
+        const { placeholders, classNames, labels } = this.props;
         let options = this.getOptions(terms, idx);
         let selectedKey = "";
         let selectedOpt = find(options, (opt) => { return opt.selected === true; });
@@ -69,50 +88,15 @@ export class TaxonomyFilter<T extends TaxonomyTerm> extends React.Component<ITax
         options.forEach((o) => {
             o.selected = false;
         });
-        if(overrideContainers) {
-            if(overrideContainers.dropdownContainer) {
-                return React.createElement(overrideContainers.dropdownContainer, {className: (classNames && classNames.dropdownContainerClassName ? classNames.dropdownContainerClassName : null)}, <>
-                    {labels &&  labels.length > idx &&
-                    <label className={classNames.labelClassname}>{labels[idx]}</label>}
-                    <Dropdown 
-                        className={classNames && classNames.dropdownClassName ? classNames.dropdownClassName : null}
-                        disabled={this.props.disabled}
-                        selectedKey={selectedKey} 
-                        options={options} 
-                        placeholder={placeholders && placeholders.length > idx ? placeholders[idx] : strings.selectTermLabel} 
-                        onChange={this.onFilterChanged}/>
-                </>);
-            }
-            else {
-                return <>
-                    {labels &&  labels.length > idx &&
-                    <label className={classNames.labelClassname}>{labels[idx]}</label>}
-                    <Dropdown 
-                        className={classNames && classNames.dropdownClassName ? classNames.dropdownClassName : null}
-                        disabled={this.props.disabled}
-                        selectedKey={selectedKey} 
-                        options={options} 
-                        placeholder={placeholders && placeholders.length > idx ? placeholders[idx] : strings.selectTermLabel} 
-                        onChange={this.onFilterChanged}/>
-                </>;
-            }
-        }
-        else {
-            return  <div  className={css(styles.dropdownContainer, classNames && classNames.dropdownContainerClassName ? classNames.dropdownContainerClassName : null)}>
-                {labels &&  labels.length > idx &&
-                <label className={classNames.labelClassname}>{labels[idx]}</label>}
-                <Dropdown 
-                    className={classNames && classNames.dropdownClassName ? classNames.dropdownClassName : null}
-                    disabled={this.props.disabled}
-                    selectedKey={selectedKey} 
-                    options={options} 
-                    placeholder={placeholders && placeholders.length > idx ? placeholders[idx] : strings.selectTermLabel} 
-                    onChange={this.onFilterChanged}/>
-            </div>;
-        }
-        
+        return <Dropdown                     
+            label={labels &&  labels.length > idx ? labels[idx] : undefined}
+            className={classNames && classNames.dropdownClassName ? classNames.dropdownClassName : null}
+            disabled={this.props.disabled}
+            selectedKey={selectedKey} 
+            options={options} 
+            placeholder={placeholders && placeholders.length > idx ? placeholders[idx] : strings.selectTermLabel} 
+            onChange={this.onFilterChanged}/>;
     }
-
 
     private onFilterChanged = (event, option?) => {
         if (option) {

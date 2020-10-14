@@ -12,7 +12,6 @@ export interface ITaxonomyFilterProps<T extends TaxonomyTerm> {
     overrideContainers?: ITaxonomyFilterContainers;
 }
 export interface ITaxonomyFilterClassNames {
-    labelClassname?: string;
     containerClassname?: string;
     dropdownClassName?: string;
     dropdownContainerClassName?: string;
