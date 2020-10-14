@@ -17,3 +17,7 @@ export { IHeaderBarProps } from "./controls/headerBar/interfaces/IHeaderBarProps
 
 export { SynchroNotifications } from "./controls/headerBar/components/synchroNotifications/SynchroNotifications";
 export { ISynchroNotificationsProps } from "./controls/headerBar/components/synchroNotifications/interfaces/ISynchroNotificationsProps";
+
+
+export { ItemDropdown } from "./controls/ItemDropdown/ItemDropdown";
+export { IItemDropdownProps } from "./controls/ItemDropdown/interfaces/IItemDropdownProps";
