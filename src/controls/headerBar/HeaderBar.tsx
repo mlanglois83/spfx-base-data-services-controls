@@ -28,9 +28,14 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
       fullscreen: this.isFullScreen(),
       title: ""
     };
+    this.adaptDomElements(this.state.fullscreen);
   }
 
-  
+  public componentDidUpdate(prevprops: IHeaderBarProps) {
+    if(prevprops.contentContainer !== this.props.contentContainer) {
+      this.adaptDomElements(this.state.fullscreen);
+    }
+  }
 
   public componentDidMount() {
     window.addEventListener("resize", this.onWindowResize);
