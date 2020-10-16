@@ -38,11 +38,19 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
   }
 
   public componentDidMount() {
+    document.addEventListener("fullscreenchange", this.onFullScreenChanged);
+    document.addEventListener("mozfullscreenchange", this.onFullScreenChanged);
+    document.addEventListener("webkitfullscreenchange", this.onFullScreenChanged);
+    document.addEventListener("msfullscreenchange", this.onFullScreenChanged);
     window.addEventListener("resize", this.onWindowResize);
     window.addEventListener('keydown', this.onWindowKeypress);
     document.addEventListener("setHeaderTitle", this.setTitle);
   }
-  public componentWillUnmount() {
+  public componentWillUnmount() {    
+    document.removeEventListener("fullscreenchange", this.onFullScreenChanged);
+    document.removeEventListener("mozfullscreenchange", this.onFullScreenChanged);
+    document.removeEventListener("webkitfullscreenchange", this.onFullScreenChanged);
+    document.removeEventListener("msfullscreenchange", this.onFullScreenChanged);
     window.removeEventListener("resize", this.onWindowResize);
     window.removeEventListener("keydown", this.onWindowKeypress);
     document.removeEventListener("setHeaderTitle", this.setTitle);
@@ -88,7 +96,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         </div>
         <div className={styles.panelItem}>
           <IconButton
-            title={this.state.fullscreen ? strings.FullscreenLabel : strings.AbortFullScreenLabel}
+            title={this.state.fullscreen ? strings.AbortFullScreenLabel: strings.FullscreenLabel}
             iconProps={{ iconName: this.state.fullscreen ? "BackToWindow" : "FullScreen" }}
             onClick={this.onToggleFullscreenClick} />
         </div>
@@ -125,11 +133,10 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
   }
 
   private isFullScreen = () => {
-    var maxHeight = window.screen.height,
-    maxWidth = window.screen.width,
-    curHeight = window.innerHeight,
-    curWidth = window.innerWidth;
-    return maxWidth == curWidth && maxHeight == curHeight;
+    return (document["fullscreenElement"] !== null && document["fullscreenElement"] !== undefined)|| /* Standard syntax */
+    (document['webkitFullscreenElement'] !== null && document["webkitFullscreenElement"] !== undefined)|| /* Chrome, Safari and Opera syntax */
+    (document['mozFullScreenElement'] !== null && document["mozFullScreenElement"] !== undefined) ||/* Firefox syntax */
+    (document['msFullscreenElement'] !== null && document["msFullscreenElement"] !== undefined);/* IE/Edge syntax */
   }
   private onWindowResize = () => {
     const fullscreen = this.isFullScreen();
@@ -142,6 +149,18 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
       });
     }
   }
+  private onFullScreenChanged = () => {
+    const fullscreen = this.isFullScreen();
+    if(fullscreen !== this.state.fullscreen) {
+      this.adaptDomElements(fullscreen);
+      this.setState({fullscreen: fullscreen}, () =>{
+        if(this.props.onFullscreenChanged) {
+          this.props.onFullscreenChanged(fullscreen);
+        }
+      });
+    }
+  }
+
   private onWindowKeypress = (event) => {
     // override f11
     if(event.which === 122) {
