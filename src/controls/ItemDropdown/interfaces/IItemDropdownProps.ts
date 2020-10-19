@@ -10,10 +10,12 @@ export interface IItemDropdownProps<T extends IBaseItem> {
     disabled?: boolean;
     multiSelect?: boolean;
     className?: string;
+    required?: boolean;
     /**
      * Taxo only
      */
     showFullPath?: boolean;
     baseLevel?: number;
+    showLevel?: number;
     showDeprecated?: boolean;
 }

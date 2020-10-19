@@ -40,34 +40,39 @@ export class ItemDropdown<T extends IBaseItem> extends React.Component<IItemDrop
     }
 
     public render() {
-        const {label, multiSelect, placeholder, disabled, defaultOption, className} = this.props;
+        const {label, multiSelect, placeholder, disabled, defaultOption, className, required} = this.props;
         const {selectedItems, allItems} = this.state;
-        return <Dropdown 
+        const displayedItems = this.getDisplayedItems(allItems);
+        return <Dropdown
             className={className}
             label={label}
+            required={required}
             multiSelect={multiSelect}
             disabled={disabled}
             onChange={this.onChange}
             placeholder={placeholder}
-            options={(!stringIsNullOrEmpty(defaultOption) ? [{id: "", title: defaultOption} as T] : []).concat(allItems).map(item => this.getOption(item))}
-            selectedKeys={selectedItems ? (isArray(selectedItems) ? (selectedItems as T[]).map(i => i.id.toString()) : [(selectedItems as T).id.toString()] ) : []}
+            options={(!stringIsNullOrEmpty(defaultOption) ? [{id: "", title: defaultOption} as T] : []).concat(displayedItems).map(item => this.getOption(item))}
+            selectedKeys={selectedItems && multiSelect ? (isArray(selectedItems) ? (selectedItems as T[]).map(i => i.id.toString()) : [(selectedItems as T).id.toString()] ) : undefined}
+            selectedKey={selectedItems && !multiSelect ? (selectedItems as T).id.toString() : undefined }
         />;
+    }
+
+    public getDisplayedItems(items: T[]): T[] {
+        if(items && items.length > 0 && items[0] instanceof TaxonomyTerm) {
+            if(this.props.showLevel !== undefined && this.props.showLevel !== null) {
+                return items.filter((term: T) => { return term instanceof TaxonomyTerm && !stringIsNullOrEmpty(term.path) && term.path.split(';').length === this.props.showLevel;});
+            }
+        }
+        return items;
     }
 
     private onChange = (event, option?: IDropdownOption) => {
         if(option) {
             //Test if multiselect then add item to selection or remove it if present (unchecked)
             if (!this.props.multiSelect) {
-                if (!option.selected) {
-                    this.setState({ selectedItems: null }, () => {
-                        this.props.onChanged(this.state.selectedItems);
-                    });
-                }
-                else {
-                    this.setState({ selectedItems: find(this.state.allItems, i => i.id.toString() === option.key.toString()) }, () => {
-                        this.props.onChanged(this.state.selectedItems);
-                    });
-                }
+                this.setState({ selectedItems: find(this.state.allItems, i => i.id.toString() === option.key.toString()) }, () => {
+                    this.props.onChanged(this.state.selectedItems);
+                });
             }
             else {
                 let tempSelection = this.state.selectedItems ? cloneDeep(this.state.selectedItems) as T[] : [];
@@ -87,6 +92,11 @@ export class ItemDropdown<T extends IBaseItem> extends React.Component<IItemDrop
                     });
                 }
             }
+        }
+        else if(!this.props.multiSelect) {
+            this.setState({ selectedItems: null }, () => {
+                this.props.onChanged(this.state.selectedItems);
+            });
         }
     }
 

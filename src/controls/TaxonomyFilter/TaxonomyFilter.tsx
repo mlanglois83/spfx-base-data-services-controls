@@ -185,12 +185,12 @@ export class TaxonomyFilter<T extends TaxonomyTerm> extends React.Component<ITax
             });
             if (currentTerms.length > 0) {
                 result.push(currentTerms);
-                count += currentTerms.length;
                 level++;
             }
             else {
                 level++;
-            }
+            }            
+            count += currentTerms.length;
         }
         return result;
     }
