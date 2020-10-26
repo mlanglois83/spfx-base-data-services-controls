@@ -7,10 +7,19 @@
     background: linear-gradient(90deg, $ms-color-themePrimary, #14284E);
     flex-direction: row;
     box-sizing: border-box;
+    
     * {       
       @include ms-font-l;
       @include ms-fontWeight-bold;
       color: #FFFFFF;
+    }
+    :global(.ms-Button) {
+      &:global(.is-disabled) {
+        background-color: transparent;
+      }
+      &:hover * {
+        color: $ms-color-themePrimary;
+      }
     }
     .panelItem {    
       display: flex;
@@ -19,12 +28,10 @@
     }
     .headerLeftPanel {
       margin: 0 -10px;
-      align-items: flex-start;
       display: flex;
       flex-direction: row;
       align-items: center;
       .titleBlock {
-          border-left: 2px solid white;
           .headerTitle {
               font-weight: $ms-font-weight-regular;
               display: flex;
@@ -35,6 +42,16 @@
       margin: 0 -10px;
       display: flex;
       margin-left: auto;
+      align-items: center;
+      .separator {
+        margin: 0 10px;
+      }   
+    }
+    .separator{        
+      background-color: white;
+      display: flex;
+      width:2px;
+      height:22px;
     }
   }
   

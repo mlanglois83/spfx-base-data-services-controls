@@ -17,6 +17,15 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     document.dispatchEvent(event);
   }
 
+  public static setActions(actions: () => Array<JSX.Element | "separator">){
+    var event = new CustomEvent<() => Array<JSX.Element | "separator">>('setHeaderActions', {detail: actions});
+    document.dispatchEvent(event);
+  }
+  public static removeActions(){
+    var event = new CustomEvent<void>('removeHeaderActions');
+    document.dispatchEvent(event);
+  }
+
   /**
    * Construct RiskStateSelector control
    * @param props control properties (see IRiskStateSelectorProps)
@@ -45,6 +54,8 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     window.addEventListener("resize", this.onWindowResize);
     window.addEventListener('keydown', this.onWindowKeypress);
     document.addEventListener("setHeaderTitle", this.setTitle);
+    document.addEventListener("setHeaderActions", this.setActions);
+    document.addEventListener("removeHeaderActions", this.removeActions);
   }
   public componentWillUnmount() {    
     document.removeEventListener("fullscreenchange", this.onFullScreenChanged);
@@ -54,17 +65,25 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     window.removeEventListener("resize", this.onWindowResize);
     window.removeEventListener("keydown", this.onWindowKeypress);
     document.removeEventListener("setHeaderTitle", this.setTitle);
+    document.removeEventListener("setHeaderActions", this.setActions);
+    document.removeEventListener("removeHeaderActions", this.removeActions);
   }
 
-  private setTitle = (event: CustomEvent) => {
+  private setTitle = (event: CustomEvent<string>) => {
     this.setState({title: event.detail});
+  }
+  private setActions = (event: CustomEvent<() => Array<JSX.Element | "separator">>) => {
+    this.setState({actions: event.detail});
+  }
+  private removeActions = () => {
+    this.setState({actions: null});
   }
 
   /**
    * Render control
    */
   public render(): React.ReactElement<IHeaderBarProps> {
-    const {title} = this.state;
+    const {title, actions} = this.state;
     return <div className={styles.stickyHeader}>
       <div className={styles.headerLeftPanel}>
         <HashRouter>
@@ -81,13 +100,31 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
               </div>} />
           </Switch>
         </HashRouter>
-        {!stringIsNullOrEmpty(title) && <div className={css(styles.panelItem, styles.titleBlock)}>
-          <div className={styles.headerTitle}>
-            {title}
+        {!stringIsNullOrEmpty(title) && <>
+          <div className={styles.separator}></div>
+          <div className={css(styles.panelItem, styles.titleBlock)}>          
+            <div className={styles.headerTitle}>
+              {title}
+            </div>
           </div>
-        </div>}
+        </>}
       </div>
-      <div className={styles.headerRightPanel}>            
+      <div className={styles.headerRightPanel}>    
+        {actions && <>
+            {actions()?.map(a=> {
+              return  a ? <>
+                {a === "separator" ?
+                <div className={styles.separator}></div>
+                :
+                <div className={styles.panelItem}>
+                {a}
+                </div>}
+              </>
+               : null;
+            })}
+            <div className={styles.separator}></div>
+          </>
+        }
         <div className={styles.panelItem}>
           <SynchroNotifications syncErrors={this.props.syncErrors} transactions={this.props.transactions} syncRunning={this.props.syncRuning} />
         </div>
