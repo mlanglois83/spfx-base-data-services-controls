@@ -244,6 +244,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         ControlZone[0]['style'].padding = "0";
         ControlZone[0]['style'].margin = "0";
       }
+      document.body.className = this.addClass(document.body.className, "fullscreen");
       if (this.props.contentContainer) {
         this.props.contentContainer.style.height = "calc(100vh - 52px)";
         this.props.contentContainer.style.overflow = "auto";
@@ -291,7 +292,8 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         ControlZone[0]['style'].padding = null;
         ControlZone[0]['style'].margin = null;
       }
-      if (this.props.contentContainer) {
+      document.body.className = this.removeClass(document.body.className, "fullscreen");
+      if (this.props.contentContainer) {        
         this.props.contentContainer.style.height = "auto";
         this.props.contentContainer.style.overflow = null;
         let scrollDiv = document.querySelector("div[data-is-scrollable='true']") as HTMLDivElement;
@@ -301,7 +303,31 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
       }
     }
   }
-
-
+  private addClass(classProperty: string, className: string) {
+    className = className.trim();
+    if(stringIsNullOrEmpty(classProperty)) {
+      return className;
+    }
+    else {
+      return this.removeClass(classProperty, className) + " " + className;
+    }
+  }
+  private removeClass(classProperty: string, className: string) {
+    className = className.trim();
+    if(stringIsNullOrEmpty(classProperty)) {
+      return classProperty;
+    }
+    else {
+      classProperty = classProperty.replace(/\s+/g, " ");
+      const splited = classProperty.split(" ");      
+      let idx = splited.indexOf(className);
+      while(idx !== -1)
+      {
+          splited.splice(idx, 1);
+          idx = splited.indexOf(className);
+      }
+      return splited.join(" ");
+    }
+  }
 
 }
