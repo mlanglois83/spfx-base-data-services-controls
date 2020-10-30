@@ -2,11 +2,17 @@ import * as strings from 'ControlsStrings';
 import { IconButton, Icon, css } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { IHeaderBarProps } from "./interfaces/IHeaderBarProps";
-import { IHeaderBarState } from "./interfaces/IHeaderBarState";
+import { IActionsGroup, IHeaderBarState } from "./interfaces/IHeaderBarState";
 import styles from './HeaderBar.module.scss';
 import { HashRouter, Switch, Route, WithRouter } from "react-router-dom";
 import { SynchroNotifications } from "./components/synchroNotifications/SynchroNotifications";
 import { stringIsNullOrEmpty } from '@pnp/common';
+import { cloneDeep } from '@microsoft/sp-lodash-subset';
+interface IActionsEvent {
+  key: string;
+  actions: () => Array<JSX.Element | "separator">; 
+  order?:number;
+}
 /**
  * Control to select disable state and associated dates of a risk
  */
@@ -17,13 +23,24 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     document.dispatchEvent(event);
   }
 
-  public static setActions(actions: () => Array<JSX.Element | "separator">){
-    var event = new CustomEvent<() => Array<JSX.Element | "separator">>('setHeaderActions', {detail: actions});
+  public static setActions(key: string, actions: () => Array<JSX.Element | "separator">, order?:number){
+    var event = new CustomEvent<IActionsEvent>('setHeaderActions', {detail: {key: key, actions: actions, order: order}});
     document.dispatchEvent(event);
   }
-  public static removeActions(){
-    var event = new CustomEvent<void>('removeHeaderActions');
+  public static removeActions(key: string){
+    var event = new CustomEvent<string>('removeHeaderActions', {detail: key});
     document.dispatchEvent(event);
+  }
+
+  private get orderesActionGroups(): Array<() => Array<JSX.Element | "separator">> {
+    const groups: Array<IActionsGroup> = [];
+    this.state.actions?.forEach(value => { groups.push(value); });
+    groups.sort((a: IActionsGroup, b: IActionsGroup) =>{ 
+      const anum = (a.order === undefined || a.order === null ? -1 : a.order);
+      const bnum = (b.order === undefined || b.order === null ? -1 : b.order);
+      return bnum - anum; // reverse order (right to left)
+    });
+    return groups.map(r => r.actions);
   }
 
   /**
@@ -72,18 +89,26 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
   private setTitle = (event: CustomEvent<string>) => {
     this.setState({title: event.detail});
   }
-  private setActions = (event: CustomEvent<() => Array<JSX.Element | "separator">>) => {
-    this.setState({actions: event.detail});
+  private setActions = (event: CustomEvent<IActionsEvent>) => {
+    const actions: Map<string, IActionsGroup> = this.state.actions ? cloneDeep(this.state.actions) : new Map<string, IActionsGroup>();
+    actions.set(event.detail.key, {
+      actions: event.detail.actions,
+      order: event.detail.order
+    });
+    this.setState({actions: actions});
   }
-  private removeActions = () => {
-    this.setState({actions: null});
+  private removeActions = (event: CustomEvent<string>) => {    
+    const actions: Map<string, IActionsGroup> = this.state.actions ? cloneDeep(this.state.actions) : new Map<string, IActionsGroup>();
+    actions.delete(event.detail);
+    this.setState({actions: actions});
   }
 
   /**
    * Render control
    */
   public render(): React.ReactElement<IHeaderBarProps> {
-    const {title, actions} = this.state;
+    const {title} = this.state;
+    const actions = this.orderesActionGroups;
     return <div className={styles.stickyHeader}>
       <div className={styles.headerLeftPanel}>
         <HashRouter>
@@ -110,19 +135,29 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         </>}
       </div>
       <div className={styles.headerRightPanel}>    
-        {actions && <>
-            {actions()?.map(a=> {
-              return  a ? <>
-                {a === "separator" ?
+        {actions && actions.length > 0 &&
+          <>
+            {actions.map(ag=> {
+              return <>
+                {ag()?.map(a => {
+                  return  a ? 
+                  <>
+                    {a === "separator" ?
+                      <div className={styles.separator}></div>
+                    :
+                      <div className={styles.panelItem}>
+                        {a}
+                      </div>
+                    }
+                  </>
+                  : null;
+                })}
                 <div className={styles.separator}></div>
-                :
-                <div className={styles.panelItem}>
-                {a}
-                </div>}
-              </>
-               : null;
+              </>;
+              
+              
             })}
-            <div className={styles.separator}></div>
+            
           </>
         }
         <div className={styles.panelItem}>
