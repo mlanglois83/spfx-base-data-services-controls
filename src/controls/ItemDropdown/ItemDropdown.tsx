@@ -58,12 +58,16 @@ export class ItemDropdown<T extends IBaseItem> extends React.Component<IItemDrop
     }
 
     public getDisplayedItems(items: T[]): T[] {
+        let result = cloneDeep(items || []);
         if(items && items.length > 0 && items[0] instanceof TaxonomyTerm) {
             if(this.props.showLevel !== undefined && this.props.showLevel !== null) {
-                return items.filter((term: T) => { return term instanceof TaxonomyTerm && !stringIsNullOrEmpty(term.path) && term.path.split(';').length === this.props.showLevel;});
+                result = items.filter((term: T) => { return term instanceof TaxonomyTerm && !stringIsNullOrEmpty(term.path) && term.path.split(';').length === this.props.showLevel;});
             }
         }
-        return items;
+        if(this.props.onFilterItems) {
+            result = this.props.onFilterItems(items);
+        }
+        return result;
     }
 
     private onChange = (event, option?: IDropdownOption) => {

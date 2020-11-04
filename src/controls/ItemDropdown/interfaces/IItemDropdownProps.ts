@@ -2,6 +2,7 @@ import { IBaseItem } from 'spfx-base-data-services';
 
 export interface IItemDropdownProps<T extends IBaseItem> {
     modelName: string;
+    onFilterItems?: (allItems: Array<T>) => Array<T>;
     selectedItems?: T[] | T;
     onChanged?: (value?: T[] | T) => void;
     label?: string;
