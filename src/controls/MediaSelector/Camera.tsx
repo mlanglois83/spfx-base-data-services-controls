@@ -1,17 +1,17 @@
+import { assign } from '@microsoft/sp-lodash-subset';
+import * as strings from 'ControlsStrings';
+import { css, DefaultButton, Dialog, Icon, PrimaryButton } from 'office-ui-fabric-react';
+import { ResponsiveMode } from 'office-ui-fabric-react/lib/utilities/decorators/withResponsiveMode';
 import * as React from 'react';
 import Webcam from "react-webcam";
 import RecordRTC from 'recordrtc';
-
+import { IBaseFile, UtilsService } from 'spfx-base-data-services';
 import useMobileDetect from 'use-mobile-detect-hook';
-import { Icon, Dialog, css, PrimaryButton, DialogType, DefaultButton } from 'office-ui-fabric-react';
+import { IContentUrl } from '../MediaSelector/interfaces/IMediaSelectorState';
+import { MediaType } from './interfaces/IMediaSelectorProps';
 import styles from './MediaSelector.module.scss';
 
-import { SPFile, UtilsService } from 'spfx-base-data-services';
-import { cloneDeep, find, assign } from '@microsoft/sp-lodash-subset';
-import { IContentUrl } from '../MediaSelector/interfaces/IMediaSelectorState';
-import { ResponsiveMode } from 'office-ui-fabric-react/lib/utilities/decorators/withResponsiveMode';
-import * as strings from 'ControlsStrings';
-import { MediaType } from './interfaces/IMediaSelectorProps';
+
 
 
 export interface ICameraClasses {
@@ -43,15 +43,16 @@ export enum CameraFacing {
     Environnement
 }
 
-export interface ICameraProps {
-    onChanged?: (file: SPFile) => void;
+export interface ICameraProps<T extends IBaseFile> {
+    fileConstructor: new (data?: any) => T;
+    onChanged?: (file: T) => void;
     cssClasses?: ICameraClasses;
     mediaTypes: MediaType;
     icons?: IIcons;
 }
 
 
-export const Camera = (props: ICameraProps) => {
+export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
 
     const detectMobile = useMobileDetect();
 
@@ -112,8 +113,8 @@ export const Camera = (props: ICameraProps) => {
     const addFileMobile = async (inputElement: HTMLInputElement) => {
         const file = inputElement.files[0];
 
-        let newFile: (SPFile & IContentUrl) = assign(new SPFile(), { contentUrl: "" });
-        newFile.name = file.name;
+        let newFile: (T & IContentUrl) = assign(new props.fileConstructor(), { contentUrl: "" });
+        newFile.title = file.name;
         newFile.mimeType = file.type;
         newFile.content = await UtilsService.blobToArrayBuffer(file);
         newFile.contentUrl = await UtilsService.getOfflineFileUrl(file);
@@ -131,13 +132,13 @@ export const Camera = (props: ICameraProps) => {
     const addFile = async (base64: string) => {
 
 
-        let newFile: (SPFile & IContentUrl) = assign(new SPFile(), { contentUrl: "" });
+        let newFile: (T & IContentUrl) = assign(new props.fileConstructor(), { contentUrl: "" });
         if (mode == CameraMode.Picture) {
-            newFile.name = "Picture-" + formatDate(new Date()) + ".jpeg";
+            newFile.title = "Picture-" + formatDate(new Date()) + ".jpeg";
             newFile.mimeType = "image/jpeg";
         }
         if (mode == CameraMode.Video) {
-            newFile.name = "Video-" + formatDate(new Date()) + ".webm";
+            newFile.title = "Video-" + formatDate(new Date()) + ".webm";
             newFile.mimeType = "video/webm";
         }
 
@@ -215,7 +216,7 @@ export const Camera = (props: ICameraProps) => {
                         <div className={css(styles.Addzone, cssClasses && cssClasses.addzone ? cssClasses.addzone: null)} onClick={() => {
                             fileInput.click();
                         }}>
-                        <input ref={(elt) => { fileInput = elt; }} type="file" accept=".doc,.docx,.csv,.xlsx,.xls,.ppt,.pptx,text/plain,.pdf" capture onChange={() => addFileMobile(this.fileInput)} />
+                        <input ref={(elt) => { fileInput = elt; }} type="file" accept=".doc,.docx,.csv,.xlsx,.xls,.ppt,.pptx,text/plain,.pdf" capture onChange={() => addFileMobile(fileInput)} />
                             <Icon iconName="Page" />
                         </div>
                     </div>}

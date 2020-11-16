@@ -5,7 +5,7 @@ import { IItemDropdownState } from './interfaces/IItemDropdownState';
 import { TagPicker, ITag, IconButton, Panel, PanelType, PrimaryButton, DefaultButton, Checkbox, css, Dropdown, IDropdownOption } from 'office-ui-fabric-react';
 import { isArray, stringIsNullOrEmpty } from '@pnp/common';
 import { find, cloneDeep, findIndex } from '@microsoft/sp-lodash-subset';
-import { TaxonomyTerm, UtilsService, ServicesConfiguration, IBaseItem } from 'spfx-base-data-services';
+import { TaxonomyTerm, UtilsService, ServicesConfiguration, IBaseItem, BaseDataService } from 'spfx-base-data-services';
 
 export class ItemDropdown<T extends IBaseItem> extends React.Component<IItemDropdownProps<T>, IItemDropdownState<T>> {
     constructor(props: IItemDropdownProps<T>) {
@@ -19,14 +19,18 @@ export class ItemDropdown<T extends IBaseItem> extends React.Component<IItemDrop
 
 
     public async componentDidMount() {
-        let service = ServicesConfiguration.configuration.serviceFactory.create(this.props.modelName);
+        let service = ServicesConfiguration.configuration.serviceFactory.create(this.props.modelName) as BaseDataService<T>;
         let items = await service.getAll();
         if (!this.props.showDeprecated) {
             items = items.filter((t) => { 
                 return ((t instanceof TaxonomyTerm)  && !t.isDeprecated) || (!(t instanceof TaxonomyTerm)); 
             });
         }
-        this.setState({ allItems: items as T[] });
+        let selection = this.state.selectedItems;
+        if(this.props.onGetSelectedItems) {
+            selection = this.props.onGetSelectedItems(items);
+        }
+        this.setState({ allItems: items, selectedItems:selection });
     }
 
     /**
@@ -43,6 +47,14 @@ export class ItemDropdown<T extends IBaseItem> extends React.Component<IItemDrop
         const {label, multiSelect, placeholder, disabled, defaultOption, className, required} = this.props;
         const {selectedItems, allItems} = this.state;
         const displayedItems = this.getDisplayedItems(allItems);
+        let selection = selectedItems;
+        if(this.props.onGetSelectedItems) {
+            selection = this.props.onGetSelectedItems(displayedItems);
+        }
+        let isdisabled = disabled;
+        if(this.props.onGetDisabled) {
+            isdisabled = this.props.onGetDisabled(displayedItems);
+        }
         return <Dropdown
             className={className}
             label={label}
@@ -52,8 +64,8 @@ export class ItemDropdown<T extends IBaseItem> extends React.Component<IItemDrop
             onChange={this.onChange}
             placeholder={placeholder}
             options={(!stringIsNullOrEmpty(defaultOption) ? [{id: "", title: defaultOption} as T] : []).concat(displayedItems).map(item => this.getOption(item))}
-            selectedKeys={selectedItems && multiSelect ? (isArray(selectedItems) ? (selectedItems as T[]).map(i => i.id.toString()) : [(selectedItems as T).id.toString()] ) : undefined}
-            selectedKey={selectedItems && !multiSelect ? (selectedItems as T).id.toString() : undefined }
+            selectedKeys={selection && multiSelect ? (isArray(selection) ? (selection as T[]).map(i => i.id.toString()) : [(selection as T).id.toString()] ) : undefined}
+            selectedKey={selection && !multiSelect ? (selection as T).id.toString() : undefined }
         />;
     }
 

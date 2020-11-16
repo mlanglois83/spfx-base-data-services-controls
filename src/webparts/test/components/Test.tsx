@@ -74,6 +74,7 @@ export class Test extends React.Component<ITestProps, ITestState> {
             </div>     
             <div>
                 <MediaSelector
+                    fileConstructor={Asset}
                     editMode
                     files={this.state.files}
                     onFileAdded={async (file) => {

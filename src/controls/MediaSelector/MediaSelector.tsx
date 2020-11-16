@@ -6,15 +6,15 @@ import * as React from 'react';
 import { IMediaSelectorProps, MediaType } from './interfaces/IMediaSelectorProps';
 import { IContentUrl, IMediaSelectorState } from './interfaces/IMediaSelectorState';
 import styles from './MediaSelector.module.scss';
-import { SPFile, UtilsService } from 'spfx-base-data-services';
+import { IBaseFile, UtilsService } from 'spfx-base-data-services';
 
 import { Camera } from './Camera';
 import { css } from 'office-ui-fabric-react';
 
-export class MediaSelector extends React.Component<IMediaSelectorProps, IMediaSelectorState> { 
+export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSelectorProps<T>, IMediaSelectorState<T>> { 
 
 
-    public constructor(props: IMediaSelectorProps) {
+    public constructor(props: IMediaSelectorProps<T>) {
         super(props);
         this.state = {
             files: [],
@@ -51,12 +51,14 @@ export class MediaSelector extends React.Component<IMediaSelectorProps, IMediaSe
     private async loadCachedUrls() {
         let cached = [];
         await Promise.all(this.state.files.map(async (f) => {
-            let isInCache = false;
-            if(!stringIsNullOrEmpty(this.props.cacheKey)) {
-                isInCache = await UtilsService.isUrlInCache(f.serverRelativeUrl, this.props.cacheKey);
-            } 
-            if (isInCache) {
-                cached.push(f.serverRelativeUrl);
+            if(f.serverRelativeUrl) {
+                let isInCache = false;
+                if(!stringIsNullOrEmpty(this.props.cacheKey)) {
+                    isInCache = await UtilsService.isUrlInCache(f.serverRelativeUrl, this.props.cacheKey);
+                } 
+                if (isInCache) {
+                    cached.push(f.serverRelativeUrl);
+                }
             }
         }));
         this.setState({ cachedUrls: cached });
@@ -71,7 +73,8 @@ export class MediaSelector extends React.Component<IMediaSelectorProps, IMediaSe
                 <React.Fragment>
 
                     {!this.props.disabled && <Camera 
-                        onChanged={(newFile: SPFile) => {
+                        fileConstructor={this.props.fileConstructor}
+                        onChanged={(newFile: T) => {
                             let filesCopy = cloneDeep(this.state.files);
                             let existing = find(filesCopy, (f) => { return f.title === newFile.title; });
                             if (existing) {
@@ -112,9 +115,9 @@ export class MediaSelector extends React.Component<IMediaSelectorProps, IMediaSe
                     this.props.online ||
                     (!this.props.online && find(this.state.cachedUrls, (c) => { return c == testfile.serverRelativeUrl; }))
                 );
-        }).map((file: SPFile & IContentUrl, i: number) => {
+        }).map((file: T & IContentUrl, i: number) => {
             const url = (
-                (this.props.online && !file.content) || (!this.props.online && find(this.state.cachedUrls, (c) => { return c == file.serverRelativeUrl; }) && !file.content)
+                (this.props.online && !file.content) || (!this.props.online && find(this.state.cachedUrls, (c) => { return c === file.serverRelativeUrl; }) && !file.content)
                     ?
                     file.serverRelativeUrl
                     :
@@ -126,16 +129,18 @@ export class MediaSelector extends React.Component<IMediaSelectorProps, IMediaSe
             const isFile = !isVideo && !isImage;
             return (
                 <div className={css(styles.tile, cssClasses && cssClasses.tile ? cssClasses.tile : null)}>
-                    <div className={css(styles.media, cssClasses && cssClasses.media ? cssClasses.media : null,styles.uploaded, cssClasses && cssClasses.uploaded ? cssClasses.uploaded : null,(this.props.disabled ? styles.disabled : null), (this.props.disabled && cssClasses && cssClasses.disabled ? cssClasses.disabled : null))} onClick={() => { if (file.serverRelativeUrl && !this.props.disabled) { window.open(file.serverRelativeUrl+"?web=1", '_blank'); } }} >
+                    <div 
+                        className={css(styles.media, cssClasses && cssClasses.media ? cssClasses.media : null,styles.uploaded, cssClasses && cssClasses.uploaded ? cssClasses.uploaded : null,(this.props.disabled ? styles.disabled : null), (this.props.disabled && cssClasses && cssClasses.disabled ? cssClasses.disabled : null))} 
+                        onClick={() => { if (file.serverRelativeUrl && !this.props.disabled) { window.open(file.serverRelativeUrl+"?web=1", '_blank'); } }} >
                         <div className={css(styles.preview, cssClasses && cssClasses.preview ? cssClasses.preview : null)}>
                             {isFile &&
                                 <div className={css(styles.filePreview, cssClasses && cssClasses.filePreview ? cssClasses.filePreview : null)}>
                                     {/* <a href={url} target="_blank"> </a> */}
-                                    <label>{file.name}</label>
+                                    <label>{file.title}</label>
                                 </div>
                             }
                             {isImage &&
-                                <img src={url} alt={file.name} />
+                                <img src={url} alt={file.title} />
                             }
                             {isVideo &&
                                 <video controls>

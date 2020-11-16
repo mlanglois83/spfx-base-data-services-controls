@@ -1,10 +1,10 @@
-import { SPFile } from 'spfx-base-data-services';
+import { IBaseFile } from 'spfx-base-data-services';
 
 export interface IContentUrl {
     contentUrl?: string;
 }
-export interface IMediaSelectorState {
-    files: (SPFile & IContentUrl)[];
+export interface IMediaSelectorState<T extends IBaseFile> {
+    files: (T & IContentUrl)[];
     cachedUrls: string[];
 
     videoRecorder: any;

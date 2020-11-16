@@ -1,19 +1,20 @@
-import { SPFile } from "spfx-base-data-services";
+import { IBaseFile } from "spfx-base-data-services";
 import { ICameraClasses, IIcons } from "../Camera";
 
-export interface IMediaSelectorProps {  
+export interface IMediaSelectorProps<T extends IBaseFile> {  
     /**
      * Use sp.utility.stripInvalidFileFolderChars from @pnp/sp before set
      */  
+    fileConstructor: new (data?: any) => T;
     cacheKey?: string;
-    files: Array<SPFile>;
+    files: Array<T>;
     disabled?: boolean;
     editMode: boolean;
     title?: string;
     online: boolean;
-    onFileAdded: (file: SPFile) => void;
-    onBeforeFileRemove?: (file: SPFile) => Promise<boolean> | boolean;
-    onFileRemoved: (file: SPFile) => void;
+    onFileAdded: (file: T) => void;
+    onBeforeFileRemove?: (file: T) => Promise<boolean> | boolean;
+    onFileRemoved: (file: T) => void;
     cssClasses?: IMediaSelectorClassNames;
     mediaTypes?: MediaType;
     icons?: IIcons;
