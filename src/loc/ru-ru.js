@@ -30,6 +30,7 @@ define([], function() {
         "TransactionErrorsLabel": "Ошибка синхронизации",
         "NoTransactionsLabel": "Выполняющиеся транзакции отсутствуют",
         "NoSyncErrorsLabel": "Ошибки синхронизации отсутствуют",
-        "clearSyncErrors": "Очистить список"
+        "clearSyncErrors": "Очистить список",
+        "download": "Скачать"
     }
 });

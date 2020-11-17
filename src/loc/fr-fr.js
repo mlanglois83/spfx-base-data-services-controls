@@ -30,6 +30,7 @@ define([], function() {
         "TransactionErrorsLabel": "Erreurs de synchronisation",
         "NoTransactionsLabel": "Aucune transaction en cours",
         "NoSyncErrorsLabel": "Aucune erreur lors de la dernère synchronisation",
-        "clearSyncErrors": "Vider la liste"
+        "clearSyncErrors": "Vider la liste",
+        "download": "Télécharger"
     }
 });

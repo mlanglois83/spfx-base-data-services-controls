@@ -30,6 +30,7 @@ define([], function() {
         "TransactionErrorsLabel": "同步错误",
         "NoTransactionsLabel": "无待处理的事务",
         "NoSyncErrorsLabel": "无同步错误",
-        "clearSyncErrors": "清空列表"
+        "clearSyncErrors": "清空列表",
+        "download": "下载"
     }
 });

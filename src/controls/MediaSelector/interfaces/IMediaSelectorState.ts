@@ -5,8 +5,9 @@ export interface IContentUrl {
 }
 export interface IMediaSelectorState<T extends IBaseFile> {
     files: (T & IContentUrl)[];
+    preview: (T & IContentUrl);
+    previewRatio?: number;
     cachedUrls: string[];
-
     videoRecorder: any;
 }
 

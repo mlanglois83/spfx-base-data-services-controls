@@ -50,7 +50,16 @@
     }
   }
 }
-
+.previewActions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.previewContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .attachmentsSelector {
     display: flex;
     flex-direction: row;

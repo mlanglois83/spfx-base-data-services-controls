@@ -30,6 +30,7 @@ define([], function() {
         "TransactionErrorsLabel": "Eroare de sincronizare",
         "NoTransactionsLabel": "Nici o tranzactie in curs",
         "NoSyncErrorsLabel": "Nici o eroare în timpul ultimei sincronizări ",
-        "clearSyncErrors": "Ștergeți lista"
+        "clearSyncErrors": "Ștergeți lista",
+        "download": "Descărcați"
     }
 });

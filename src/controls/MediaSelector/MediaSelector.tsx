@@ -1,7 +1,7 @@
 import { assign, cloneDeep, find } from '@microsoft/sp-lodash-subset';
 import { stringIsNullOrEmpty } from '@pnp/common';
 import * as strings from 'ControlsStrings';
-import { IconButton } from 'office-ui-fabric-react/lib/Button';
+import { IconButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import * as React from 'react';
 import { IMediaSelectorProps, MediaType } from './interfaces/IMediaSelectorProps';
 import { IContentUrl, IMediaSelectorState } from './interfaces/IMediaSelectorState';
@@ -9,7 +9,7 @@ import styles from './MediaSelector.module.scss';
 import { IBaseFile, UtilsService } from 'spfx-base-data-services';
 
 import { Camera } from './Camera';
-import { css } from 'office-ui-fabric-react';
+import { css, Dialog, ResponsiveMode } from 'office-ui-fabric-react';
 
 export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSelectorProps<T>, IMediaSelectorState<T>> { 
 
@@ -19,7 +19,8 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
         this.state = {
             files: [],
             cachedUrls: [],
-            videoRecorder: null
+            videoRecorder: null,
+            preview: null
         };
     }
 
@@ -65,8 +66,20 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
     }
 
     public render() {
+        const {preview, previewRatio} = this.state;
         const {cssClasses, mediaTypes, icons} = this.props;
         const attachments: JSX.Element = this.renderFiles();
+
+        let previewUrl = "";
+        if(preview){
+            previewUrl = (
+                (this.props.online && !preview.content) || (!this.props.online && find(this.state.cachedUrls, (c) => { return c === preview.serverRelativeUrl; }) && !preview.content)
+                ?
+                preview.serverRelativeUrl
+                :
+                preview.contentUrl
+            );
+        }
 
         return <div className={css(styles.attachmentsSelector, cssClasses && cssClasses.container ? cssClasses.container : null)}>
             {this.props.editMode &&
@@ -95,6 +108,44 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
                 </React.Fragment>
             }
             {attachments}
+            {preview &&                 
+                <Dialog
+                    hidden={false} 
+                    onDismiss={() => { this.setState({preview:null}); }}         
+                    modalProps={{                        
+                        isBlocking: false,
+                        responsiveMode: ResponsiveMode.large,
+                        containerClassName: css( styles.dialogOuter, cssClasses && cssClasses.dialogContainer ? cssClasses.dialogContainer: null)
+                    }}>
+                        <React.Fragment>
+                            <style dangerouslySetInnerHTML={{__html: `
+                                .${styles.dialogOuter} {  
+                                    max-width: min(100%, calc((100vh - 132px) * ${previewRatio || 0}) + 56px);
+                                }
+                            `}}/>
+                            <div className={styles.previewContainer}>
+                                {preview.mimeType.indexOf("image/") === 0 &&
+                                    <img 
+                                        src={previewUrl} 
+                                        alt={preview.title} 
+                                        style={{maxWidth: `min(100%, calc((100vh - 132px) * ${previewRatio || 0}))`}}
+                                    />
+                                }
+                                {preview.mimeType.indexOf("video/") === 0 &&
+                                    <video 
+                                        controls
+                                        style={{maxWidth: `min(100%, calc((100vh - 132px) * ${previewRatio || 0}))`}}
+                                    >
+                                        <source src={previewUrl}
+                                            type={preview.mimeType} />
+                                    </video>
+                                }
+                            </div>                            
+                            <div className={styles.previewActions}>
+                                <PrimaryButton text={strings.download} iconProps={{iconName: "Download"}} onClick={()=>{ this.downloadFile(preview); }}/>
+                            </div>
+                        </React.Fragment>
+                    </Dialog>}
         </div>;
     }
 
@@ -131,11 +182,46 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
                 <div className={css(styles.tile, cssClasses && cssClasses.tile ? cssClasses.tile : null)}>
                     <div 
                         className={css(styles.media, cssClasses && cssClasses.media ? cssClasses.media : null,styles.uploaded, cssClasses && cssClasses.uploaded ? cssClasses.uploaded : null,(this.props.disabled ? styles.disabled : null), (this.props.disabled && cssClasses && cssClasses.disabled ? cssClasses.disabled : null))} 
-                        onClick={() => { if (file.serverRelativeUrl && !this.props.disabled) { window.open(file.serverRelativeUrl+"?web=1", '_blank'); } }} >
+                        onClick={() => { 
+                            if (!this.props.disabled) { 
+                                if(isFile) {
+                                    if(file.serverRelativeUrl) { // open in new window
+                                        window.open(file.serverRelativeUrl+"?web=1", '_blank'); 
+                                    }
+                                    else if(file.contentUrl) {
+                                        this.downloadFile(file);
+                                    }
+                                }
+                                else if(file.serverRelativeUrl || file.contentUrl) {
+                                    if(isVideo) {
+                                        const videoElt = document.createElement("video");
+                                        videoElt.controls = true;
+                                        videoElt.src = url;
+                                        videoElt.style.visibility = "hidden";
+                                        videoElt.onloadeddata = () => {
+                                            const ratio = videoElt.clientWidth / videoElt.clientHeight;            
+                                            document.body.removeChild(videoElt);
+                                            this.setState({preview: file, previewRatio: ratio});
+                                        };
+                                        document.body.appendChild(videoElt);
+                                    }
+                                    else {
+                                        const imgElt = document.createElement("img");
+                                        imgElt.src = url;
+                                        imgElt.style.visibility = "hidden";
+                                        imgElt.onload = () => {
+                                            const ratio = imgElt.clientWidth / imgElt.clientHeight;  
+                                            document.body.removeChild(imgElt);
+                                            this.setState({preview: file, previewRatio: ratio});
+                                        };
+                                        document.body.appendChild(imgElt);
+                                    }
+                                }                                
+                            } 
+                        }} >
                         <div className={css(styles.preview, cssClasses && cssClasses.preview ? cssClasses.preview : null)}>
                             {isFile &&
                                 <div className={css(styles.filePreview, cssClasses && cssClasses.filePreview ? cssClasses.filePreview : null)}>
-                                    {/* <a href={url} target="_blank"> </a> */}
                                     <label>{file.title}</label>
                                 </div>
                             }
@@ -152,7 +238,7 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
                         {this.props.editMode && <div className={css(styles.actions, cssClasses && cssClasses.tileActions ? cssClasses.tileActions : null)}>
                             <IconButton disabled={this.props.disabled} iconProps={{ iconName: "StatusErrorFull" }} ariaLabel={strings.removeButtonLabel} onClick={async (e) => { 
                                 e.stopPropagation(); 
-                                let remove = false;
+                                let remove = true;
                                 if(this.props.onBeforeFileRemove) {
                                     remove = await this.props.onBeforeFileRemove(this.state.files[i]);
                                 }
@@ -167,6 +253,12 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
         return (result.length > 0 ? <React.Fragment>{result}</React.Fragment> : (!this.props.editMode ? <div className={css(styles.noTiles, cssClasses && cssClasses.noTiles ? cssClasses.noTiles : null)}>{strings.NoMediaMessage}</div> : null));
     }
 
+    private downloadFile = (file: T & IContentUrl) => {
+        const downloadLink = document.createElement("a");        
+        downloadLink.href = file.contentUrl;
+        downloadLink.download = file.title;
+        downloadLink.click();
+    }
 
     private onFileRemove = (idx: number) => {
         let file = cloneDeep(this.state.files[idx]);

@@ -172,7 +172,6 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
 
                         videoRecorder.getDataURL((data) => {
                             addFile(data);
-                            console.log(data);
                             setVideoRecorder(null);
                         });
                     });

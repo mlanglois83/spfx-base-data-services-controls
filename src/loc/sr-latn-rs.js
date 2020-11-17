@@ -30,6 +30,7 @@ define([], function() {
         "TransactionErrorsLabel": "Greške u sinhronizaciji",
         "NoTransactionsLabel": "Nema tekućih transakcija",
         "NoSyncErrorsLabel": "Nema greške prilikom poslednje sinhronizacije",
-        "clearSyncErrors": "Clear errors"
+        "clearSyncErrors": "Clear errors",
+        "download": "Preuzimanje"
     }
 });

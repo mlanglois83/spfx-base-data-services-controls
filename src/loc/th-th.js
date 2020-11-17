@@ -30,6 +30,7 @@ define([], function() {
         "TransactionErrorsLabel": "การดำเนินการเกิดข้อผิดพลาด",
         "NoTransactionsLabel": "ไม่มีการส่งถ่ายข้อมูล",
         "NoSyncErrorsLabel": "ไม่มีข้อผิดพลาดขณะดำเนินการ",
-        "clearSyncErrors": "เคลียร์ข้อความผิดพลาด"
+        "clearSyncErrors": "เคลียร์ข้อความผิดพลาด",
+        "download": "ดาวน์โหลด"
     }
 });
