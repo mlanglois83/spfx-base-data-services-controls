@@ -7,11 +7,12 @@ import { isArray, stringIsNullOrEmpty } from '@pnp/common';
 import { find, cloneDeep, findIndex } from '@microsoft/sp-lodash-subset';
 import { TaxonomyTerm, UtilsService, ServicesConfiguration, IBaseItem, BaseDataService } from 'spfx-base-data-services';
 
-export class ItemDropdown<T extends IBaseItem> extends React.Component<IItemDropdownProps<T>, IItemDropdownState<T>> {
-    constructor(props: IItemDropdownProps<T>) {
+export class ItemDropdown<T extends IBaseItem, K extends keyof T> extends React.Component<IItemDropdownProps<T, K>, IItemDropdownState<T>> {
+    constructor(props: IItemDropdownProps<T, K>) {
         super(props);
         this.state = {
-            selectedItems: props.selectedItems,
+            keyProperty: props.keyProperty?.toString() || "id",
+            selectedItems: this.getSelected([], props.selectedItems),
             allItems: []
         };
 
@@ -19,53 +20,53 @@ export class ItemDropdown<T extends IBaseItem> extends React.Component<IItemDrop
 
 
     public async componentDidMount() {
-        let service = ServicesConfiguration.configuration.serviceFactory.create(this.props.modelName) as BaseDataService<T>;
+        let service = ServicesConfiguration.configuration.serviceFactory.create(this.props.model["name"]) as BaseDataService<T>;
         let items = await service.getAll();
         if (!this.props.showDeprecated) {
             items = items.filter((t) => { 
                 return ((t instanceof TaxonomyTerm)  && !t.isDeprecated) || (!(t instanceof TaxonomyTerm)); 
             });
-        }
-        let selection = this.state.selectedItems;
-        if(this.props.onGetSelectedItems) {
-            selection = this.props.onGetSelectedItems(items);
-        }
-        this.setState({ allItems: items, selectedItems:selection });
+        }        
+        this.setState({ allItems: items, selectedItems: this.getSelected(items, this.props.selectedItems) });
     }
 
     /**
        * New props have been received, not saved yet
        * @param nextProps New props object
        */
-    public componentWillReceiveProps(nextProps: IItemDropdownProps<T>) {
+    public componentWillReceiveProps(nextProps: IItemDropdownProps<T, K>) {
         if (JSON.stringify(nextProps.selectedItems) !== JSON.stringify(this.props.selectedItems)) {
-            this.setState({ selectedItems: nextProps.selectedItems });
+            this.setState({ selectedItems: this.getSelected(this.state.allItems, nextProps.selectedItems) });
+        }
+    }
+
+    private getSelected(allItems: T[], selectedItems: T | T[] | ((allitems: T[]) => T | T[])) {
+        if(typeof(selectedItems) === "function") {
+            const items = this.getDisplayedItems(allItems);
+            return selectedItems(allItems);
+        }
+        else {
+            return selectedItems;
         }
     }
 
     public render() {
         const {label, multiSelect, placeholder, disabled, defaultOption, className, required} = this.props;
-        const {selectedItems, allItems} = this.state;
+        const {selectedItems, allItems, keyProperty} = this.state;
         const displayedItems = this.getDisplayedItems(allItems);
-        let selection = selectedItems;
-        if(this.props.onGetSelectedItems) {
-            selection = this.props.onGetSelectedItems(displayedItems);
-        }
-        let isdisabled = disabled;
-        if(this.props.onGetDisabled) {
-            isdisabled = this.props.onGetDisabled(displayedItems);
-        }
+        const defaultOptionObj: T = new this.props.model();
+        defaultOptionObj[keyProperty] = "";
         return <Dropdown
             className={className}
             label={label}
             required={required}
             multiSelect={multiSelect}
-            disabled={disabled}
+            disabled={typeof(disabled) === "function" ? disabled(displayedItems) : disabled}
             onChange={this.onChange}
             placeholder={placeholder}
-            options={(!stringIsNullOrEmpty(defaultOption) ? [{id: "", title: defaultOption} as T] : []).concat(displayedItems).map(item => this.getOption(item))}
-            selectedKeys={selection && multiSelect ? (isArray(selection) ? (selection as T[]).map(i => i.id.toString()) : [(selection as T).id.toString()] ) : undefined}
-            selectedKey={selection && !multiSelect ? (selection as T).id.toString() : undefined }
+            options={(!stringIsNullOrEmpty(defaultOption) ? [defaultOptionObj] : []).concat(displayedItems).map(item => this.getOption(item))}
+            selectedKeys={selectedItems && multiSelect ? (isArray(selectedItems) ? (selectedItems as T[]).map(i => i[keyProperty].toString()) : [(selectedItems as T)[keyProperty].toString()] ) : undefined}
+            selectedKey={selectedItems && !multiSelect ? (selectedItems as T)[keyProperty].toString() : undefined }
         />;
     }
 
@@ -83,17 +84,18 @@ export class ItemDropdown<T extends IBaseItem> extends React.Component<IItemDrop
     }
 
     private onChange = (event, option?: IDropdownOption) => {
+        const {keyProperty} = this.state;
         if(option) {
             //Test if multiselect then add item to selection or remove it if present (unchecked)
             if (!this.props.multiSelect) {
-                this.setState({ selectedItems: find(this.state.allItems, i => i.id.toString() === option.key.toString()) }, () => {
+                this.setState({ selectedItems: find(this.state.allItems, i => i[keyProperty].toString() === option.key.toString()) }, () => {
                     this.props.onChanged(this.state.selectedItems);
                 });
             }
             else {
                 let tempSelection = this.state.selectedItems ? cloneDeep(this.state.selectedItems) as T[] : [];
                 if (!option.selected) {
-                    let idxToRemove = findIndex(this.state.selectedItems as T[], i => i.id.toString() === option.key);
+                    let idxToRemove = findIndex(this.state.selectedItems as T[], i => i[keyProperty].toString() === option.key);
                     if (idxToRemove > -1) {
                         tempSelection.splice(idxToRemove, 1);
                     }
@@ -102,7 +104,7 @@ export class ItemDropdown<T extends IBaseItem> extends React.Component<IItemDrop
                     });
                 }
                 else {
-                    tempSelection.push(find(this.state.allItems, i => i.id.toString() === option.key.toString()));
+                    tempSelection.push(find(this.state.allItems, i => i[keyProperty].toString() === option.key.toString()));
                     this.setState({ selectedItems: tempSelection }, () => {
                         this.props.onChanged(this.state.selectedItems);
                     });
@@ -117,14 +119,21 @@ export class ItemDropdown<T extends IBaseItem> extends React.Component<IItemDrop
     }
 
     private getOption = (item: T): IDropdownOption => {
+        const {keyProperty} = this.state;
         let result: IDropdownOption;
         if (item) {
             result = { 
-                key: item.id.toString(), 
+                key: item[keyProperty].toString(), 
                 text: 
-                    this.props.showFullPath  && item instanceof(TaxonomyTerm) ? 
-                    UtilsService.getTermFullPathString(item, this.state.allItems as unknown[] as TaxonomyTerm[], this.props.baseLevel || 0) : 
-                    item.title 
+                    stringIsNullOrEmpty(item[keyProperty].toString()) && this.props.defaultOption ? 
+                        this.props.defaultOption 
+                        :
+                        (
+                            this.props.showFullPath && item instanceof(TaxonomyTerm) ? 
+                                UtilsService.getTermFullPathString(item, this.state.allItems as unknown[] as TaxonomyTerm[], this.props.baseLevel || 0) 
+                                : 
+                                item.title
+                        )
             };
         }
         return result;
