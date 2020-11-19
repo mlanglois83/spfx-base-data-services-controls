@@ -65,7 +65,7 @@ export class ItemDropdown<T extends IBaseItem, K extends keyof T> extends React.
             onChange={this.onChange}
             placeholder={placeholder}
             options={(!stringIsNullOrEmpty(defaultOption) ? [defaultOptionObj] : []).concat(displayedItems).map(item => this.getOption(item))}
-            selectedKeys={selectedItems && multiSelect ? (isArray(selectedItems) ? (selectedItems as T[]).map(i => i[keyProperty].toString()) : [(selectedItems as T)[keyProperty].toString()] ) : undefined}
+            selectedKeys={selectedItems && multiSelect ? (isArray(selectedItems) ? (selectedItems as T[]).map(i => i[keyProperty].toString()) : [(selectedItems as T)[keyProperty].toString()] ) : []}
             selectedKey={selectedItems && !multiSelect ? (selectedItems as T)[keyProperty].toString() : undefined }
         />;
     }
