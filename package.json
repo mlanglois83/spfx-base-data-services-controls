@@ -1,7 +1,7 @@
 {
   "name": "spfx-base-data-services-controls",
   "description": "Usefull controls for spfx-base-data-services",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "author": {
     "name": "Matthieu LANGLOIS",
     "email": "matthieu.langlois@gmail.com"
