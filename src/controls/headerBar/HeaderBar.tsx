@@ -8,7 +8,8 @@ import { HashRouter, Switch, Route, WithRouter } from "react-router-dom";
 import { SynchroNotifications } from "./components/synchroNotifications/SynchroNotifications";
 import { stringIsNullOrEmpty } from '@pnp/common';
 import { cloneDeep } from '@microsoft/sp-lodash-subset';
-interface IActionsEvent {
+import { Semaphore, SemaphoreInterface } from "async-mutex";
+export interface IActionsEvent {
   key: string;
   actions: () => Array<JSX.Element | "separator">; 
   order?:number;
@@ -18,21 +19,25 @@ interface IActionsEvent {
  */
 export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState> {
 
+
+  private semaphore = new Semaphore(1);
+  private semacq: [number, SemaphoreInterface.Releaser] = null;
+
   public static setTitle(newTitle: string){
     var event = new CustomEvent<string>('setHeaderTitle', {detail: newTitle});
     document.dispatchEvent(event);
   }
 
-  public static setActions(key: string, actions: () => Array<JSX.Element | "separator">, order?:number){
-    var event = new CustomEvent<IActionsEvent>('setHeaderActions', {detail: {key: key, actions: actions, order: order}});
+  public static setActions(...actionsGroups: IActionsEvent[]){
+    var event = new CustomEvent<Array<IActionsGroup>>('setHeaderActions', {detail: actionsGroups});
     document.dispatchEvent(event);
   }
-  public static removeActions(key: string){
-    var event = new CustomEvent<string>('removeHeaderActions', {detail: key});
+  public static removeActions(...keys: string[]){
+    var event = new CustomEvent<Array<string>>('removeHeaderActions', {detail: keys});
     document.dispatchEvent(event);
   }
 
-  private get orderesActionGroups(): Array<() => Array<JSX.Element | "separator">> {
+  private get orderedActionGroups(): Array<() => Array<JSX.Element | "separator">> {
     const groups: Array<IActionsGroup> = [];
     this.state.actions?.forEach(value => { groups.push(value); });
     groups.sort((a: IActionsGroup, b: IActionsGroup) =>{ 
@@ -86,21 +91,38 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     document.removeEventListener("removeHeaderActions", this.removeActions);
   }
 
-  private setTitle = (event: CustomEvent<string>) => {
-    this.setState({title: event.detail});
-  }
-  private setActions = (event: CustomEvent<IActionsEvent>) => {
-    const actions: Map<string, IActionsGroup> = this.state.actions ? cloneDeep(this.state.actions) : new Map<string, IActionsGroup>();
-    actions.set(event.detail.key, {
-      actions: event.detail.actions,
-      order: event.detail.order
+  private setTitle = async (event: CustomEvent<string>) => {
+    this.semacq = await this.semaphore.acquire();
+    this.setState({title: event.detail}, () => {
+      this.semacq[1]();
     });
-    this.setState({actions: actions});
   }
-  private removeActions = (event: CustomEvent<string>) => {    
+  private setActions = async (event: CustomEvent<Array<IActionsEvent>>) => {
+    this.semacq = await this.semaphore.acquire();
     const actions: Map<string, IActionsGroup> = this.state.actions ? cloneDeep(this.state.actions) : new Map<string, IActionsGroup>();
-    actions.delete(event.detail);
-    this.setState({actions: actions});
+    if(event.detail) {
+      event.detail.forEach(ag => {
+          actions.set(ag.key, {
+          actions: ag.actions,
+          order: ag.order
+        });
+      });
+    }
+    this.setState({actions: actions}, () => {
+      this.semacq[1]();
+    });
+  }
+  private removeActions = async (event: CustomEvent<Array<string>>) => {   
+    this.semacq = await this.semaphore.acquire(); 
+    const actions: Map<string, IActionsGroup> = this.state.actions ? cloneDeep(this.state.actions) : new Map<string, IActionsGroup>();
+    if(event.detail) {
+      event.detail.forEach(key => {
+        actions.delete(key);
+      });
+    }    
+    this.setState({actions: actions}, () => {
+      this.semacq[1]();
+    });
   }
 
   /**
@@ -108,7 +130,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
    */
   public render(): React.ReactElement<IHeaderBarProps> {
     const {title} = this.state;
-    const actions = this.orderesActionGroups;
+    const actions = this.orderedActionGroups;
     return <div className={styles.stickyHeader}>
       <div className={styles.headerLeftPanel}>
         <HashRouter>
@@ -210,22 +232,26 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     (document['mozFullScreenElement'] !== null && document["mozFullScreenElement"] !== undefined) ||/* Firefox syntax */
     (document['msFullscreenElement'] !== null && document["msFullscreenElement"] !== undefined);/* IE/Edge syntax */
   }
-  private onWindowResize = () => {
+  private onWindowResize = async () => {    
     const fullscreen = this.isFullScreen();
-    if(fullscreen !== this.state.fullscreen) {
+    if(fullscreen !== this.state.fullscreen) {      
+      this.semacq = await this.semaphore.acquire(); 
       this.adaptDomElements(fullscreen);
-      this.setState({fullscreen: fullscreen}, () =>{
+      this.setState({fullscreen: fullscreen}, () =>{        
+        this.semacq[1]();
         if(this.props.onFullscreenChanged) {
           this.props.onFullscreenChanged(fullscreen);
         }
       });
     }
   }
-  private onFullScreenChanged = () => {
+  private onFullScreenChanged = async () => {    
     const fullscreen = this.isFullScreen();
-    if(fullscreen !== this.state.fullscreen) {
+    if(fullscreen !== this.state.fullscreen) {      
+      this.semacq = await this.semaphore.acquire(); 
       this.adaptDomElements(fullscreen);
       this.setState({fullscreen: fullscreen}, () =>{
+        this.semacq[1]();
         if(this.props.onFullscreenChanged) {
           this.props.onFullscreenChanged(fullscreen);
         }

@@ -11,7 +11,7 @@ export { ITaxonomyFilterClassNames, ITaxonomyFilterProps } from "./controls/Taxo
 export { TaxonomyPicker } from "./controls/TaxonomyPicker/TaxonomyPicker";
 export { ITaxonomyPickerProps } from "./controls/TaxonomyPicker/interfaces/ITaxonomyPickerProps";
 
-export { HeaderBar } from "./controls/headerBar/HeaderBar";
+export { HeaderBar, IActionsEvent } from "./controls/headerBar/HeaderBar";
 export { IHeaderBarProps } from "./controls/headerBar/interfaces/IHeaderBarProps";
 
 
