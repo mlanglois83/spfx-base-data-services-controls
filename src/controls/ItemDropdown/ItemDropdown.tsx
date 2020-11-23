@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { IItemDropdownProps } from './interfaces/IItemDropdownProps';
 import { IItemDropdownState } from './interfaces/IItemDropdownState';
-import { TagPicker, ITag, IconButton, Panel, PanelType, PrimaryButton, DefaultButton, Checkbox, css, Dropdown, IDropdownOption } from 'office-ui-fabric-react';
+import { TagPicker, ITag, IconButton, Panel, PanelType, PrimaryButton, DefaultButton, Checkbox, css, Dropdown, IDropdownOption, ComboBox } from 'office-ui-fabric-react';
 import { isArray, stringIsNullOrEmpty } from '@pnp/common';
 import { find, cloneDeep, findIndex } from '@microsoft/sp-lodash-subset';
 import { TaxonomyTerm, UtilsService, ServicesConfiguration, IBaseItem, BaseDataService } from 'spfx-base-data-services';
@@ -52,22 +52,57 @@ export class ItemDropdown<T extends IBaseItem, K extends keyof T> extends React.
 
     public render() {
         const {label, multiSelect, placeholder, disabled, defaultOption, className, required} = this.props;
-        const {selectedItems, allItems, keyProperty} = this.state;
+        const {selectedItems, allItems, keyProperty} = this.state;        
+        const displayControl: "Combobox" | "Dropdown" = this.props.displayControl || "Dropdown";
         const displayedItems = this.getDisplayedItems(allItems);
         const defaultOptionObj: T = new this.props.model();
         defaultOptionObj[keyProperty] = "";
-        return <Dropdown
-            className={className}
-            label={label}
-            required={required}
-            multiSelect={multiSelect}
-            disabled={typeof(disabled) === "function" ? disabled(displayedItems) : disabled}
-            onChange={this.onChange}
-            placeholder={placeholder}
-            options={(!stringIsNullOrEmpty(defaultOption) ? [defaultOptionObj] : []).concat(displayedItems).map(item => this.getOption(item))}
-            selectedKeys={selectedItems && multiSelect ? (isArray(selectedItems) ? (selectedItems as T[]).map(i => i[keyProperty].toString()) : [(selectedItems as T)[keyProperty].toString()] ) : (multiSelect ? [] : undefined)}
-            selectedKey={selectedItems && !multiSelect ? (selectedItems as T)[keyProperty].toString() : (!multiSelect ? "" : undefined) }
-        />;
+        let selectedKeys;
+        if(multiSelect) {
+            if(selectedItems) {
+                selectedKeys = isArray(selectedItems) ? (selectedItems as T[]).map(i => i[keyProperty].toString()) : [(selectedItems as T)[keyProperty].toString()]; 
+            }
+            else {
+                selectedKeys = [];
+            }
+        }
+        else {
+            if(selectedItems) {
+                (selectedItems as T)[keyProperty].toString();
+            }
+            else {
+                selectedKeys = "";
+            }
+        }
+        if(displayControl === "Dropdown") {
+            return <Dropdown
+                className={className}
+                label={label}
+                required={required}
+                multiSelect={multiSelect}
+                disabled={typeof(disabled) === "function" ? disabled(displayedItems) : disabled}
+                onChange={this.onChange}
+                placeholder={placeholder}
+                options={(!stringIsNullOrEmpty(defaultOption) ? [defaultOptionObj] : []).concat(displayedItems).map(item => this.getOption(item))}
+                selectedKeys={multiSelect ? selectedKeys : undefined}
+                selectedKey={!multiSelect ? selectedKeys : undefined}
+            />;
+        }
+        else {
+            return <ComboBox className={className}
+                openOnKeyboardFocus
+                allowFreeform
+                label={label}
+                required={required}
+                multiSelect={multiSelect}
+                disabled={typeof(disabled) === "function" ? disabled(displayedItems) : disabled}
+                onChange={this.onChange}
+                placeholder={placeholder}
+                options={(!stringIsNullOrEmpty(defaultOption) ? [defaultOptionObj] : []).concat(displayedItems).map(item => this.getOption(item))}
+                selectedKey={selectedKeys}
+            />;
+        }
+        
     }
 
     public getDisplayedItems(items: T[]): T[] {
@@ -129,10 +164,11 @@ export class ItemDropdown<T extends IBaseItem, K extends keyof T> extends React.
                         this.props.defaultOption 
                         :
                         (
-                            this.props.showFullPath && item instanceof(TaxonomyTerm) ? 
-                                UtilsService.getTermFullPathString(item, this.state.allItems as unknown[] as TaxonomyTerm[], this.props.baseLevel || 0) 
-                                : 
-                                item.title
+                            this.props.showFullPath && item instanceof(TaxonomyTerm) 
+                            ? 
+                            UtilsService.getTermFullPathString(item, this.state.allItems as unknown[] as TaxonomyTerm[], this.props.baseLevel || 0) 
+                            : 
+                            (this.props.onGetItemText ? this.props.onGetItemText(item) : item.title)                                
                         )
             };
         }

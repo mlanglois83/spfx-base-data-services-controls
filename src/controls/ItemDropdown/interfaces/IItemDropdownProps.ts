@@ -1,6 +1,7 @@
 import { IBaseItem } from 'spfx-base-data-services';
 
 export interface IItemDropdownProps<T extends IBaseItem, K extends keyof T> {
+    displayControl?: "Combobox" | "Dropdown";
     model: new() => T;
     onFilterItems?: (allItems: Array<T>) => Array<T>;
     selectedItems?: T[] | T | ((allItems: Array<T>) => (Array<T> | T));
@@ -13,6 +14,7 @@ export interface IItemDropdownProps<T extends IBaseItem, K extends keyof T> {
     className?: string;
     required?: boolean;
     keyProperty?: K;
+    onGetItemText?: (item: T) => string;
     /**
      * Taxo only
      */
