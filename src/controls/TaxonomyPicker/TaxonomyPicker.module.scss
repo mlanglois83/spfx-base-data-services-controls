@@ -24,6 +24,9 @@
         align-items: center;
         .picker {
             width: calc(100% - 32px);
+            &.full{
+                width: 100%;
+            }
             :global(.ms-BasePicker-itemsWrapper){
                 max-width: 100%;
                 padding: 2px;
@@ -32,6 +35,9 @@
             :global(.ms-TagItem){
                 max-width: 100%;
                 margin:0;
+            }
+            :global(.ms-BasePicker-text) {
+                min-width: 0;
             }
         }
         .btn {
