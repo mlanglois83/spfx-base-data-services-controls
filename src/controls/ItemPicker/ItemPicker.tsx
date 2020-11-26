@@ -156,9 +156,10 @@ export class ItemPicker<T extends IBaseItem, K extends keyof T> extends React.Co
         let title = this.props.onGetItemText ? this.props.onGetItemText(item) : item.title;
         let parentPath = "";
         if(item instanceof TaxonomyTerm) {
-            let parent = find(this.state.allItems as unknown[] as TaxonomyTerm[], (t) => { return t instanceof TaxonomyTerm && t.isParentOf(item as unknown as TaxonomyTerm); });
-            let pathparts = item.path.split(";");            
-            parentPath = UtilsService.getTermFullPathString(parent , this.state.allItems as unknown[] as TaxonomyTerm[], this.props.baseLevel || 0);
+            let parent = find(this.state.allItems as unknown[] as TaxonomyTerm[], (t) => { return t instanceof TaxonomyTerm && t.isParentOf(item as unknown as TaxonomyTerm); });          
+            if(parent) {
+                parentPath = UtilsService.getTermFullPathString(parent , this.state.allItems as unknown[] as TaxonomyTerm[], this.props.baseLevel || 0);
+            }
         }
 
         
