@@ -161,9 +161,9 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
           <>
             {actions.map(ag=> {
               const agControls = ag();
-              if(ag && ag.length > 0) {
+              if(agControls && agControls.length > 0) {
                 return <>
-                  {ag()?.map(a => {
+                  {agControls.map(a => {
                     return  a ? 
                     <>
                       {a === "separator" ?
