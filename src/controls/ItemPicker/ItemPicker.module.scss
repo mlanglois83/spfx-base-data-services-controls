@@ -1,0 +1,62 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+.itemPicker {    
+    max-width: 100%;
+    .errorMessage {
+        color: $ms-color-redDark;
+        @include ms-font-s;
+        @include ms-fontWeight-regular;
+    }
+    .required{
+        &::after {
+            content: " *";
+            color: $ms-color-redDark;
+            padding-right: 12px;
+        }
+    }
+    .invalid {
+        :global(.ms-BasePicker-text){
+            border-color: $ms-color-redDark;
+        }
+    }
+    .pickerContainer {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        .picker {
+            width: calc(100% - 32px);
+            &.full{
+                width: 100%;
+            }
+            :global(.ms-BasePicker-itemsWrapper){
+                max-width: 100%;
+                padding: 2px;
+                box-sizing: border-box;
+            }
+            :global(.ms-TagItem){
+                max-width: 100%;
+                margin:0;
+            }
+            :global(.ms-BasePicker-text) {
+                min-width: 0;
+            }
+        }
+        .btn {
+            width: 32px;
+            text-align: center;
+        }
+    }
+    
+}
+.suggestionItem {
+    width: 100%;
+    height: 100%;
+    padding: 7px 12px;
+    text-align: left;
+    .termLabel {
+        color: $ms-color-themePrimary;
+    }
+    .termLocation {  
+        @include ms-font-s;  
+        color: $ms-color-neutralTertiary;
+    }
+}

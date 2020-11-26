@@ -1,7 +1,9 @@
 define([], function() {
     return {
         "TaxonomyPickerSuggestedTerms": "Predloženi termini",
+        "ItemPickerSuggestedTerms": "Predložene stavke",
         "TaxonomyPickerNoTerm": "Nije pronađen nijedan termin",
+        "ItemPickerNoTerm": "Nije pronađen nijedan element",
         "TaxonomyPickerTermLocationPrefix": "u",
         "saveButtonLabel": "Sačuvaj",
         "cancelButtonLabel": "Otkaži",

@@ -1,18 +1,10 @@
-import { TaxonomyTerm } from 'spfx-base-data-services';
+import { IBaseItem } from 'spfx-base-data-services';
 
-export interface ITaxonomyPickerProps<T extends TaxonomyTerm> {
+export interface IItemPickerProps<T extends IBaseItem, K extends keyof T> {
     showFullPath?: boolean;
-    model?: (new (data?) => T) | string;
-    /**
-     * @deprecated use model
-     */
-    modelName?: string;
+    model: (new (data?) => T) | string;
     onFilterItems?: (allItems: Array<T>) => Array<T>;
     selectedItems?: T[] | T | ((allItems: Array<T>) => (Array<T> | T));
-    /**
-     * @deprecated use selectedItems
-     */
-    selectedTerm?: T[] | T;
     onChanged?: (value?: T[] | T) => void;
     onGetErrorMessage?: (value?: T[] | T ) => string;
     required?: boolean;
@@ -22,8 +14,10 @@ export interface ITaxonomyPickerProps<T extends TaxonomyTerm> {
     multiSelect?: boolean;
     baseLevel?: number;
     showDeprecated?: boolean;
-    panelDisabled?: boolean;
     allOptionsOnFocus?: boolean;
     placeholder?: string;
     hideSuggestionsTitle?: boolean;
+    className?: string;
+    keyProperty?: K;
+    onGetItemText?: (item: T) => string;
 }

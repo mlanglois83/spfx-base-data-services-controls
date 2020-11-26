@@ -21,3 +21,7 @@ export { ISynchroNotificationsProps } from "./controls/headerBar/components/sync
 
 export { ItemDropdown } from "./controls/ItemDropdown/ItemDropdown";
 export { IItemDropdownProps } from "./controls/ItemDropdown/interfaces/IItemDropdownProps";
+
+
+export { ItemPicker} from "./controls/ItemPicker/ItemPicker";
+export { IItemPickerProps } from "./controls/ItemPicker/interfaces/IItemPickerProps";

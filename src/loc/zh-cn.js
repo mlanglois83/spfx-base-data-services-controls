@@ -1,7 +1,9 @@
 define([], function() {
     return {
         "TaxonomyPickerSuggestedTerms": "建议的术语",
+        "ItemPickerSuggestedTerms": "",
         "TaxonomyPickerNoTerm": "找不到术语",
+        "ItemPickerNoTerm": "找不到元素",
         "TaxonomyPickerTermLocationPrefix": "在…",
         "saveButtonLabel": "保存",
         "cancelButtonLabel": "取消",

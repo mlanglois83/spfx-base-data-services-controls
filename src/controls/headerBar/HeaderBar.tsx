@@ -160,24 +160,28 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         {actions && actions.length > 0 &&
           <>
             {actions.map(ag=> {
-              return <>
-                {ag()?.map(a => {
-                  return  a ? 
-                  <>
-                    {a === "separator" ?
-                      <div className={styles.separator}></div>
-                    :
-                      <div className={styles.panelItem}>
-                        {a}
-                      </div>
-                    }
-                  </>
-                  : null;
-                })}
-                <div className={styles.separator}></div>
-              </>;
-              
-              
+              const agControls = ag();
+              if(ag && ag.length > 0) {
+                return <>
+                  {ag()?.map(a => {
+                    return  a ? 
+                    <>
+                      {a === "separator" ?
+                        <div className={styles.separator}></div>
+                      :
+                        <div className={styles.panelItem}>
+                          {a}
+                        </div>
+                      }
+                    </>
+                    : null;
+                  })}
+                  <div className={styles.separator}></div>
+                </>;
+              }
+              else {
+                return null;
+              }   
             })}
             
           </>

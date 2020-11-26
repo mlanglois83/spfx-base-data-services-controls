@@ -1,7 +1,9 @@
 define([], function() {
     return {
         "TaxonomyPickerSuggestedTerms": "แนะนำคำจำกัดความ",
+        "ItemPickerSuggestedTerms": "รายการแนะนำ",
         "TaxonomyPickerNoTerm": "ไม่เจอคำที่ค้นหา",
+        "ItemPickerNoTerm": "ไม่พบองค์ประกอบ",
         "TaxonomyPickerTermLocationPrefix": "ใน",
         "saveButtonLabel": "บันทึก",
         "cancelButtonLabel": "ยกเลิก",

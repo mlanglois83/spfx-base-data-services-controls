@@ -1,7 +1,9 @@
 define([], function() {
     return {
         "TaxonomyPickerSuggestedTerms": "Suggested terminology",
+        "ItemPickerSuggestedTerms": "Suggested items",
         "TaxonomyPickerNoTerm": "No words found",
+        "ItemPickerNoTerm": "No item found",
         "TaxonomyPickerTermLocationPrefix": " In",
         "saveButtonLabel": "Save",
         "cancelButtonLabel": "Cancel",
