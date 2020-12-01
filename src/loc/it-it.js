@@ -4,7 +4,7 @@ define([], function() {
         "ItemPickerSuggestedTerms": "Elementi suggeriti",
         "TaxonomyPickerNoTerm": "Nessun termine/parola trovato",
         "ItemPickerNoTerm": "Nessun elemento trovato",
-        "TaxonomyPickerTermLocationPrefix": "In",
+        "TaxonomyPickerTermLocationPrefix": "In ",
         "saveButtonLabel": "Registrare",
         "cancelButtonLabel": "Annullare",
         "selectTermLabel": "Seleziona un termine...",

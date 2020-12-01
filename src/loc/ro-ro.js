@@ -4,7 +4,7 @@ define([], function() {
         "ItemPickerSuggestedTerms": "Elemente sugerate",
         "TaxonomyPickerNoTerm": "Nici un termen gasit",
         "ItemPickerNoTerm": "Nici un element gasit",
-        "TaxonomyPickerTermLocationPrefix": "In",
+        "TaxonomyPickerTermLocationPrefix": "In ",
         "saveButtonLabel": "Inregistrare",
         "cancelButtonLabel": "Anulare",
         "selectTermLabel": "Selectați un termen...",
