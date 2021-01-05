@@ -54,6 +54,37 @@ export interface ICameraProps<T extends IBaseFile> {
 
 export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
 
+
+    function rotateBase64Image(base64data, callback) { 
+        const currentAngle = window.screen.orientation.angle;
+        if(currentAngle === 0 || currentAngle % 360 === 0) {
+            callback(base64data);
+        }
+        else {
+            var image = new Image();
+            image.src = base64data;
+            image.onload = function() {
+                const canvas = document.createElement("canvas");            
+                if(currentAngle === 90 || currentAngle === -90 || currentAngle === 270){
+                    canvas.width = image.height;
+                    canvas.height = image.width;
+                }
+                else {                
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                }
+                document.body.append(canvas);
+                const ctx = canvas.getContext("2d");
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate(currentAngle * Math.PI / 180);
+                ctx.drawImage(image, -image.width / 2, -image.width / 2);
+                const url = canvas.toDataURL();
+                document.body.removeChild(canvas);
+                callback(url);
+            };
+        }     
+    }
+
     const detectMobile = useMobileDetect();
 
     const [videoConstraints, setVideoCosntraints] = React.useState<any>({
@@ -180,7 +211,10 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
             }
             if (mode == CameraMode.Picture) {
                 const imageSrc = webcamRef.current.getScreenshot();
-                addFile(imageSrc);
+                rotateBase64Image(imageSrc, (url) => {
+                    addFile(url);
+                });
+                //addFile(imageSrc);
             }
         },
         [webcamRef, videoRecorder, mode]
@@ -269,9 +303,8 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
                     }}>
 
                     <React.Fragment>
-
                         <div className={css(styles.cameraRow, cssClasses && cssClasses.cameraRow ? cssClasses.cameraRow: null)}>
-                            <div className={css(styles.videoView, cssClasses && cssClasses.videoView ? cssClasses.videoView: null)} style={angle === 90 || angle === 180 ? {height: "80vh"}: undefined} >
+                            <div className={css(styles.videoView, cssClasses && cssClasses.videoView ? cssClasses.videoView: null)} style={angle === 90 || angle === 270 ? {height: "80vh"}: undefined} >
                                 <div style={angle !== 0 ? {transform: `rotate(${angle}deg)`, height: "100%", width: "100%", alignItems: "center", justifyContent: "center", display: "flex" } : undefined}>
                                     <Webcam
                                         audio={false}
@@ -292,6 +325,7 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
                                         screenshotQuality={1}
                                         onUserMedia={() => { }}
                                         onUserMediaError={() => { }}
+
                                     />
                                 </div>
                             </div>
