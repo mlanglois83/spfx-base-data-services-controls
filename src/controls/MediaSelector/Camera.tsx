@@ -1,4 +1,5 @@
 import { assign } from '@microsoft/sp-lodash-subset';
+import { stringIsNullOrEmpty } from '@pnp/common';
 import * as strings from 'ControlsStrings';
 import { css, DefaultButton, Dialog, Icon, PrimaryButton } from 'office-ui-fabric-react';
 import { ResponsiveMode } from 'office-ui-fabric-react/lib/utilities/decorators/withResponsiveMode';
@@ -49,14 +50,28 @@ export interface ICameraProps<T extends IBaseFile> {
     cssClasses?: ICameraClasses;
     mediaTypes: MediaType;
     icons?: IIcons;
+    customFilesAccept?: string;
 }
 
 
 export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
 
-
-    function rotateBase64Image(base64data, callback) { 
-        const currentAngle = window.screen.orientation.angle;
+    const getAngle = (): number => {
+        let result = 0;
+        var orientation = screen.orientation.type;
+        if (orientation === "landscape-primary") {
+            result = 0;
+        } else if (orientation === "landscape-secondary") {
+            result = 180;
+        } else if (orientation === "portrait-secondary") {
+            result = 90;
+        }  else if (orientation === "portrait-primary") {
+            result = 270;
+        } 
+        return result;
+    };
+    const rotateBase64Image = (base64data, callback) => { 
+        const currentAngle = getAngle();
         if(currentAngle === 0 || currentAngle % 360 === 0) {
             callback(base64data);
         }
@@ -65,7 +80,7 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
             image.src = base64data;
             image.onload = function() {
                 const canvas = document.createElement("canvas");            
-                if(currentAngle === 90 || currentAngle === -90 || currentAngle === 270){
+                if(currentAngle === 90 || currentAngle === 270){
                     canvas.width = image.height;
                     canvas.height = image.width;
                 }
@@ -83,7 +98,7 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
                 callback(url);
             };
         }     
-    }
+    };
 
     const detectMobile = useMobileDetect();
 
@@ -101,7 +116,7 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
 
     const [camera, setCamera] = React.useState<CameraFacing>(CameraFacing.User);
 
-    const [angle, setAngle]= React.useState<number>(window.screen.orientation.angle);
+    const [angle, setAngle]= React.useState<number>(getAngle());
 
     const [RTC, setRTC] = React.useState<boolean>(false);
     const [videoRecorder, setVideoRecorder] = React.useState<any>(null);
@@ -136,8 +151,9 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
     );
 
     const handleOrientation = (e: Event) => {
-        if(angle !== window.screen.orientation.angle) {
-            setAngle(window.screen.orientation.angle);
+        const currentangle = getAngle();
+        if(angle !== currentangle) {
+            setAngle(currentangle);
         }
     };  
 
@@ -249,7 +265,7 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
                         <div className={css(styles.Addzone, cssClasses && cssClasses.addzone ? cssClasses.addzone: null)} onClick={() => {
                             fileInput.click();
                         }}>
-                        <input ref={(elt) => { fileInput = elt; }} type="file" accept=".doc,.docx,.csv,.xlsx,.xls,.ppt,.pptx,text/plain,.pdf" capture onChange={() => addFileMobile(fileInput)} />
+                        <input ref={(elt) => { fileInput = elt; }} type="file" accept={!stringIsNullOrEmpty(props.customFilesAccept) ? props.customFilesAccept : ".doc,.docx,.csv,.xlsx,.xls,.ppt,.pptx,text/plain,.pdf"} capture onChange={() => addFileMobile(fileInput)} />
                             <Icon iconName="Page" />
                         </div>
                     </div>}

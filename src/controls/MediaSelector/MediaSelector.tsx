@@ -67,7 +67,7 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
 
     public render() {
         const {preview, previewRatio} = this.state;
-        const {cssClasses, mediaTypes, icons} = this.props;
+        const {cssClasses, mediaTypes, icons, customFilesAccept} = this.props;
         const attachments: JSX.Element = this.renderFiles();
 
         let previewUrl = "";
@@ -103,6 +103,7 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
                         cssClasses={cssClasses} 
                         mediaTypes={mediaTypes || MediaType.All}
                         icons={icons}
+                        customFilesAccept={customFilesAccept}
                     />}
 
                 </React.Fragment>

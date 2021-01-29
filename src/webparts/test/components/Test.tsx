@@ -93,6 +93,7 @@ export class Test extends React.Component<ITestProps, ITestState> {
                         this.setState({files: copy});
                     }} 
                     online        
+                    customFilesAccept="image/*"
                 />
             </div>         
         

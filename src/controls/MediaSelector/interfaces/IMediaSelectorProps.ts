@@ -18,6 +18,7 @@ export interface IMediaSelectorProps<T extends IBaseFile> {
     cssClasses?: IMediaSelectorClassNames;
     mediaTypes?: MediaType;
     icons?: IIcons;
+    customFilesAccept?: string;
 }
 export interface IMediaSelectorClassNames extends ICameraClasses {
     container?: string;
