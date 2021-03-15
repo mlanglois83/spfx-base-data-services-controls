@@ -68,7 +68,7 @@ export class ItemDropdown<T extends IBaseItem, K extends keyof T> extends React.
         }
         else {
             if(selectedItems) {
-                (selectedItems as T)[keyProperty].toString();
+                selectedKeys = (selectedItems as T)[keyProperty].toString();
             }
             else {
                 selectedKeys = "";
