@@ -2,7 +2,10 @@ import { BaseTermsetService, TaxonomyTerm } from "spfx-base-data-services";
 import { FakeTerm } from "../../models/taxonomy/FakeTerm";
 import { find } from "@microsoft/sp-lodash-subset";
 import { Guid } from "@microsoft/sp-core-library";
+import { Decorators } from "spfx-base-data-services";
+const dataService = Decorators.dataService;
 
+dataService("FakeTerm");
 export class FakeTermsService extends BaseTermsetService<FakeTerm> {
     private _terms: Array<FakeTerm> = null;
     private get terms(): Array<FakeTerm> {
@@ -39,7 +42,7 @@ export class FakeTermsService extends BaseTermsetService<FakeTerm> {
     }
 
     constructor() {
-        super(FakeTerm, "fake", "FakeTerms");
+        super(FakeTerm, "fake");
     }
     public async getAll_Internal(): Promise<Array<FakeTerm>> {
         return this.terms;

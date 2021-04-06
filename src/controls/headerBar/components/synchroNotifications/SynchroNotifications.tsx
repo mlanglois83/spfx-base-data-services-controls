@@ -5,7 +5,7 @@ import { IconButton, Icon, Callout, DirectionalHint, List, SelectionMode, Detail
 import { ISynchroNotificationsProps } from "./interfaces/ISynchroNotificationsProps";
 import { ISynchroNotificationsState } from "./interfaces/ISynchroNotificationsState";
 import styles from "../../HeaderBar.module.scss";
-import { OfflineTransaction, SPFile,  IBaseItem, TransactionType, ServicesConfiguration } from 'spfx-base-data-services';
+import { OfflineTransaction, SPFile,  ServiceFactory, TransactionType, ServicesConfiguration } from 'spfx-base-data-services';
 import { assign } from '@microsoft/sp-lodash-subset';
 
 /**
@@ -37,7 +37,7 @@ export class SynchroNotifications extends React.Component<ISynchroNotificationsP
             isSorted: false,
             onRender: (transaction: OfflineTransaction) => {
                 let operationLabel: string;
-                let itemType = ServicesConfiguration.configuration.serviceFactory.getItemTypeByName(transaction.itemType);
+                let itemType = ServiceFactory.getItemTypeByName(transaction.itemType);
                 let item = assign(new itemType(), transaction.itemData);
                 switch (transaction.title) {
                     case TransactionType.AddOrUpdate:

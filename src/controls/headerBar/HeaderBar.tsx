@@ -28,6 +28,11 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     document.dispatchEvent(event);
   }
 
+  public static setAdditionnalClassName(className?: string){
+    var event = new CustomEvent<string>('setHeaderClassName', {detail: className});
+    document.dispatchEvent(event);
+  }
+
   public static setActions(...actionsGroups: IActionsEvent[]){
     var event = new CustomEvent<Array<IActionsGroup>>('setHeaderActions', {detail: actionsGroups});
     document.dispatchEvent(event);
@@ -76,6 +81,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     window.addEventListener("resize", this.onWindowResize);
     window.addEventListener('keydown', this.onWindowKeypress);
     document.addEventListener("setHeaderTitle", this.setTitle);
+    document.addEventListener("setHeaderClassName", this.setAdditionnalClassName);
     document.addEventListener("setHeaderActions", this.setActions);
     document.addEventListener("removeHeaderActions", this.removeActions);
   }
@@ -87,6 +93,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     window.removeEventListener("resize", this.onWindowResize);
     window.removeEventListener("keydown", this.onWindowKeypress);
     document.removeEventListener("setHeaderTitle", this.setTitle);
+    document.removeEventListener("setHeaderClassName", this.setAdditionnalClassName);
     document.removeEventListener("setHeaderActions", this.setActions);
     document.removeEventListener("removeHeaderActions", this.removeActions);
   }
@@ -97,6 +104,14 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
       this.semacq[1]();
     });
   }
+
+  private setAdditionnalClassName = async (event: CustomEvent<string>) => {
+    this.semacq = await this.semaphore.acquire();
+    this.setState({className: event.detail}, () => {
+      this.semacq[1]();
+    });
+  }
+
   private setActions = async (event: CustomEvent<Array<IActionsEvent>>) => {
     this.semacq = await this.semaphore.acquire();
     const actions: Map<string, IActionsGroup> = this.state.actions ? cloneDeep(this.state.actions) : new Map<string, IActionsGroup>();
@@ -131,7 +146,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
   public render(): React.ReactElement<IHeaderBarProps> {
     const {title} = this.state;
     const actions = this.orderedActionGroups;
-    return <div className={styles.stickyHeader}>
+    return <div className={css(styles.stickyHeader, this.state.className, this.props.className)}>
       <div className={styles.headerLeftPanel}>
         <HashRouter>
           <Switch>

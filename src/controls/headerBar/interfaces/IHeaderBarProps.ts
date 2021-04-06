@@ -1,6 +1,7 @@
 import { OfflineTransaction } from "spfx-base-data-services";
 
-export interface IHeaderBarProps {    
+export interface IHeaderBarProps {  
+    className?: string;  
     homeButtonHideUrls?: Array<string>;
     homeUrl: string;
     isConnected: boolean;

@@ -1,13 +1,13 @@
 
+import { cloneDeep, find, findIndex } from '@microsoft/sp-lodash-subset';
+import { isArray, stringIsNullOrEmpty } from '@pnp/common';
+import { ComboBox, Dropdown, IDropdownOption } from 'office-ui-fabric-react';
 import * as React from 'react';
+import { BaseDataService, BaseItem, TaxonomyTerm, UtilsService, ServiceFactory } from 'spfx-base-data-services';
 import { IItemDropdownProps } from './interfaces/IItemDropdownProps';
 import { IItemDropdownState } from './interfaces/IItemDropdownState';
-import { TagPicker, ITag, IconButton, Panel, PanelType, PrimaryButton, DefaultButton, Checkbox, css, Dropdown, IDropdownOption, ComboBox } from 'office-ui-fabric-react';
-import { isArray, stringIsNullOrEmpty } from '@pnp/common';
-import { find, cloneDeep, findIndex } from '@microsoft/sp-lodash-subset';
-import { TaxonomyTerm, UtilsService, ServicesConfiguration, IBaseItem, BaseDataService } from 'spfx-base-data-services';
 
-export class ItemDropdown<T extends IBaseItem, K extends keyof T> extends React.Component<IItemDropdownProps<T, K>, IItemDropdownState<T>> {
+export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.Component<IItemDropdownProps<T, K>, IItemDropdownState<T>> {
     constructor(props: IItemDropdownProps<T, K>) {
         super(props);
         this.state = {
@@ -20,7 +20,7 @@ export class ItemDropdown<T extends IBaseItem, K extends keyof T> extends React.
 
 
     public async componentDidMount() {
-        let service = ServicesConfiguration.configuration.serviceFactory.create(this.props.model["name"]) as BaseDataService<T>;
+        let service = ServiceFactory.getService(this.props.model);
         let items = await service.getAll();
         if (!this.props.showDeprecated) {
             items = items.filter((t) => { 

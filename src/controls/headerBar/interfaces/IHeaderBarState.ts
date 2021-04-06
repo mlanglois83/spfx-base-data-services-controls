@@ -1,4 +1,5 @@
 export interface IHeaderBarState {
+    className?: string;
     fullscreen: boolean;
     title: string;
     actions?: Map<string,IActionsGroup>;

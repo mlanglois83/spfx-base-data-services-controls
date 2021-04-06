@@ -4,12 +4,12 @@ import { stringIsNullOrEmpty } from '@pnp/common';
 import * as strings from "ControlsStrings";
 import { css, ITag, TagPicker } from 'office-ui-fabric-react';
 import * as React from 'react';
-import { BaseDataService, IBaseItem, ServicesConfiguration, TaxonomyTerm, UtilsService } from 'spfx-base-data-services';
+import { BaseDataService, BaseItem, ServiceFactory, TaxonomyTerm, UtilsService } from 'spfx-base-data-services';
 import { IItemPickerProps } from './interfaces/IItemPickerProps';
 import { IItemPickerState } from './interfaces/IItemPickerState';
 import styles from './ItemPicker.module.scss';
 
-export class ItemPicker<T extends IBaseItem, K extends keyof T> extends React.Component<IItemPickerProps<T, K>, IItemPickerState<T>> {
+export class ItemPicker<T extends BaseItem, K extends keyof T> extends React.Component<IItemPickerProps<T, K>, IItemPickerState<T>> {
     private get termTags(): ITag[] {
         return this.state.allItems ? this.getDisplayedItems(this.state.allItems).map((item) => {
             return this.BuildSingleITag(item);
@@ -49,7 +49,7 @@ export class ItemPicker<T extends IBaseItem, K extends keyof T> extends React.Co
     public async componentDidMount() {
         let modelName = (typeof(this.props.model) === "string" ? this.props.model : this.props.model["name"]);
         if(!stringIsNullOrEmpty(modelName)) {
-            let service = ServicesConfiguration.configuration.serviceFactory.create(modelName) as BaseDataService<T>;
+            let service = ServiceFactory.getServiceByModelName(modelName) as BaseDataService<T>;
             let items = await service.getAll();
             if (!this.props.showDeprecated) {
                 items = items.filter((t) => { 

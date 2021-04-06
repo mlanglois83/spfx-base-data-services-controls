@@ -1,6 +1,6 @@
-import { IBaseItem } from 'spfx-base-data-services';
+import { BaseItem } from 'spfx-base-data-services';
 
-export interface IItemPickerProps<T extends IBaseItem, K extends keyof T> {
+export interface IItemPickerProps<T extends BaseItem, K extends keyof T> {
     showFullPath?: boolean;
     model: (new (data?) => T) | string;
     onFilterItems?: (allItems: Array<T>) => Array<T>;

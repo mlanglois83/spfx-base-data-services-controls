@@ -4,7 +4,7 @@ import { stringIsNullOrEmpty } from '@pnp/common';
 import * as strings from "ControlsStrings";
 import { Checkbox, css, DefaultButton, IconButton, ITag, Panel, PanelType, PrimaryButton, TagPicker } from 'office-ui-fabric-react';
 import * as React from 'react';
-import { BaseDataService, ServicesConfiguration, TaxonomyTerm, UtilsService } from 'spfx-base-data-services';
+import { BaseDataService, ServiceFactory, TaxonomyTerm, UtilsService } from 'spfx-base-data-services';
 import { ITaxonomyPickerProps } from './interfaces/ITaxonomyPickerProps';
 import { ITaxonomyPickerState } from './interfaces/ITaxonomyPickerState';
 import styles from './TaxonomyPicker.module.scss';
@@ -53,7 +53,7 @@ export class TaxonomyPicker<T extends TaxonomyTerm> extends React.Component<ITax
             modelName = (typeof(this.props.model) === "string" ? this.props.model : this.props.model["name"]);
         }
         if(!stringIsNullOrEmpty(modelName)) {
-            let service = ServicesConfiguration.configuration.serviceFactory.create(modelName) as BaseDataService<T>;
+            let service = ServiceFactory.getServiceByModelName(modelName) as BaseDataService<T>;
             let items = await service.getAll();
             if (!this.props.showDeprecated) {
                 items = items.filter((t) => { return !(t as TaxonomyTerm).isDeprecated; });

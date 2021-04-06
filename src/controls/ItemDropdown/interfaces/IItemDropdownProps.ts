@@ -1,8 +1,8 @@
-import { IBaseItem } from 'spfx-base-data-services';
+import { BaseItem } from 'spfx-base-data-services';
 
-export interface IItemDropdownProps<T extends IBaseItem, K extends keyof T> {
+export interface IItemDropdownProps<T extends BaseItem, K extends keyof T> {
     displayControl?: "Combobox" | "Dropdown";
-    model: new() => T;
+    model: new (data?: any) => T;
     onFilterItems?: (allItems: Array<T>) => Array<T>;
     selectedItems?: T[] | T | ((allItems: Array<T>) => (Array<T> | T));
     onChanged?: (value?: T[] | T) => void;

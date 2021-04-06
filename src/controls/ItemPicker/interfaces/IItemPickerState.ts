@@ -1,6 +1,6 @@
-import { IBaseItem, TaxonomyTerm } from 'spfx-base-data-services';
+import { BaseItem } from 'spfx-base-data-services';
 
-export interface IItemPickerState<T extends IBaseItem> {
+export interface IItemPickerState<T extends BaseItem> {
     keyProperty: string;
     selectedItems?: T[] | T;
     query: string;

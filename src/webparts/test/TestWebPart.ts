@@ -8,8 +8,7 @@ import {
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
 import * as strings from 'SpfxBaseDataServicesControlsStrings';
-import { ServicesConfiguration, User } from 'spfx-base-data-services';
-import { ServiceFactory } from '../../services/ServiceFactory';
+import { ServicesConfiguration } from 'spfx-base-data-services';
 import { Test, ITestProps } from './components/Test';
 export interface ITestWebPartProps {
   description: string;
@@ -30,15 +29,11 @@ export default class TestWebPart extends BaseClientSideWebPart<ITestWebPartProps
   public onInit(): Promise<void> {
     return super.onInit().then(_ => {
       ServicesConfiguration.Init({
-        lastConnectionCheckResult: false,
         onlineCheckPage: "/SitePages/home.aspx",
         dbName: "spfx-base-data-services-controls",
         dbVersion: 1,
         checkOnline: true,
         context: this.context,
-        currentUserId: -1,
-        serviceFactory: new ServiceFactory(),
-        tableNames: ["Assets", "FakeTerms"],
         translations: {
           AddLabel: strings.AddLabel,
           DeleteLabel: strings.DeleteLabel,
