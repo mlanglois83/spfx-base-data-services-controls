@@ -2,7 +2,7 @@ import { IBasePickerSuggestionsProps, IPersonaProps, NormalPeoplePicker, css, Ic
 import { IPeoplePickerProps } from "./interfaces/IPeoplePickerProps";
 import { IPeoplePickerState } from "./interfaces/IPeoplePickerState";
 
-import { User, UserService, ServicesConfiguration, UtilsService } from 'spfx-base-data-services';
+import { User, UserService, ServicesConfiguration, UtilsService, ServiceFactory } from 'spfx-base-data-services';
 import * as React from "react";
 import * as strings from 'ControlsStrings';
 import { stringIsNullOrEmpty } from "@pnp/common";
@@ -10,7 +10,6 @@ import { Text } from "@microsoft/sp-core-library";
 import styles from './PeoplePicker.module.scss';
 
 export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePickerState> {
-  private userService: UserService;
 
   public constructor(props: IPeoplePickerProps) {
     super(props);
@@ -25,7 +24,6 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
         };
       })
     };
-    this.userService = new UserService(0);
   }
 
   public componentDidUpdate(prevProps: IPeoplePickerProps) {
@@ -72,7 +70,7 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
   ): IPersonaProps[] | Promise<IPersonaProps[]> => {
     if (filterText) {
       return new Promise<IPersonaProps[]>((resolve, reject) => {
-        this.userService.getByDisplayName(filterText)
+        ServiceFactory.getService(User, 0).cast<UserService>().getByDisplayName(filterText)
           .then(async (users: User[]) => {
             let personas: IPersonaProps[] = new Array<IPersonaProps>();
             await Promise.all(users.map(async (user) => {

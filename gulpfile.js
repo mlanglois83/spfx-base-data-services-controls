@@ -1,5 +1,7 @@
 'use strict';
 
+const configure = require('spfx-base-data-services/gulp')
+const fs = require('fs');
 const gulp = require('gulp');
 const build = require('@microsoft/sp-build-web');
 const path = require('path');
@@ -12,48 +14,7 @@ const tsconfig = require('./tsconfig.json');
 build.addSuppression(`Warning - [sass] The local CSS class 'ms-Grid' is not camelCase and will not be type-safe.`);
 
 
-build.task("test-webpack", build.serial(build.configureRig, build.configureWebpack));
-
-build.configureWebpack.setConfig({
-    additionalConfiguration: (config) => {
-        // include sourcemaps for dev
-        if (!build.getConfig().production) {
-            config.module.rules.push({
-              test: /\.(js|mjs|jsx|ts|tsx)$/,
-              use: ['source-map-loader'],
-              enforce: 'pre',
-            }); 
-        }  
-        // only prod buid
-        if (build.getConfig().production) { 
-            // get excluded names for uglify
-            const reserved = glob.sync('./src/{services,models}/**/*.ts').map((filePath) => {
-                return filePath.replace(/.*\/(\w+)\.ts/g, "$1");
-            }).concat("SPFile", "TaxonomyTerm", "TaxonomyHiddenListService", "TaxonomyHidden", "UserService", "User");
-            config.optimization.minimizer = 
-            [
-                new TerserPlugin
-                (
-                    {
-                        extractComments: false,
-                        sourceMap: false,
-                        cache: false,
-                        parallel: false,
-                        terserOptions:
-                        { 
-                            output: { comments: false },
-                            compress: { warnings: false },
-                            mangle: { 
-                                reserved: reserved // rem sample from doc ['$super', '$', 'exports', 'require']
-                            }                               
-                        }
-                    }
-                )
-            ];
-        }
-        return config;
-    }
-});
+configure(__dirname, true);
 
 gulp.task('generate-translation', function () {
     // Input Excel file

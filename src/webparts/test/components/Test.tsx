@@ -1,15 +1,9 @@
 
-import { PeoplePicker } from "../../../controls/PeoplePicker/PeoplePicker";
-import { TaxonomyPicker } from "../../../controls/TaxonomyPicker/TaxonomyPicker";
-import { TaxonomyFilter } from "../../../controls/TaxonomyFilter/TaxonomyFilter";
-import { MediaSelector } from "../../../controls/MediaSelector/MediaSelector";
-import * as React from 'react';
-import { User, ServicesConfiguration } from "spfx-base-data-services";
+import { MediaSelector, PeoplePicker, TaxonomyFilter, TaxonomyPicker } from "@controls";
 import { cloneDeep, findIndex } from "@microsoft/sp-lodash-subset";
-import { FakeTerm } from "../../../models/taxonomy/FakeTerm";
-import { FakeTermsService } from "../../../services/taxonomy/FakeTermsService";
-import { Asset } from "../../../models/sp/Asset";
-import { AssetsService } from "../../../services/sp/AssetsService";
+import { Asset, FakeTerm } from "@models";
+import * as React from 'react';
+import { ServiceFactory, ServicesConfiguration, User } from "spfx-base-data-services";
 
 export interface ITestProps {
 
@@ -22,7 +16,6 @@ export interface ITestState {
     files: Asset[];
 }
 export class Test extends React.Component<ITestProps, ITestState> {
-    private assetsService: AssetsService = null;
     constructor(props: ITestProps) {
         super(props);
         this.state = {  
@@ -32,13 +25,11 @@ export class Test extends React.Component<ITestProps, ITestState> {
             allTerms: [],
             files:[]
         };
-        this.assetsService = new AssetsService();
     }
 
     public async componentDidMount() {
-        const fakeService = new FakeTermsService();
-        const allTerms = await fakeService.getAll();
-        const assets = await this.assetsService.getAll();
+        const allTerms = await ServiceFactory.getService(FakeTerm).getAll();
+        const assets = await ServiceFactory.getService(Asset).getAll();
         this.setState({allTerms: allTerms, files: assets});
     }
 
@@ -81,14 +72,14 @@ export class Test extends React.Component<ITestProps, ITestState> {
                         file.id = ServicesConfiguration.context.pageContext.web.serverRelativeUrl +
                         "/SiteAssets/" + file.title;
                         const copy = cloneDeep(this.state.files);
-                        await this.assetsService.addOrUpdateItem(file);
+                        await ServiceFactory.getService(Asset).addOrUpdateItem(file);
                         copy.push(file);
                         this.setState({files: copy});
                     }} 
                     onFileRemoved={async (file) => {
                         const copy = cloneDeep(this.state.files);
                         const idx = findIndex(copy, (f) => {return f.id === file.id;});
-                        await this.assetsService.deleteItem(file);
+                        await ServiceFactory.getService(Asset).deleteItem(file);
                         copy.splice(idx,1);
                         this.setState({files: copy});
                     }} 
