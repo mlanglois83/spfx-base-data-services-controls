@@ -13,6 +13,24 @@ import { css, Dialog, ResponsiveMode } from 'office-ui-fabric-react';
 
 export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSelectorProps<T>, IMediaSelectorState<T>> { 
 
+    private get canAdd(): boolean {
+        if(typeof(this.props.canAdd) === "function") {
+        
+            return this.props.canAdd();
+        }
+        else {
+            return this.props.canAdd;
+        }
+    }
+
+    private get canRemove(): boolean {
+        if(typeof(this.props.canRemove) === "function") {        
+            return this.props.canRemove();
+        }
+        else {
+            return this.props.canRemove;
+        }
+    }
 
     public constructor(props: IMediaSelectorProps<T>) {
         super(props);
@@ -82,7 +100,7 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
         }
 
         return <div className={css(styles.attachmentsSelector, cssClasses && cssClasses.container ? cssClasses.container : null)}>
-            {this.props.editMode &&
+            {(this.props.editMode || this.canAdd) &&
                 <React.Fragment>
 
                     {!this.props.disabled && <Camera 
@@ -236,7 +254,7 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
                                 </video>
                             }
                         </div>
-                        {this.props.editMode && <div className={css(styles.actions, cssClasses && cssClasses.tileActions ? cssClasses.tileActions : null)}>
+                        {(this.props.editMode || this.canRemove) && <div className={css(styles.actions, cssClasses && cssClasses.tileActions ? cssClasses.tileActions : null)}>
                             <IconButton disabled={this.props.disabled} iconProps={{ iconName: "StatusErrorFull" }} ariaLabel={strings.removeButtonLabel} onClick={async (e) => { 
                                 e.stopPropagation(); 
                                 let remove = true;
@@ -251,7 +269,7 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
                     </div>
                 </div>);
         });
-        return (result.length > 0 ? <React.Fragment>{result}</React.Fragment> : (!this.props.editMode ? <div className={css(styles.noTiles, cssClasses && cssClasses.noTiles ? cssClasses.noTiles : null)}>{strings.NoMediaMessage}</div> : null));
+        return (result.length > 0 ? <React.Fragment>{result}</React.Fragment> : ((!this.props.editMode && !this.canRemove) ? <div className={css(styles.noTiles, cssClasses && cssClasses.noTiles ? cssClasses.noTiles : null)}>{strings.NoMediaMessage}</div> : null));
     }
 
     private downloadFile = (file: T & IContentUrl) => {

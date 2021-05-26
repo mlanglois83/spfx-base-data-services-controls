@@ -148,7 +148,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     const actions = this.orderedActionGroups;
     return <div className={css(styles.stickyHeader, this.state.className, this.props.className)}>
       <div className={styles.headerLeftPanel}>
-        <HashRouter>
+        {!stringIsNullOrEmpty(this.props.homeUrl) && <HashRouter>
           <Switch>
             {this.props.homeButtonHideUrls && this.props.homeButtonHideUrls.map((url) => {
               return <Route
@@ -157,13 +157,17 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
               />;
             })}   
             <Route
-              component={({ history }) => <div className={styles.panelItem}>
+              component={({ history }) => <>
+              <div className={styles.panelItem}>
                 <IconButton iconProps={{ iconName: "Home" }} title={strings.NavHomeText} onClick={() => { history.push(this.props.homeUrl); }} />
-              </div>} />
+              </div>
+              {!stringIsNullOrEmpty(title) && 
+                <div className={styles.separator}></div>
+              }
+              </>} />
           </Switch>
-        </HashRouter>
+        </HashRouter>}
         {!stringIsNullOrEmpty(title) && <>
-          <div className={styles.separator}></div>
           <div className={css(styles.panelItem, styles.titleBlock)}>          
             <div className={styles.headerTitle}>
               {title}
@@ -201,12 +205,14 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
             
           </>
         }
-        <div className={styles.panelItem}>
-          <SynchroNotifications syncErrors={this.props.syncErrors} transactions={this.props.transactions} syncRunning={this.props.syncRuning} />
-        </div>
-        <div className={styles.panelItem}>
-          <Icon iconName={this.props.isConnected ? "Streaming" : "StreamingOff"} />
-        </div>
+        {!this.props.disableOfflineActions && <>          
+          <div className={styles.panelItem}>
+            <SynchroNotifications syncErrors={this.props.syncErrors} transactions={this.props.transactions} syncRunning={this.props.syncRuning} />
+          </div>
+          <div className={styles.panelItem}>
+            <Icon iconName={this.props.isConnected ? "Streaming" : "StreamingOff"} />
+          </div>
+        </>}
         <div className={styles.panelItem}>
           <IconButton
             title={this.state.fullscreen ? strings.AbortFullScreenLabel: strings.FullscreenLabel}

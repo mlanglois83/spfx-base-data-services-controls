@@ -9,7 +9,9 @@ export interface IMediaSelectorProps<T extends IBaseFile> {
     cacheKey?: string;
     files: Array<T>;
     disabled?: boolean;
-    editMode: boolean;
+    editMode?: boolean;
+    canRemove?: boolean | (() => boolean);
+    canAdd?:  boolean | (() => boolean);
     title?: string;
     online: boolean;
     onFileAdded: (file: T) => void;
