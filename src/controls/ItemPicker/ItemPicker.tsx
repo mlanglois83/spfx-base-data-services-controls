@@ -158,7 +158,7 @@ export class ItemPicker<T extends BaseItem, K extends keyof T> extends React.Com
         if(item instanceof TaxonomyTerm) {
             let parent = find(this.state.allItems as unknown[] as TaxonomyTerm[], (t) => { return t instanceof TaxonomyTerm && t.isParentOf(item as unknown as TaxonomyTerm); });          
             if(parent) {
-                parentPath = UtilsService.getTermFullPathString(parent , this.state.allItems as unknown[] as TaxonomyTerm[], this.props.baseLevel || 0);
+                parentPath = UtilsService.getTermFullPathString(parent, this.state.allItems as unknown[] as TaxonomyTerm[], this.props.baseLevel || 0);
             }
         }
 

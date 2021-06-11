@@ -21,12 +21,12 @@ export class FakeTermsService extends BaseTermsetService<FakeTerm> {
         return this._terms;
     }
     private generateTerm(index: number, parent?: FakeTerm): FakeTerm {
-        return new FakeTerm({
-            Name : "Term-" + index.toString(),
-            Id: `/Guid(${Guid.newGuid().toString()})/`,
-            PathOfTerm: (parent ? parent.path + ";" : "") + "Term-" + index.toString(),
-            IsDeprecated: false
-        });
+        const term = new FakeTerm();
+        term.title = "Term-" + index.toString();
+        term.id = Guid.newGuid().toString();
+        term.path = (parent ? parent.path + ";" : "") + "Term-" + index.toString();
+        term.isDeprecated = false;
+        return term;
     }
     private generateSubTerms(term: FakeTerm, sublevels: number): Array<FakeTerm> {
         const result = [];
