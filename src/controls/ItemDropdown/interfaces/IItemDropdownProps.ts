@@ -1,3 +1,4 @@
+import { IDropdownOption, IRenderFunction, ISelectableOption } from 'office-ui-fabric-react';
 import { BaseItem } from 'spfx-base-data-services';
 
 export interface IItemDropdownProps<T extends BaseItem, K extends keyof T> {
@@ -15,6 +16,11 @@ export interface IItemDropdownProps<T extends BaseItem, K extends keyof T> {
     required?: boolean;
     keyProperty?: K;
     onGetItemText?: (item: T) => string;
+    onRenderOption?: IRenderFunction<ISelectableOption>;
+    /**
+     * Dropdown only
+     */
+    onRenderTitle?: IRenderFunction<IDropdownOption[]>;
     /**
      * Taxo only
      */

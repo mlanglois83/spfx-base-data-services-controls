@@ -86,6 +86,8 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
                 options={(!stringIsNullOrEmpty(defaultOption) ? [defaultOptionObj] : []).concat(displayedItems).map(item => this.getOption(item))}
                 selectedKeys={multiSelect ? selectedKeys : undefined}
                 selectedKey={!multiSelect ? selectedKeys : undefined}
+                onRenderOption={this.props.onRenderOption}
+                onRenderTitle={this.props.onRenderTitle}
             />;
         }
         else {
@@ -100,6 +102,7 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
                 placeholder={placeholder}
                 options={(!stringIsNullOrEmpty(defaultOption) ? [defaultOptionObj] : []).concat(displayedItems).map(item => this.getOption(item))}
                 selectedKey={selectedKeys}
+                onRenderOption={this.props.onRenderOption}
             />;
         }
         
