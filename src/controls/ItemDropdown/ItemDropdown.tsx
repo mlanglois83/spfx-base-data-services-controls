@@ -172,7 +172,8 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
                             UtilsService.getTermFullPathString(item, this.state.allItems as unknown[] as TaxonomyTerm[], this.props.baseLevel || 0) 
                             : 
                             (this.props.onGetItemText ? this.props.onGetItemText(item) : item.title)                                
-                        )
+                        ),
+                data: this.props.onGetItemData?.call(this, item) 
             };
         }
         return result;

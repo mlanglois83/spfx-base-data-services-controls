@@ -16,6 +16,7 @@ export interface IItemDropdownProps<T extends BaseItem, K extends keyof T> {
     required?: boolean;
     keyProperty?: K;
     onGetItemText?: (item: T) => string;
+    onGetItemData?: (item: T) => any;
     onRenderOption?: IRenderFunction<ISelectableOption>;
     /**
      * Dropdown only
