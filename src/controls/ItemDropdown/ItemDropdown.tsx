@@ -19,9 +19,20 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
     }
 
 
-    public async componentDidMount() {
+    public componentDidMount() {
+        this.loadItems();
+    }
+
+    private async loadItems() {
         let service = ServiceFactory.getService(this.props.model);
-        let items = await service.getAll();
+        let items: T[];
+        if(this.props.getItemsQuery) {
+            items = await service.get(this.props.getItemsQuery);
+        }
+        else {
+            items = await service.getAll();
+        }
+        
         if (!this.props.showDeprecated) {
             items = items.filter((t) => { 
                 return ((t instanceof TaxonomyTerm)  && !t.isDeprecated) || (!(t instanceof TaxonomyTerm)); 
@@ -34,8 +45,11 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
        * New props have been received, not saved yet
        * @param nextProps New props object
        */
-    public componentWillReceiveProps(nextProps: IItemDropdownProps<T, K>) {
-        if (JSON.stringify(nextProps.selectedItems) !== JSON.stringify(this.props.selectedItems)) {
+    public componentWillReceiveProps(nextProps: IItemDropdownProps<T, K>) {        
+        if(JSON.stringify(nextProps.getItemsQuery) !== JSON.stringify(this.props.getItemsQuery)) {
+            this.loadItems();
+        }
+        else if (JSON.stringify(nextProps.selectedItems) !== JSON.stringify(this.props.selectedItems)) {
             this.setState({ selectedItems: this.getSelected(this.state.allItems, nextProps.selectedItems) });
         }
     }

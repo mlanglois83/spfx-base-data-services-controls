@@ -1,9 +1,10 @@
 import { IDropdownOption, IRenderFunction, ISelectableOption } from 'office-ui-fabric-react';
-import { BaseItem } from 'spfx-base-data-services';
+import { BaseItem, IQuery } from 'spfx-base-data-services';
 
 export interface IItemDropdownProps<T extends BaseItem, K extends keyof T> {
     displayControl?: "Combobox" | "Dropdown";
     model: new (data?: any) => T;
+    getItemsQuery?: IQuery<T>;
     onFilterItems?: (allItems: Array<T>) => Array<T>;
     selectedItems?: T[] | T | ((allItems: Array<T>) => (Array<T> | T));
     onChanged?: (value?: T[] | T) => void;

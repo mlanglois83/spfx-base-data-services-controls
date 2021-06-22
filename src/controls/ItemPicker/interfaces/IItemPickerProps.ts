@@ -1,8 +1,9 @@
-import { BaseItem } from 'spfx-base-data-services';
+import { BaseItem, IQuery } from 'spfx-base-data-services';
 
 export interface IItemPickerProps<T extends BaseItem, K extends keyof T> {
     showFullPath?: boolean;
     model: (new (data?) => T) | string;
+    getItemsQuery?: IQuery<T>;
     onFilterItems?: (allItems: Array<T>) => Array<T>;
     selectedItems?: T[] | T | ((allItems: Array<T>) => (Array<T> | T));
     onChanged?: (value?: T[] | T) => void;
