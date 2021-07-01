@@ -1,5 +1,5 @@
 import { assign } from '@microsoft/sp-lodash-subset';
-import { stringIsNullOrEmpty } from '@pnp/common';
+import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from 'ControlsStrings';
 import { css, DefaultButton, Dialog, Icon, PrimaryButton } from 'office-ui-fabric-react';
 import { ResponsiveMode } from 'office-ui-fabric-react/lib/utilities/decorators/withResponsiveMode';

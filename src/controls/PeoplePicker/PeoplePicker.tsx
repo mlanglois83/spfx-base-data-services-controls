@@ -5,7 +5,7 @@ import { IPeoplePickerState } from "./interfaces/IPeoplePickerState";
 import { User, UserService, ServicesConfiguration, UtilsService, ServiceFactory } from 'spfx-base-data-services';
 import * as React from "react";
 import * as strings from 'ControlsStrings';
-import { stringIsNullOrEmpty } from "@pnp/common";
+import { stringIsNullOrEmpty } from "@pnp/common/util";
 import { Text } from "@microsoft/sp-core-library";
 import styles from './PeoplePicker.module.scss';
 

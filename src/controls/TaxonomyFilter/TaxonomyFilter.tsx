@@ -4,7 +4,7 @@ import { ITaxonomyFilterProps } from './interfaces/ITaxonomyFilterProps';
 import { ITaxonomyFilterState } from './interfaces/ITaxonomyFilterState';
 import { TaxonomyTerm } from 'spfx-base-data-services';
 import { Dropdown, IDropdownOption, find, css } from 'office-ui-fabric-react';
-import { stringIsNullOrEmpty } from '@pnp/common';
+import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from 'ControlsStrings';
 import styles from './TaxonomyFilter.module.scss';
 

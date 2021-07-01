@@ -1,6 +1,6 @@
 
 import { cloneDeep, find, findIndex } from '@microsoft/sp-lodash-subset';
-import { isArray, stringIsNullOrEmpty } from '@pnp/common';
+import { isArray, stringIsNullOrEmpty } from '@pnp/common/util';
 import { ComboBox, Dropdown, IDropdownOption } from 'office-ui-fabric-react';
 import * as React from 'react';
 import { BaseDataService, BaseItem, TaxonomyTerm, UtilsService, ServiceFactory } from 'spfx-base-data-services';

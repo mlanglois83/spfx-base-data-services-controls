@@ -1,5 +1,5 @@
 import { assign, cloneDeep, find } from '@microsoft/sp-lodash-subset';
-import { stringIsNullOrEmpty } from '@pnp/common';
+import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from 'ControlsStrings';
 import { IconButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import * as React from 'react';

@@ -1,6 +1,6 @@
 
 import { cloneDeep, find, findIndex } from '@microsoft/sp-lodash-subset';
-import { stringIsNullOrEmpty } from '@pnp/common';
+import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from "ControlsStrings";
 import { Checkbox, css, DefaultButton, IconButton, ITag, Panel, PanelType, PrimaryButton, TagPicker } from 'office-ui-fabric-react';
 import * as React from 'react';

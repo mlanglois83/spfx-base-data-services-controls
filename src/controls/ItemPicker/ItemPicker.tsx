@@ -1,6 +1,6 @@
 
 import { cloneDeep, find } from '@microsoft/sp-lodash-subset';
-import { stringIsNullOrEmpty } from '@pnp/common';
+import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from "ControlsStrings";
 import { css, ITag, TagPicker } from 'office-ui-fabric-react';
 import * as React from 'react';

@@ -6,7 +6,7 @@ import { IActionsGroup, IHeaderBarState } from "./interfaces/IHeaderBarState";
 import styles from './HeaderBar.module.scss';
 import { HashRouter, Switch, Route, WithRouter } from "react-router-dom";
 import { SynchroNotifications } from "./components/synchroNotifications/SynchroNotifications";
-import { stringIsNullOrEmpty } from '@pnp/common';
+import { stringIsNullOrEmpty } from '@pnp/common/util';
 import { cloneDeep } from '@microsoft/sp-lodash-subset';
 import { Semaphore, SemaphoreInterface } from "async-mutex";
 export interface IActionsEvent {
