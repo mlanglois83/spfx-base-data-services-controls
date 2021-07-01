@@ -16,6 +16,8 @@ build.addSuppression(`Warning - [sass] The local CSS class 'ms-Grid' is not came
 
 configure(__dirname, true);
 
+build.tslintCmd.enabled = false;
+
 gulp.task('generate-translation', function () {
     // Input Excel file
     var files = gulp.src("./language.csv");
@@ -47,14 +49,15 @@ gulp.task('generate-translation', function () {
         .pipe(gulp.dest('./src/loc'));
 })
 
-gulp.task('ts-beautify', ['generate-translation'], function () {
-    return gulp.src('./language/mystrings.d.ts')
+gulp.task('ts-beautify', gulp.series('generate-translation', function (done) {
+    gulp.src('./language/mystrings.d.ts')
         .pipe(prettier({
             singleQuote: true
         }))
         .pipe(gulp.dest('./src/loc'));
-});
+    done();
+}));
 
-gulp.task('localization', ['ts-beautify']);
+gulp.task('localization', gulp.series('generate-translation', 'ts-beautify'));
 
 build.initialize(gulp);
