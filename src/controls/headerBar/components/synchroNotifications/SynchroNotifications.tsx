@@ -1,7 +1,7 @@
 import * as strings from 'ControlsStrings';
 import * as React from 'react';
 
-import { IconButton, Icon, Callout, DirectionalHint, List, SelectionMode, DetailsListLayoutMode, DetailsList, IDetailsRowProps, IDetailsRowStyles, DetailsRow, css, CommandBar } from 'office-ui-fabric-react';
+import { IconButton, Icon, Callout, DirectionalHint, List, SelectionMode, DetailsListLayoutMode, DetailsList, IDetailsRowProps, IDetailsRowStyles, DetailsRow, css, CommandBar } from '@fluentui/react';
 import { ISynchroNotificationsProps } from "./interfaces/ISynchroNotificationsProps";
 import { ISynchroNotificationsState } from "./interfaces/ISynchroNotificationsState";
 import styles from "../../HeaderBar.module.scss";

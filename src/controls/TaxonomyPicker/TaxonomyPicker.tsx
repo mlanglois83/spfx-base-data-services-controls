@@ -2,7 +2,7 @@
 import { cloneDeep, find, findIndex } from '@microsoft/sp-lodash-subset';
 import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from "ControlsStrings";
-import { Checkbox, css, DefaultButton, IconButton, ITag, Panel, PanelType, PrimaryButton, TagPicker } from 'office-ui-fabric-react';
+import { Checkbox, css, DefaultButton, IconButton, ITag, Panel, PanelType, PrimaryButton, TagPicker } from '@fluentui/react';
 import * as React from 'react';
 import { BaseDataService, ServiceFactory, TaxonomyTerm, UtilsService } from 'spfx-base-data-services';
 import { ITaxonomyPickerProps } from './interfaces/ITaxonomyPickerProps';

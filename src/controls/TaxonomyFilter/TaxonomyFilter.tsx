@@ -3,7 +3,7 @@ import * as React from 'react';
 import { ITaxonomyFilterProps } from './interfaces/ITaxonomyFilterProps';
 import { ITaxonomyFilterState } from './interfaces/ITaxonomyFilterState';
 import { TaxonomyTerm } from 'spfx-base-data-services';
-import { Dropdown, IDropdownOption, find, css } from 'office-ui-fabric-react';
+import { Dropdown, IDropdownOption, find, css } from '@fluentui/react';
 import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from 'ControlsStrings';
 import styles from './TaxonomyFilter.module.scss';
@@ -88,14 +88,16 @@ export class TaxonomyFilter<T extends TaxonomyTerm> extends React.Component<ITax
         options.forEach((o) => {
             o.selected = false;
         });
-        return <Dropdown                     
+        return <Dropdown        
+            {...this.props.dropdownProps}           
             label={labels &&  labels.length > idx ? labels[idx] : undefined}
             className={classNames && classNames.dropdownClassName ? classNames.dropdownClassName : null}
             disabled={this.props.disabled}
             selectedKey={selectedKey} 
             options={options} 
             placeholder={placeholders && placeholders.length > idx ? placeholders[idx] : strings.selectTermLabel} 
-            onChange={this.onFilterChanged}/>;
+            onChange={this.onFilterChanged}
+            />;
     }
 
     private onFilterChanged = (event, option?) => {

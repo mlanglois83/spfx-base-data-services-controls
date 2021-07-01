@@ -1,7 +1,8 @@
 
+import { IComboBoxProps, IDropdownProps } from '@fluentui/react';
 import { cloneDeep, find, findIndex } from '@microsoft/sp-lodash-subset';
 import { isArray, stringIsNullOrEmpty } from '@pnp/common/util';
-import { ComboBox, Dropdown, IDropdownOption } from 'office-ui-fabric-react';
+import { ComboBox, Dropdown, IDropdownOption } from '@fluentui/react';
 import * as React from 'react';
 import { BaseDataService, BaseItem, TaxonomyTerm, UtilsService, ServiceFactory } from 'spfx-base-data-services';
 import { IItemDropdownProps } from './interfaces/IItemDropdownProps';
@@ -90,6 +91,7 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
         }
         if(displayControl === "Dropdown") {
             return <Dropdown
+                {...(this.props.controlProps as Pick<IDropdownProps, keyof IDropdownProps>)}
                 className={className}
                 label={label}
                 required={required}
@@ -105,7 +107,9 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
             />;
         }
         else {
-            return <ComboBox className={className}
+            return <ComboBox                 
+                {...(this.props.controlProps as Pick<IComboBoxProps, keyof IComboBoxProps>)}
+                className={className}
                 openOnKeyboardFocus
                 allowFreeform
                 label={label}

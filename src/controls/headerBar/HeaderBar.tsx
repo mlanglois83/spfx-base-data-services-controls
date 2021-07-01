@@ -1,5 +1,5 @@
 import * as strings from 'ControlsStrings';
-import { IconButton, Icon, css } from 'office-ui-fabric-react';
+import { IconButton, Icon, css } from '@fluentui/react';
 import * as React from 'react';
 import { IHeaderBarProps } from "./interfaces/IHeaderBarProps";
 import { IActionsGroup, IHeaderBarState } from "./interfaces/IHeaderBarState";

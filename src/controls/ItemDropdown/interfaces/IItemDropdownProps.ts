@@ -1,8 +1,10 @@
+import { IComboBoxProps, IDropdownProps } from '@fluentui/react';
 import { IDropdownOption, IRenderFunction, ISelectableOption } from 'office-ui-fabric-react';
 import { BaseItem, IQuery } from 'spfx-base-data-services';
 
 export interface IItemDropdownProps<T extends BaseItem, K extends keyof T> {
     displayControl?: "Combobox" | "Dropdown";
+    controlProps?: Pick<IDropdownProps, keyof IDropdownProps> | Pick<IComboBoxProps, keyof IComboBoxProps>;
     model: new (data?: any) => T;
     getItemsQuery?: IQuery<T>;
     onFilterItems?: (allItems: Array<T>) => Array<T>;

@@ -1,6 +1,8 @@
+import { IDropdownProps } from '@fluentui/react';
 import { TaxonomyTerm } from 'spfx-base-data-services';
 
 export interface ITaxonomyFilterProps<T extends TaxonomyTerm> {
+    dropdownProps?: Pick<IDropdownProps, keyof IDropdownProps>;
     labels?: string[];
     terms: T[];
     selectedTerm?: T;

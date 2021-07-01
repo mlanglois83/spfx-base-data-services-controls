@@ -2,7 +2,7 @@
 import { cloneDeep, find } from '@microsoft/sp-lodash-subset';
 import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from "ControlsStrings";
-import { css, ITag, TagPicker } from 'office-ui-fabric-react';
+import { css, ITag, TagPicker } from '@fluentui/react';
 import * as React from 'react';
 import { BaseDataService, BaseItem, ServiceFactory, TaxonomyTerm, UtilsService } from 'spfx-base-data-services';
 import { IItemPickerProps } from './interfaces/IItemPickerProps';

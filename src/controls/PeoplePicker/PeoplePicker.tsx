@@ -1,4 +1,4 @@
-import { IBasePickerSuggestionsProps, IPersonaProps, NormalPeoplePicker, css, Icon, IconNames } from "office-ui-fabric-react/lib";
+import { IBasePickerSuggestionsProps, IPersonaProps, NormalPeoplePicker, css, Icon } from "@fluentui/react";
 import { IPeoplePickerProps } from "./interfaces/IPeoplePickerProps";
 import { IPeoplePickerState } from "./interfaces/IPeoplePickerState";
 
@@ -6,7 +6,6 @@ import { User, UserService, ServicesConfiguration, UtilsService, ServiceFactory 
 import * as React from "react";
 import * as strings from 'ControlsStrings';
 import { stringIsNullOrEmpty } from "@pnp/common/util";
-import { Text } from "@microsoft/sp-core-library";
 import styles from './PeoplePicker.module.scss';
 
 export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePickerState> {
@@ -166,7 +165,7 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
               </div>
             }
           </div>
-          <Icon className={styles.pickerPeopleIcon} iconName={IconNames.ProfileSearch} />
+          <Icon className={styles.pickerPeopleIcon} iconName="ProfileSearch" />
         </div>
       </div>
     );

@@ -1,7 +1,7 @@
 import { assign, cloneDeep, find } from '@microsoft/sp-lodash-subset';
 import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from 'ControlsStrings';
-import { IconButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+import { IconButton, PrimaryButton } from '@fluentui/react';
 import * as React from 'react';
 import { IMediaSelectorProps, MediaType } from './interfaces/IMediaSelectorProps';
 import { IContentUrl, IMediaSelectorState } from './interfaces/IMediaSelectorState';
@@ -9,7 +9,7 @@ import styles from './MediaSelector.module.scss';
 import { IBaseFile, UtilsService } from 'spfx-base-data-services';
 
 import { Camera } from './Camera';
-import { css, Dialog, ResponsiveMode } from 'office-ui-fabric-react';
+import { css, Dialog, ResponsiveMode } from '@fluentui/react';
 
 export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSelectorProps<T>, IMediaSelectorState<T>> { 
 
