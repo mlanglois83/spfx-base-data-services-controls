@@ -91,7 +91,7 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
         }
         if(displayControl === "Dropdown") {
             return <Dropdown
-                {...(this.props.controlProps as Pick<IDropdownProps, keyof IDropdownProps>)}
+                {...(this.props.controlProps as Partial<IDropdownProps>)}
                 className={className}
                 label={label}
                 required={required}
@@ -108,7 +108,7 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
         }
         else {
             return <ComboBox                 
-                {...(this.props.controlProps as Pick<IComboBoxProps, keyof IComboBoxProps>)}
+                {...(this.props.controlProps as Partial<IComboBoxProps>)}
                 className={className}
                 openOnKeyboardFocus
                 allowFreeform
