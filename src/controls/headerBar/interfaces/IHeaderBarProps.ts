@@ -1,3 +1,4 @@
+import * as React from "react";
 import { OfflineTransaction } from "spfx-base-data-services";
 
 export interface IHeaderBarProps {  
@@ -9,6 +10,6 @@ export interface IHeaderBarProps {
     transactions?: Array<OfflineTransaction>;
     syncErrors?: Array<string>;
     syncRuning?: boolean;    
-    contentContainer: HTMLDivElement;    
+    contentContainer: HTMLDivElement | React.RefObject<HTMLDivElement>;    
     onFullscreenChanged?: (fullscreen: boolean) => void;
 }

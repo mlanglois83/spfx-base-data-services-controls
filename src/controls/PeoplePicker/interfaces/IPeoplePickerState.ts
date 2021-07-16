@@ -1,4 +1,4 @@
-import { IPersonaProps } from "office-ui-fabric-react";
+import { IPersonaProps } from "@fluentui/react";
 
 export interface IPeoplePickerState {
     selectedItems: IPersonaProps[];

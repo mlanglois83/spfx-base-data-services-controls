@@ -1,10 +1,9 @@
 
-import { IComboBoxProps, IDropdownProps } from '@fluentui/react';
+import { ComboBox, Dropdown, IComboBoxProps, IDropdownOption, IDropdownProps } from '@fluentui/react';
 import { cloneDeep, find, findIndex } from '@microsoft/sp-lodash-subset';
 import { isArray, stringIsNullOrEmpty } from '@pnp/common/util';
-import { ComboBox, Dropdown, IDropdownOption } from '@fluentui/react';
 import * as React from 'react';
-import { BaseDataService, BaseItem, TaxonomyTerm, UtilsService, ServiceFactory } from 'spfx-base-data-services';
+import { BaseItem, ServiceFactory, TaxonomyTerm, UtilsService } from 'spfx-base-data-services';
 import { IItemDropdownProps } from './interfaces/IItemDropdownProps';
 import { IItemDropdownState } from './interfaces/IItemDropdownState';
 

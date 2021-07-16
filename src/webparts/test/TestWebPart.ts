@@ -46,7 +46,7 @@ export default class TestWebPart extends BaseClientSideWebPart<ITestWebPartProps
   }
 
   public onInit(): Promise<void> {
-    return super.onInit().then(_ => {
+    return super.onInit().then(() => {
       ServicesConfiguration.Init({
         onlineCheckPage: "/SitePages/home.aspx",
         dbName: "spfx-base-data-services-controls",

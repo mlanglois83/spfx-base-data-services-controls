@@ -1,8 +1,7 @@
-import { BaseTermsetService, TaxonomyTerm } from "spfx-base-data-services";
-import { FakeTerm } from "@models";
-import { find } from "@microsoft/sp-lodash-subset";
 import { Guid } from "@microsoft/sp-core-library";
-import { Decorators } from "spfx-base-data-services";
+import { find } from "@microsoft/sp-lodash-subset";
+import { FakeTerm } from "@models";
+import { BaseTermsetService, Decorators } from "spfx-base-data-services";
 const dataService = Decorators.dataService;
 
 @dataService("FakeTerm")
@@ -13,7 +12,7 @@ export class FakeTermsService extends BaseTermsetService<FakeTerm> {
             this._terms = [];
             const levels = Math.random() * 5;
             for (let level = 0; level < levels; level++) {
-                let term =  this.generateTerm(level + 1); 
+                const term =  this.generateTerm(level + 1); 
                 this._terms.push(term);
                 this._terms.push(...this.generateSubTerms(term, levels - level + 1));
             }
@@ -33,7 +32,7 @@ export class FakeTermsService extends BaseTermsetService<FakeTerm> {
         if(sublevels > 0) {
             const termsCount = Math.random() * 10;
             for (let index = 0; index < termsCount; index++) {
-                let newterm =  this.generateTerm(index + 1, term); 
+                const newterm =  this.generateTerm(index + 1, term); 
                 result.push(newterm);
                 result.push(...this.generateSubTerms(newterm, sublevels - 1));
             }

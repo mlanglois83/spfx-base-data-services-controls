@@ -1,14 +1,14 @@
+import { css, Icon, IconButton } from '@fluentui/react';
+import { cloneDeep } from '@microsoft/sp-lodash-subset';
+import { stringIsNullOrEmpty } from '@pnp/common';
+import { Semaphore, SemaphoreInterface } from "async-mutex";
 import * as strings from 'ControlsStrings';
-import { IconButton, Icon, css } from '@fluentui/react';
 import * as React from 'react';
+import { HashRouter, Route, Switch } from "react-router-dom";
+import { SynchroNotifications } from "./components/synchroNotifications/SynchroNotifications";
+import styles from './HeaderBar.module.scss';
 import { IHeaderBarProps } from "./interfaces/IHeaderBarProps";
 import { IActionsGroup, IHeaderBarState } from "./interfaces/IHeaderBarState";
-import styles from './HeaderBar.module.scss';
-import { HashRouter, Switch, Route, WithRouter } from "react-router-dom";
-import { SynchroNotifications } from "./components/synchroNotifications/SynchroNotifications";
-import { stringIsNullOrEmpty } from '@pnp/common/util';
-import { cloneDeep } from '@microsoft/sp-lodash-subset';
-import { Semaphore, SemaphoreInterface } from "async-mutex";
 export interface IActionsEvent {
   key: string;
   actions: () => Array<JSX.Element | "separator">; 
@@ -294,6 +294,10 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
 
   private adaptDomElements = (fullscreen: boolean) => {
     if (fullscreen) {
+      let appBar  = document.getElementById("sp-appBar");
+      if (appBar) {
+        appBar.style.display = "none";
+      }
       let suiteNavWrapper = document.getElementById("SuiteNavWrapper");
       if (suiteNavWrapper) {
         suiteNavWrapper.style.display = "none";
@@ -332,15 +336,28 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
       }
       document.body.className = this.addClass(document.body.className, "fullscreen");
       if (this.props.contentContainer) {
-        this.props.contentContainer.style.height = "calc(100vh - 52px)";
-        this.props.contentContainer.style.overflow = "auto";
-        let scrollDiv = document.querySelector("div[data-is-scrollable='true']") as HTMLDivElement;
-        if (scrollDiv) {
-          scrollDiv.style.overflow = "hidden";
+        let element: HTMLElement;
+        if(this.props instanceof(HTMLElement)){
+          element = this.props.contentContainer as HTMLElement;
+        }
+        else {
+          element = (this.props.contentContainer as React.RefObject<HTMLElement>).current;
+        }
+        if(element) {
+          element.style.height = "calc(100vh - 52px)";
+          element.style.overflow = "auto";
+          let scrollDiv = document.querySelector("div[data-is-scrollable='true']") as HTMLDivElement;
+          if (scrollDiv) {
+            scrollDiv.style.overflow = "hidden";
+          }
         }
       }
     }
     else {
+      let appBar  = document.getElementById("sp-appBar");
+      if (appBar) {
+        appBar.style.display = "block";
+      }
       let suiteNavWrapper = document.getElementById("SuiteNavWrapper");
       if (suiteNavWrapper) {
         suiteNavWrapper.style.display = "block";
@@ -379,12 +396,21 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         ControlZone[0]['style'].margin = null;
       }
       document.body.className = this.removeClass(document.body.className, "fullscreen");
-      if (this.props.contentContainer) {        
-        this.props.contentContainer.style.height = "auto";
-        this.props.contentContainer.style.overflow = null;
-        let scrollDiv = document.querySelector("div[data-is-scrollable='true']") as HTMLDivElement;
-        if (scrollDiv) {
-          scrollDiv.style.overflow = null;
+      if (this.props.contentContainer) {     
+        let element: HTMLElement;
+        if(this.props instanceof(HTMLDivElement)){
+          element = this.props.contentContainer as HTMLElement;
+        }
+        else {
+          element = (this.props.contentContainer as React.RefObject<HTMLElement>).current;
+        }
+        if(element) {
+          element.style.height = "auto";
+          element.style.overflow = null;
+          let scrollDiv = document.querySelector("div[data-is-scrollable='true']") as HTMLDivElement;
+          if (scrollDiv) {
+            scrollDiv.style.overflow = null;
+          }
         }
       }
     }

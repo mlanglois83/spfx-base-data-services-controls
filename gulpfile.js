@@ -1,22 +1,43 @@
 'use strict';
 
-const configure = require('spfx-base-data-services/gulp')
-const fs = require('fs');
+const configure = require('spfx-base-data-services/gulp');
 const gulp = require('gulp');
 const build = require('@microsoft/sp-build-web');
-const path = require('path');
 const localization = require('gulp-spfx-localization');
-const TerserPlugin = require('terser-webpack-plugin');
-const glob = require('glob');
 const beautify = require('gulp-jsbeautifier');
 const prettier = require('gulp-prettier');
-const tsconfig = require('./tsconfig.json');
-build.addSuppression(`Warning - [sass] The local CSS class 'ms-Grid' is not camelCase and will not be type-safe.`);
+const ts = require('gulp-typescript');
+const gulpeslint = require('gulp-eslint');
+const gulpIf = require('gulp-if');
+build.addSuppression(/Warning - \[sass\] The local CSS class '[^']+' is not camelCase and will not be type-safe\./);
 
 
 configure(__dirname, true);
 
 build.tslintCmd.enabled = false;
+
+const tsProject = ts.createProject('tsconfig.json');
+
+function isFixed(file) {
+	return file.eslint != null && file.eslint.fixed;
+}
+
+let eslint = build.subTask('eslint', function (gulp, buildOptions, done) {
+    const hasFixFlag = process.argv.slice(2).includes('--fix');
+    tsProject.src()
+        // eslint() attaches the lint output to the "eslint" property
+        // of the file object so it can be used by other modules.
+        .pipe(gulpeslint({fix: hasFixFlag}))
+        // eslint.format() outputs the lint results to the console.
+        // Alternatively use eslint.formatEach() (see Docs).
+        .pipe(gulpeslint.format())
+        // To have the process exit with an error code (1) on
+        // lint error, return the stream and pipe to failAfterError last.
+        .pipe(gulpIf(isFixed, gulp.dest("./src")));
+      done();
+});
+
+build.rig.addPreBuildTask(eslint)
 
 gulp.task('generate-translation', function () {
     // Input Excel file
@@ -39,6 +60,7 @@ gulp.task('generate-translation', function () {
     };
 
     return files.pipe(localization({
+        'moduleFile': "mystrings.d.ts",
         'keyColumnName': "key",
         'langMap': langMap,
         'interfaceName': "IControlsStrings",
@@ -50,14 +72,14 @@ gulp.task('generate-translation', function () {
 })
 
 gulp.task('ts-beautify', gulp.series('generate-translation', function (done) {
-    gulp.src('./language/mystrings.d.ts')
+    gulp.src('./src/loc/mystrings.d.ts')
         .pipe(prettier({
             singleQuote: true
         }))
         .pipe(gulp.dest('./src/loc'));
-    done();
-}));
-
-gulp.task('localization', gulp.series('generate-translation', 'ts-beautify'));
+      done();
+  }));
+  
+  gulp.task('localization', gulp.series('generate-translation', 'ts-beautify'));
 
 build.initialize(gulp);

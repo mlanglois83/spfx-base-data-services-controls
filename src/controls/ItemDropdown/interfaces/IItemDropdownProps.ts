@@ -1,5 +1,4 @@
-import { IComboBoxProps, IDropdownProps } from '@fluentui/react';
-import { IDropdownOption, IRenderFunction, ISelectableOption } from 'office-ui-fabric-react';
+import { IComboBoxProps, IDropdownOption, IDropdownProps, IRenderFunction, ISelectableOption } from '@fluentui/react';
 import { BaseItem, IQuery } from 'spfx-base-data-services';
 
 export interface IItemDropdownProps<T extends BaseItem, K extends keyof T> {

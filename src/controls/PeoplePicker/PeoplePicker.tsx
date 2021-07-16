@@ -1,12 +1,12 @@
-import { IBasePickerSuggestionsProps, IPersonaProps, NormalPeoplePicker, css, Icon } from "@fluentui/react";
+import { css, IBasePickerSuggestionsProps, Icon, IPersonaProps, NormalPeoplePicker } from "@fluentui/react";
+import { stringIsNullOrEmpty } from "@pnp/common/util";
+import * as strings from 'ControlsStrings';
+import * as React from "react";
+import { ServiceFactory, ServicesConfiguration, User, UserService, UtilsService } from 'spfx-base-data-services';
 import { IPeoplePickerProps } from "./interfaces/IPeoplePickerProps";
 import { IPeoplePickerState } from "./interfaces/IPeoplePickerState";
-
-import { User, UserService, ServicesConfiguration, UtilsService, ServiceFactory } from 'spfx-base-data-services';
-import * as React from "react";
-import * as strings from 'ControlsStrings';
-import { stringIsNullOrEmpty } from "@pnp/common/util";
 import styles from './PeoplePicker.module.scss';
+
 
 export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePickerState> {
 
