@@ -10,6 +10,7 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as strings from 'SpfxBaseDataServicesControlsStrings';
 import { ServicesConfiguration } from 'spfx-base-data-services';
 import { Test, ITestProps } from './components/Test';
+import {sp} from "@pnp/sp/presets/all";
 //inject:imports
 /************************* Automatic services declaration injection for base-data-services *************************/
 import { TaxonomyHiddenListService } from "spfx-base-data-services";
@@ -39,6 +40,7 @@ export default class TestWebPart extends BaseClientSideWebPart<ITestWebPartProps
     const element: React.ReactElement<ITestProps > = React.createElement(
       Test,
       {
+        desc :""
       }
     );
 
@@ -46,7 +48,6 @@ export default class TestWebPart extends BaseClientSideWebPart<ITestWebPartProps
   }
 
   public onInit(): Promise<void> {
-    return super.onInit().then(() => {
       ServicesConfiguration.Init({
         onlineCheckPage: "/SitePages/home.aspx",
         dbName: "spfx-base-data-services-controls",
@@ -66,8 +67,9 @@ export default class TestWebPart extends BaseClientSideWebPart<ITestWebPartProps
           }      
         }     
       });
-    });
-  }
+      sp.setup({spfxContext: this.context, sp: {baseUrl : this.context.pageContext.web.absoluteUrl}});
+      return super.onInit();
+    }
 
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);

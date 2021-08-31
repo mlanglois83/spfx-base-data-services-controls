@@ -114,4 +114,4 @@ temp
 package-lock.json
 
 # scss generated files
-*.module.scss.ts
+*.module.scss.ts*.scss.d.ts

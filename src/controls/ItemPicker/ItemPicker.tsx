@@ -30,7 +30,7 @@ export class ItemPicker<T extends BaseItem, K extends keyof T> extends React.Com
     private getSelected(allItems: T[], selectedItems: T | T[] | ((allitems: T[]) => T | T[])) {
         if(typeof(selectedItems) === "function") {
             const items = this.getDisplayedItems(allItems);
-            return selectedItems(allItems);
+            return selectedItems(items);
         }
         else {
             return selectedItems;
@@ -46,14 +46,14 @@ export class ItemPicker<T extends BaseItem, K extends keyof T> extends React.Com
     }
 
 
-    public componentDidMount() {
-        this.loadItems();
+    public async componentDidMount(): Promise<void> {
+        return this.loadItems();
     }
 
     private async loadItems() {
-        let modelName = (typeof(this.props.model) === "string" ? this.props.model : this.props.model["name"]);
+        const modelName = (typeof(this.props.model) === "string" ? this.props.model : this.props.model["name"]);
         if(!stringIsNullOrEmpty(modelName)) {
-            let service = ServiceFactory.getServiceByModelName(modelName) as BaseDataService<T>;
+            const service = ServiceFactory.getServiceByModelName(modelName) as BaseDataService<T>;
             let items: T[];
             if(this.props.getItemsQuery) {
                 items = await service.get(this.props.getItemsQuery);
@@ -81,7 +81,7 @@ export class ItemPicker<T extends BaseItem, K extends keyof T> extends React.Com
        * New props have been received, not saved yet
        * @param nextProps New props object
        */
-     public componentWillReceiveProps(nextProps: IItemPickerProps<T, K>) {        
+     public componentWillReceiveProps(nextProps: IItemPickerProps<T, K>): void {        
         if(JSON.stringify(nextProps.getItemsQuery) !== JSON.stringify(this.props.getItemsQuery)) {
             this.loadItems();
         }
@@ -90,7 +90,7 @@ export class ItemPicker<T extends BaseItem, K extends keyof T> extends React.Com
         }
     }
 
-    public render() {
+    public render(): React.ReactElement<IItemPickerProps<T, K>> {
         const displayedItems = this.getDisplayedItems(this.state.allItems);
         const disabled = typeof(this.props.disabled) === "function" ? this.props.disabled(displayedItems) : this.props.disabled;
         return <div className={css(styles.itemPicker, this.props.className)}>
@@ -149,7 +149,7 @@ export class ItemPicker<T extends BaseItem, K extends keyof T> extends React.Com
         return result;
     }
     private BuildITag = (selectedTerm: T | T[]): ITag[] => {
-        let result: ITag[] = [];
+        const result: ITag[] = [];
         if (selectedTerm) {
             if (Array.isArray(selectedTerm)) {
                 selectedTerm.forEach(term => {
@@ -164,12 +164,12 @@ export class ItemPicker<T extends BaseItem, K extends keyof T> extends React.Com
         return result;
     }
 
-    private renderSuggestionTerm = (tag: ITag, itemProps) => {
-        let item = find(this.state.allItems, (i) => { return i[this.state.keyProperty].toString() === tag.key.toString(); });
-        let title = this.props.onGetItemText ? this.props.onGetItemText(item) : item.title;
+    private renderSuggestionTerm = (tag: ITag) => {
+        const item = find(this.state.allItems, (i) => { return i[this.state.keyProperty].toString() === tag.key.toString(); });
+        const title = this.props.onGetItemText ? this.props.onGetItemText(item) : item.title;
         let parentPath = "";
         if(item instanceof TaxonomyTerm) {
-            let parent = find(this.state.allItems as unknown[] as TaxonomyTerm[], (t) => { return t instanceof TaxonomyTerm && t.isParentOf(item as unknown as TaxonomyTerm); });          
+            const parent = find(this.state.allItems as unknown[] as TaxonomyTerm[], (t) => { return t instanceof TaxonomyTerm && t.isParentOf(item as unknown as TaxonomyTerm); });          
             if(parent) {
                 parentPath = UtilsService.getTermFullPathString(parent, this.state.allItems as unknown[] as TaxonomyTerm[], this.props.baseLevel || 0);
             }

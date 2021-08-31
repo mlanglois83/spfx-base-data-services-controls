@@ -19,12 +19,12 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
     }
 
 
-    public componentDidMount() {
-        this.loadItems();
+    public async componentDidMount(): Promise<void> {
+        return this.loadItems();
     }
 
     private async loadItems() {
-        let service = ServiceFactory.getService(this.props.model);
+        const service = ServiceFactory.getService(this.props.model);
         let items: T[];
         if(this.props.getItemsQuery) {
             items = await service.get(this.props.getItemsQuery);
@@ -45,7 +45,7 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
        * New props have been received, not saved yet
        * @param nextProps New props object
        */
-    public componentWillReceiveProps(nextProps: IItemDropdownProps<T, K>) {        
+    public componentWillReceiveProps(nextProps: IItemDropdownProps<T, K>): void {        
         if(JSON.stringify(nextProps.getItemsQuery) !== JSON.stringify(this.props.getItemsQuery)) {
             this.loadItems();
         }
@@ -57,14 +57,14 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
     private getSelected(allItems: T[], selectedItems: T | T[] | ((allitems: T[]) => T | T[])) {
         if(typeof(selectedItems) === "function") {
             const items = this.getDisplayedItems(allItems);
-            return selectedItems(allItems);
+            return selectedItems(items);
         }
         else {
             return selectedItems;
         }
     }
 
-    public render() {
+    public render(): React.ReactElement<IItemDropdownProps<T, K>> {
         const {label, multiSelect, placeholder, disabled, defaultOption, className, required} = this.props;
         const {selectedItems, allItems, keyProperty} = this.state;        
         const displayControl: "Combobox" | "Dropdown" = this.props.displayControl || "Dropdown";
@@ -148,9 +148,9 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
                 });
             }
             else {
-                let tempSelection = this.state.selectedItems ? cloneDeep(this.state.selectedItems) as T[] : [];
+                const tempSelection = this.state.selectedItems ? cloneDeep(this.state.selectedItems) as T[] : [];
                 if (!option.selected) {
-                    let idxToRemove = findIndex(this.state.selectedItems as T[], i => i[keyProperty].toString() === option.key);
+                    const idxToRemove = findIndex(this.state.selectedItems as T[], i => i[keyProperty].toString() === option.key);
                     if (idxToRemove > -1) {
                         tempSelection.splice(idxToRemove, 1);
                     }

@@ -53,11 +53,11 @@ export interface ICameraProps<T extends IBaseFile> {
 }
 
 
-export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
+export const Camera = <T extends IBaseFile>(props: ICameraProps<T>): JSX.Element => {
 
     const getAngle = (): number => {
         let result = 0;
-        var orientation = screen.orientation.type;
+        const orientation = screen.orientation.type;
         if (orientation === "landscape-primary") {
             result = 0;
         } else if (orientation === "landscape-secondary") {
@@ -75,7 +75,7 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
             callback(base64data);
         }
         else {
-            var image = new Image();
+            const image = new Image();
             image.src = base64data;
             image.onload = function() {
                 const canvas = document.createElement("canvas");            
@@ -149,7 +149,7 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
         [angle]
     );
 
-    const handleOrientation = (e: Event) => {
+    const handleOrientation = () => {
         const currentangle = getAngle();
         if(angle !== currentangle) {
             setAngle(currentangle);
@@ -159,7 +159,7 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
     const addFileMobile = async (inputElement: HTMLInputElement) => {
         const file = inputElement.files[0];
 
-        let newFile: (T & IContentUrl) = assign(new props.fileConstructor(), { contentUrl: "" });
+        const newFile: (T & IContentUrl) = assign(new props.fileConstructor(), { contentUrl: "" });
         newFile.title = file.name;
         newFile.mimeType = file.type;
         newFile.content = await UtilsService.blobToArrayBuffer(file);
@@ -178,7 +178,7 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
     const addFile = async (base64: string) => {
 
 
-        let newFile: (T & IContentUrl) = assign(new props.fileConstructor(), { contentUrl: "" });
+        const newFile: (T & IContentUrl) = assign(new props.fileConstructor(), { contentUrl: "" });
         if (mode == CameraMode.Picture) {
             newFile.title = "Picture-" + formatDate(new Date()) + ".jpeg";
             newFile.mimeType = "image/jpeg";
@@ -198,7 +198,7 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
         () => {
             if (mode == CameraMode.Video) {
                 if (!videoRecorder) {
-                    let temp = RecordRTC(webcamRef.current.stream, {
+                    const temp = RecordRTC(webcamRef.current.stream, {
                         type: 'video',
                         video: {
                             width: 640,
@@ -214,7 +214,7 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
                     setVideoRecorder(temp);
 
                 } else {
-                    videoRecorder.stopRecording((url) => {
+                    videoRecorder.stopRecording(() => {
 
                         videoRecorder.getDataURL((data) => {
                             addFile(data);
@@ -235,14 +235,14 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
         [webcamRef, videoRecorder, mode]
     );
 
-    var BASE64_MARKER = ';base64,';
+    const BASE64_MARKER = ';base64,';
 
     function convertDataURIToBinary(dataURI) {
-        var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
-        var base64 = dataURI.substring(base64Index);
-        var raw = window.atob(base64);
-        var rawLength = raw.length;
-        var array = new Uint8Array(new ArrayBuffer(rawLength));
+        const base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+        const base64 = dataURI.substring(base64Index);
+        const raw = window.atob(base64);
+        const rawLength = raw.length;
+        const array = new Uint8Array(new ArrayBuffer(rawLength));
 
         for (let i = 0; i < rawLength; i++) {
             array[i] = raw.charCodeAt(i);
@@ -338,8 +338,6 @@ export const Camera = <T extends IBaseFile>(props: ICameraProps<T>) => {
                                         mirrored={false}
     
                                         screenshotQuality={1}
-                                        onUserMedia={() => { }}
-                                        onUserMediaError={() => { }}
 
                                     />
                                 </div>

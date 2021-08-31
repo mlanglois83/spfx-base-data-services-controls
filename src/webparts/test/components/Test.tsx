@@ -6,7 +6,7 @@ import * as React from 'react';
 import { ServiceFactory, ServicesConfiguration, User } from "spfx-base-data-services";
 
 export interface ITestProps {
-
+    desc: string;
 }
 export interface ITestState {
     selectedUsers: User[];
@@ -27,13 +27,13 @@ export class Test extends React.Component<ITestProps, ITestState> {
         };
     }
 
-    public async componentDidMount() {
+    public async componentDidMount(): Promise<void> {
         const allTerms = await ServiceFactory.getService(FakeTerm).getAll();
         const assets = await ServiceFactory.getService(Asset).getAll();
         this.setState({allTerms: allTerms, files: assets});
     }
 
-    public render() {        
+    public render(): React.ReactElement<ITestProps> {        
         return <>
             <div>
                 <PeoplePicker

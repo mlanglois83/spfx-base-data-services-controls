@@ -23,22 +23,22 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
   private semaphore = new Semaphore(1);
   private semacq: [number, SemaphoreInterface.Releaser] = null;
 
-  public static setTitle(newTitle: string){
-    var event = new CustomEvent<string>('setHeaderTitle', {detail: newTitle});
+  public static setTitle(newTitle: string): void{
+    const event = new CustomEvent<string>('setHeaderTitle', {detail: newTitle});
     document.dispatchEvent(event);
   }
 
-  public static setAdditionnalClassName(className?: string){
-    var event = new CustomEvent<string>('setHeaderClassName', {detail: className});
+  public static setAdditionnalClassName(className?: string): void{
+    const event = new CustomEvent<string>('setHeaderClassName', {detail: className});
     document.dispatchEvent(event);
   }
 
-  public static setActions(...actionsGroups: IActionsEvent[]){
-    var event = new CustomEvent<Array<IActionsGroup>>('setHeaderActions', {detail: actionsGroups});
+  public static setActions(...actionsGroups: IActionsEvent[]): void{
+    const event = new CustomEvent<Array<IActionsGroup>>('setHeaderActions', {detail: actionsGroups});
     document.dispatchEvent(event);
   }
-  public static removeActions(...keys: string[]){
-    var event = new CustomEvent<Array<string>>('removeHeaderActions', {detail: keys});
+  public static removeActions(...keys: string[]): void{
+    const event = new CustomEvent<Array<string>>('removeHeaderActions', {detail: keys});
     document.dispatchEvent(event);
   }
 
@@ -67,13 +67,13 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     this.adaptDomElements(this.state.fullscreen);
   }
 
-  public componentDidUpdate(prevprops: IHeaderBarProps) {
+  public componentDidUpdate(prevprops: IHeaderBarProps): void {
     if(prevprops.contentContainer !== this.props.contentContainer) {
       this.adaptDomElements(this.state.fullscreen);
     }
   }
 
-  public componentDidMount() {
+  public componentDidMount(): void {
     document.addEventListener("fullscreenchange", this.onFullScreenChanged);
     document.addEventListener("mozfullscreenchange", this.onFullScreenChanged);
     document.addEventListener("webkitfullscreenchange", this.onFullScreenChanged);
@@ -85,7 +85,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     document.addEventListener("setHeaderActions", this.setActions);
     document.addEventListener("removeHeaderActions", this.removeActions);
   }
-  public componentWillUnmount() {    
+  public componentWillUnmount(): void {    
     document.removeEventListener("fullscreenchange", this.onFullScreenChanged);
     document.removeEventListener("mozfullscreenchange", this.onFullScreenChanged);
     document.removeEventListener("webkitfullscreenchange", this.onFullScreenChanged);
@@ -294,42 +294,42 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
 
   private adaptDomElements = (fullscreen: boolean) => {
     if (fullscreen) {
-      let appBar  = document.getElementById("sp-appBar");
+      const appBar  = document.getElementById("sp-appBar");
       if (appBar) {
         appBar.style.display = "none";
       }
-      let suiteNavWrapper = document.getElementById("SuiteNavWrapper");
+      const suiteNavWrapper = document.getElementById("SuiteNavWrapper");
       if (suiteNavWrapper) {
         suiteNavWrapper.style.display = "none";
       }
-      let headerHost = document.querySelector("div[data-sp-feature-tag='Site header host']");
+      const headerHost = document.querySelector("div[data-sp-feature-tag='Site header host']");
       if(headerHost) {
         headerHost['style'].display = 'none';
       }
-      let banner = document.querySelector('[role=banner]');
+      const banner = document.querySelector('[role=banner]');
       if (banner) {
         banner['style'].display = 'none';
       }
-      let nav = document.getElementById("SuiteNavPlaceHolder");
+      const nav = document.getElementById("SuiteNavPlaceHolder");
       if (nav) {
         nav.style.display = "none";
       }
-      let commandBar = document.getElementsByClassName("commandBarWrapper");
+      const commandBar = document.getElementsByClassName("commandBarWrapper");
       if (commandBar && commandBar.length > 0) {
         commandBar[0]['style'].display = "none";
       }
-      let CanvasZone = document.getElementsByClassName("CanvasZone");
+      const CanvasZone = document.getElementsByClassName("CanvasZone");
       if (CanvasZone && CanvasZone.length > 0) {
         CanvasZone[0]['style'].padding = "0";
         CanvasZone[0]['style'].margin = "0";
         CanvasZone[0]['style'].maxWidth = "100%";
       }
-      let CanvasSection = document.getElementsByClassName("CanvasSection");
+      const CanvasSection = document.getElementsByClassName("CanvasSection");
       if (CanvasSection && CanvasSection.length > 0) {
         CanvasSection[0]['style'].padding = "0";
         CanvasSection[0]['style'].margin = "0";
       }
-      let ControlZone = document.getElementsByClassName("ControlZone");
+      const ControlZone = document.getElementsByClassName("ControlZone");
       if (ControlZone && ControlZone.length > 0) {
         ControlZone[0]['style'].padding = "0";
         ControlZone[0]['style'].margin = "0";
@@ -346,7 +346,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         if(element) {
           element.style.height = "calc(100vh - 52px)";
           element.style.overflow = "auto";
-          let scrollDiv = document.querySelector("div[data-is-scrollable='true']") as HTMLDivElement;
+          const scrollDiv = document.querySelector("div[data-is-scrollable='true']") as HTMLDivElement;
           if (scrollDiv) {
             scrollDiv.style.overflow = "hidden";
           }
@@ -354,43 +354,43 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
       }
     }
     else {
-      let appBar  = document.getElementById("sp-appBar");
+      const appBar  = document.getElementById("sp-appBar");
       if (appBar) {
         appBar.style.display = "block";
       }
-      let suiteNavWrapper = document.getElementById("SuiteNavWrapper");
+      const suiteNavWrapper = document.getElementById("SuiteNavWrapper");
       if (suiteNavWrapper) {
         suiteNavWrapper.style.display = "block";
       }
-      let headerHost = document.querySelector("div[data-sp-feature-tag='Site header host']");
+      const headerHost = document.querySelector("div[data-sp-feature-tag='Site header host']");
       if(headerHost) {
         headerHost['style'].display = 'block';
       }
-      let banner = document.querySelector('[role=banner]');
+      const banner = document.querySelector('[role=banner]');
       if (banner) {
         banner['style'].display = 'flex';
       }
-      let nav = document.getElementById("SuiteNavPlaceHolder");
+      const nav = document.getElementById("SuiteNavPlaceHolder");
       if (nav) {
         nav.style.display = "block";
       }
-      let commandBar = document.getElementsByClassName("commandBarWrapper");
+      const commandBar = document.getElementsByClassName("commandBarWrapper");
       if (commandBar && commandBar.length > 0) {
         commandBar[0]['style'].display = "block";
       }
 
-      let CanvasZone = document.getElementsByClassName("CanvasZone");
+      const CanvasZone = document.getElementsByClassName("CanvasZone");
       if (CanvasZone && CanvasZone.length > 0) {
         CanvasZone[0]['style'].padding = null;
         CanvasZone[0]['style'].margin = null;
         CanvasZone[0]['style'].maxWidth = null;
       }
-      let CanvasSection = document.getElementsByClassName("CanvasSection");
+      const CanvasSection = document.getElementsByClassName("CanvasSection");
       if (CanvasSection && CanvasSection.length > 0) {
         CanvasSection[0]['style'].padding = null;
         CanvasSection[0]['style'].margin = null;
       }
-      let ControlZone = document.getElementsByClassName("ControlZone");
+      const ControlZone = document.getElementsByClassName("ControlZone");
       if (ControlZone && ControlZone.length > 0) {
         ControlZone[0]['style'].padding = null;
         ControlZone[0]['style'].margin = null;
@@ -407,7 +407,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         if(element) {
           element.style.height = "auto";
           element.style.overflow = null;
-          let scrollDiv = document.querySelector("div[data-is-scrollable='true']") as HTMLDivElement;
+          const scrollDiv = document.querySelector("div[data-is-scrollable='true']") as HTMLDivElement;
           if (scrollDiv) {
             scrollDiv.style.overflow = null;
           }

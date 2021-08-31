@@ -31,7 +31,7 @@ export class TaxonomyPicker<T extends TaxonomyTerm> extends React.Component<ITax
     private getSelected(allItems: T[], selectedItems: T | T[] | ((allitems: T[]) => T | T[])) {
         if(typeof(selectedItems) === "function") {
             const items = this.getDisplayedItems(allItems);
-            return selectedItems(allItems);
+            return selectedItems(items);
         }
         else {
             return selectedItems;
@@ -47,13 +47,13 @@ export class TaxonomyPicker<T extends TaxonomyTerm> extends React.Component<ITax
     }
 
 
-    public async componentDidMount() {
+    public async componentDidMount(): Promise<void> {
         let modelName = this.props.modelName;
         if(this.props.model) {
             modelName = (typeof(this.props.model) === "string" ? this.props.model : this.props.model["name"]);
         }
         if(!stringIsNullOrEmpty(modelName)) {
-            let service = ServiceFactory.getServiceByModelName(modelName) as BaseDataService<T>;
+            const service = ServiceFactory.getServiceByModelName(modelName) as BaseDataService<T>;
             let items = await service.getAll();
             if (!this.props.showDeprecated) {
                 items = items.filter((t) => { return !(t as TaxonomyTerm).isDeprecated; });
@@ -73,13 +73,13 @@ export class TaxonomyPicker<T extends TaxonomyTerm> extends React.Component<ITax
        * New props have been received, not saved yet
        * @param nextProps New props object
        */
-    public componentWillReceiveProps(nextProps: ITaxonomyPickerProps<T>) {
+    public componentWillReceiveProps(nextProps: ITaxonomyPickerProps<T>): void {
         if (JSON.stringify(nextProps.selectedTerm) !== JSON.stringify(this.props.selectedTerm) || JSON.stringify(nextProps.selectedItems) !== JSON.stringify(this.props.selectedItems)) {
             this.setState({ selectedTerm: nextProps.selectedTerm ? nextProps.selectedTerm : this.getSelected(this.state.allTerms, nextProps.selectedItems) });
         }
     }
 
-    public render() {
+    public render(): React.ReactElement<ITaxonomyPickerProps<T>> {
         const displayedItems = this.getDisplayedItems(this.state.allTerms);
         const disabled = typeof(this.props.disabled) === "function" ? this.props.disabled(displayedItems) : this.props.disabled;
         return <div className={styles.taxonomyPicker}>
@@ -135,7 +135,7 @@ export class TaxonomyPicker<T extends TaxonomyTerm> extends React.Component<ITax
             >
                 <div className={styles.panelContent}>
                     {this.getDisplayedItems(this.state.allTerms).map((term) => {
-                        let pathparts = term.path.split(";");
+                        const pathparts = term.path.split(";");
                         return <div className={styles.panelItem} style={{ marginLeft: ((pathparts.length - 1 - (this.props.baseLevel || 0)) * 30) + "px" }}>
                             <Checkbox checked={this.state.panelSelection ? Array.isArray(this.state.panelSelection) ? findIndex(this.state.panelSelection as T[], (i) => { return i.id == term.id; }) != -1 : (this.state.panelSelection as T).id == term.id : false} label={term.title} onChange={(evt, checked?) => { this.onCheckChange(checked === true, term); }} />
                         </div>;
@@ -152,7 +152,7 @@ export class TaxonomyPicker<T extends TaxonomyTerm> extends React.Component<ITax
         return result;
     }
     private BuildITag = (selectedTerm: T | T[]): ITag[] => {
-        let result: ITag[] = [];
+        const result: ITag[] = [];
         if (selectedTerm) {
             if (Array.isArray(selectedTerm)) {
                 selectedTerm.forEach(term => {
@@ -179,9 +179,9 @@ export class TaxonomyPicker<T extends TaxonomyTerm> extends React.Component<ITax
             }
         }
         else {
-            let tempSelection = this.state.panelSelection ? cloneDeep(this.state.panelSelection) as T[] : [];
+            const tempSelection = this.state.panelSelection ? cloneDeep(this.state.panelSelection) as T[] : [];
             if (!checked) {
-                let idxToRemove = findIndex(this.state.panelSelection as T[], (i) => { return i.id == item.id; });
+                const idxToRemove = findIndex(this.state.panelSelection as T[], (i) => { return i.id == item.id; });
 
                 if (idxToRemove > -1)
                     tempSelection.splice(idxToRemove, 1);
@@ -199,7 +199,6 @@ export class TaxonomyPicker<T extends TaxonomyTerm> extends React.Component<ITax
        * Display panel footer with action buttons
        */
     private onRenderPanelFooter = () => {
-        const { panelSelection } = this.state;
         return (
             <div className={styles.panelActions}>
                 <PrimaryButton className={styles.panelActionsButton} onClick={this.validatePanelSelection} >{strings.saveButtonLabel}</PrimaryButton>
@@ -219,15 +218,15 @@ export class TaxonomyPicker<T extends TaxonomyTerm> extends React.Component<ITax
             }
         });
     }
-    private renderSuggestionTerm = (tag, itemProps) => {
-        let term = find(this.state.allTerms, (t) => { return t.id === tag.key; });
-        let pathparts = term.path.split(";");
+    private renderSuggestionTerm = (tag) => {
+        const term = find(this.state.allTerms, (t) => { return t.id === tag.key; });
+        const pathparts = term.path.split(";");
         if (this.props.baseLevel) {
             for (let index = 0; index < this.props.baseLevel; index++) {
                 pathparts.shift();
             }
         }
-        let parentPath = (pathparts.length > 1 ? pathparts.slice(0, pathparts.length - 1).join(" > ") : "");
+        const parentPath = (pathparts.length > 1 ? pathparts.slice(0, pathparts.length - 1).join(" > ") : "");
         return <div className={styles.suggestionItem}>
             <div className={styles.termLabel}>
                 {term.title}

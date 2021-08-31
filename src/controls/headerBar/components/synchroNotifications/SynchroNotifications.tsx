@@ -1,12 +1,12 @@
+import { Callout, CommandBar, css, DetailsList, DetailsListLayoutMode, DetailsRow, DirectionalHint, IconButton, IDetailsRowProps, IDetailsRowStyles, List, SelectionMode } from '@fluentui/react';
+import { assign } from '@microsoft/sp-lodash-subset';
 import * as strings from 'ControlsStrings';
 import * as React from 'react';
-
-import { IconButton, Icon, Callout, DirectionalHint, List, SelectionMode, DetailsListLayoutMode, DetailsList, IDetailsRowProps, IDetailsRowStyles, DetailsRow, css, CommandBar } from '@fluentui/react';
+import { OfflineTransaction, ServiceFactory, ServicesConfiguration, SPFile, TransactionType } from 'spfx-base-data-services';
+import styles from "../../HeaderBar.module.scss";
 import { ISynchroNotificationsProps } from "./interfaces/ISynchroNotificationsProps";
 import { ISynchroNotificationsState } from "./interfaces/ISynchroNotificationsState";
-import styles from "../../HeaderBar.module.scss";
-import { OfflineTransaction, SPFile,  ServiceFactory, TransactionType, ServicesConfiguration } from 'spfx-base-data-services';
-import { assign } from '@microsoft/sp-lodash-subset';
+
 
 /**
  * Control to select disable state and associated dates of a risk
@@ -37,8 +37,8 @@ export class SynchroNotifications extends React.Component<ISynchroNotificationsP
             isSorted: false,
             onRender: (transaction: OfflineTransaction) => {
                 let operationLabel: string;
-                let itemType = ServiceFactory.getItemTypeByName(transaction.itemType);
-                let item = assign(new itemType(), transaction.itemData);
+                const itemType = ServiceFactory.getItemTypeByName(transaction.itemType);
+                const item = assign(new itemType(), transaction.itemData);
                 switch (transaction.title) {
                     case TransactionType.AddOrUpdate:
                         if(item instanceof SPFile) {
@@ -99,11 +99,8 @@ export class SynchroNotifications extends React.Component<ISynchroNotificationsP
         };
     }
 
-    public async componentDidMount() {
-    }
 
-
-    public componentDidUpdate(prevProps) {
+    public componentDidUpdate(prevProps: ISynchroNotificationsProps): void {
         if(prevProps.syncErrors !== this.props.syncErrors) {
             this.setState({syncErrors: this.props.syncErrors});
         }

@@ -25,7 +25,7 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
     };
   }
 
-  public componentDidUpdate(prevProps: IPeoplePickerProps) {
+  public componentDidUpdate(prevProps: IPeoplePickerProps): void {
     if (JSON.stringify(this.props.selectedItems) !== JSON.stringify(prevProps.selectedItems)) {
       this.setState({
         selectedItems: this.props.selectedItems.map((u) => {
@@ -64,14 +64,13 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
 
   private onFilterPeopleChanged = (
     filterText: string,
-    currentPersonas: IPersonaProps[],
-    limitResults?: number
+    currentPersonas: IPersonaProps[]
   ): IPersonaProps[] | Promise<IPersonaProps[]> => {
     if (filterText) {
       return new Promise<IPersonaProps[]>((resolve, reject) => {
         ServiceFactory.getService(User, 0).cast<UserService>().getByDisplayName(filterText)
           .then(async (users: User[]) => {
-            let personas: IPersonaProps[] = new Array<IPersonaProps>();
+            const personas: IPersonaProps[] = new Array<IPersonaProps>();
             await Promise.all(users.map(async (user) => {
               let pictureUrl = UserService.getPictureUrl(user);
               if (!stringIsNullOrEmpty(pictureUrl)) {
@@ -91,13 +90,13 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
                 imageUrl: stringIsNullOrEmpty(pictureUrl) ? undefined : pictureUrl
               });
             }));
-            let filteredPersonas = this.removeDuplicates(
+            const filteredPersonas = this.removeDuplicates(
               personas,
               currentPersonas
             );
             resolve(filteredPersonas);
           })
-          .catch(err => {
+          .catch(() => {
             reject();
           });
       });
@@ -107,7 +106,7 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
     }
   }
 
-  public render() {
+  public render(): React.ReactElement<IPeoplePickerProps> {
     return (
       <div className={styles.peoplePicker}>
         {this.props.label &&
@@ -127,7 +126,7 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
                   let users: User[] = [];
                   if (items) {
                     users = items.map((item) => {
-                      let user = new User();
+                      const user = new User();
                       user.id = Number(item.tertiaryText);
                       user.title = item.text;
                       user.mail = item.secondaryText;

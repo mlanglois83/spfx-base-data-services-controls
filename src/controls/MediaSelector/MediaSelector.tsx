@@ -41,11 +41,11 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
         };
     }
 
-    public async componentDidMount() {
+    public async componentDidMount(): Promise<void> {
         this.loadFilesFromProps();
     }
 
-    public async componentDidUpdate(prevProps, prevState) {
+    public async componentDidUpdate(prevProps: IMediaSelectorProps<T>): Promise<void> {
         if (this.props.online !== prevProps.online && !this.props.online) {
             this.loadCachedUrls();
         }
@@ -55,9 +55,9 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
     }
 
     private async loadFilesFromProps() {
-        let filesCopy = cloneDeep(this.props.files);
-        let stateFiles = await Promise.all(filesCopy.map(async (f) => {
-            let file = assign(f, { contentUrl: undefined });
+        const filesCopy = cloneDeep(this.props.files);
+        const stateFiles = await Promise.all(filesCopy.map(async (f) => {
+            const file = assign(f, { contentUrl: undefined });
             if (file.content) {
                 file.contentUrl = await UtilsService.getOfflineFileUrl(UtilsService.arrayBufferToBlob(file.content, file.mimeType));
             }
@@ -67,7 +67,7 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
     }
 
     private async loadCachedUrls() {
-        let cached = [];
+        const cached = [];
         await Promise.all(this.state.files.map(async (f) => {
             if(f.serverRelativeUrl) {
                 let isInCache = false;
@@ -82,7 +82,7 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
         this.setState({ cachedUrls: cached });
     }
 
-    public render() {
+    public render(): React.ReactElement<IMediaSelectorProps<T>> {
         const {preview, previewRatio} = this.state;
         const {cssClasses, mediaTypes, icons, customFilesAccept} = this.props;
         const attachments: JSX.Element = this.renderFiles();
@@ -105,7 +105,7 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
                     {!this.props.disabled && <Camera 
                         fileConstructor={this.props.fileConstructor}
                         onChanged={(newFile: T) => {
-                            let filesCopy = cloneDeep(this.state.files);
+                            const filesCopy = cloneDeep(this.state.files);
                             let existing = find(filesCopy, (f) => { return f.title === newFile.title; });
                             if (existing) {
                                 existing = newFile;
@@ -173,7 +173,7 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
 
     private renderFiles() {
         const {cssClasses} = this.props;
-        let result = (this.state.files || []).filter((testfile) => {
+        const result = (this.state.files || []).filter((testfile) => {
             const isImage = testfile.mimeType.indexOf("image/") === 0;
             const isVideo = testfile.mimeType.indexOf("video/") === 0;
             const isFile = !isVideo && !isImage;
@@ -279,8 +279,8 @@ export class MediaSelector<T extends IBaseFile> extends React.Component<IMediaSe
     }
 
     private onFileRemove = (idx: number) => {
-        let file = cloneDeep(this.state.files[idx]);
-        let filesCopy = cloneDeep(this.state.files);
+        const file = cloneDeep(this.state.files[idx]);
+        const filesCopy = cloneDeep(this.state.files);
         filesCopy.splice(idx, 1);
         this.setState({ files: filesCopy }, () => {
             this.props.onFileRemoved(file);

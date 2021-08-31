@@ -11,8 +11,13 @@ const gulpeslint = require('gulp-eslint');
 const gulpIf = require('gulp-if');
 build.addSuppression(/Warning - \[sass\] The local CSS class '[^']+' is not camelCase and will not be type-safe\./);
 
+const path = require("path");
+const _root = path.resolve(__dirname,"..");
+function root(args) {
+  return path.join.apply(path, [_root].concat(args));
+}
 
-configure(__dirname, true);
+configure(__dirname, true, [root('node_modules/@pnp'), root('node_modules/spfx-base-data-services/node_modules/@pnp'), root("/node_modules/typescript-collections")]);
 
 build.tslintCmd.enabled = false;
 
@@ -82,4 +87,10 @@ gulp.task('ts-beautify', gulp.series('generate-translation', function (done) {
   
   gulp.task('localization', gulp.series('generate-translation', 'ts-beautify'));
 
-build.initialize(gulp);
+/* fast-serve */
+const { addFastServe } = require("spfx-fast-serve-helpers");
+addFastServe(build);
+/* end of fast-serve */
+
+build.initialize(require('gulp'));
+

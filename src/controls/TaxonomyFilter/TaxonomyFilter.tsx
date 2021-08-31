@@ -21,7 +21,7 @@ export class TaxonomyFilter<T extends TaxonomyTerm> extends React.Component<ITax
        * New props have been received, not saved yet
        * @param nextProps New props object
        */
-    public componentWillReceiveProps(nextProps: ITaxonomyFilterProps<T>) {
+    public componentWillReceiveProps(nextProps: ITaxonomyFilterProps<T>): void {
         let newState = null;
         if (JSON.stringify(nextProps.terms) !== JSON.stringify(this.props.terms)) {
             newState = {
@@ -37,12 +37,12 @@ export class TaxonomyFilter<T extends TaxonomyTerm> extends React.Component<ITax
         }
     }
 
-    public render() {
+    public render(): React.ReactElement<ITaxonomyFilterProps<T>> {
         const { orderedTerms } = this.state;
         const { classNames, overrideContainers } = this.props;
         if(overrideContainers) {
             if(overrideContainers.container) {
-                return React.createElement(overrideContainers.container, {className: (classNames && classNames.containerClassname ? classNames.containerClassname : null)}, orderedTerms.map(this.renderLevel));
+                return React.createElement(overrideContainers.container, {... this.props, className: (classNames && classNames.containerClassname ? classNames.containerClassname : null)}, orderedTerms.map(this.renderLevel));
             }
             else {
                 return <>
@@ -79,9 +79,9 @@ export class TaxonomyFilter<T extends TaxonomyTerm> extends React.Component<ITax
 
     private renderDropdown = (terms: T[], idx: number) => {        
         const { placeholders, classNames, labels } = this.props;
-        let options = this.getOptions(terms, idx);
+        const options = this.getOptions(terms, idx);
         let selectedKey = "";
-        let selectedOpt = find(options, (opt) => { return opt.selected === true; });
+        const selectedOpt = find(options, (opt) => { return opt.selected === true; });
         if (selectedOpt) {
             selectedKey = selectedOpt.key.toString();
         }
@@ -103,7 +103,7 @@ export class TaxonomyFilter<T extends TaxonomyTerm> extends React.Component<ITax
     private onFilterChanged = (event, option?) => {
         if (option) {
             if (!stringIsNullOrEmpty(option.key)) {
-                let term = find(this.props.terms, (t) => {
+                const term = find(this.props.terms, (t) => {
                     if (option.key.charAt(option.key.length - 1) == ';'){  // solution brutal mais besoin d'enlever le ; a la fin du path qui est en trop dans le cas de la selection du placeholder,
                         return t.path === option.key.substring(0, option.key.length - 1); // impossible de débuger (très pénible) pour ne pas ajouter ce ; a l'origine, perdu trop de temps pour un ;
                     }
@@ -146,7 +146,7 @@ export class TaxonomyFilter<T extends TaxonomyTerm> extends React.Component<ITax
         else if (selectedTerm) {
             let path = this.getLevelBasePath((this.props.baseLevel ? this.props.baseLevel + idx : idx));
             path = path + ";";
-            let related = terms.filter((t) => {
+            const related = terms.filter((t) => {
                 return t.path.indexOf(path) === 0 && !stringIsNullOrEmpty(path);
             });
             if (related.length > 0) {
@@ -168,7 +168,7 @@ export class TaxonomyFilter<T extends TaxonomyTerm> extends React.Component<ITax
     private getLevelBasePath(level: number): string {
         const { selectedTerm } = this.state;
         let result = "";
-        let parts = selectedTerm.path.split(";");
+        const parts = selectedTerm.path.split(";");
         if (parts.length >= level) {
             parts.splice(level);
             result = parts.join(";");
@@ -178,11 +178,11 @@ export class TaxonomyFilter<T extends TaxonomyTerm> extends React.Component<ITax
     }
 
     private getOrderedTerms(terms: T[]): T[][] {
-        let result = new Array<Array<T>>();
+        const result = new Array<Array<T>>();
         let level = (this.props.baseLevel ? this.props.baseLevel + 1 : 1);
         let count = 0;
         while (count < terms.length) {
-            let currentTerms = terms.filter((t) => {
+            const currentTerms = terms.filter((t) => {
                 return t.path.split(";").length === level;
             });
             if (currentTerms.length > 0) {
