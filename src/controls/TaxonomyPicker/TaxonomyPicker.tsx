@@ -82,6 +82,7 @@ export class TaxonomyPicker<T extends TaxonomyTerm> extends React.Component<ITax
     public render(): React.ReactElement<ITaxonomyPickerProps<T>> {
         const displayedItems = this.getDisplayedItems(this.state.allTerms);
         const disabled = typeof(this.props.disabled) === "function" ? this.props.disabled(displayedItems) : this.props.disabled;
+        const selected = typeof(this.props.selectedItems) === "function" ? this.props.selectedItems(displayedItems) : this.state.selectedTerm;
         return <div className={styles.taxonomyPicker}>
             {this.props.label &&
                 <label className={this.props.required ? styles.required : ""}>{this.props.label}</label>
@@ -99,11 +100,11 @@ export class TaxonomyPicker<T extends TaxonomyTerm> extends React.Component<ITax
                         onDismiss={() => {
                             let error = null;
                             if (this.props.onGetErrorMessage) {
-                                error = this.props.onGetErrorMessage(this.state.selectedTerm);
+                                error = this.props.onGetErrorMessage(selected);
                             }
                             this.setState({ error: error });
                         }}
-                        selectedItems={this.BuildITag(this.state.selectedTerm)}
+                        selectedItems={this.BuildITag(selected)}
                         onResolveSuggestions={this.onFilterChanged}
                         getTextFromItem={this.getTextFromItem}
                         pickerSuggestionsProps={{

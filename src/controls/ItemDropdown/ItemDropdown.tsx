@@ -71,18 +71,19 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
         const displayedItems = this.getDisplayedItems(allItems);
         const defaultOptionObj: T = new this.props.model();
         defaultOptionObj[keyProperty] = "";
+        const selected = typeof(this.props.selectedItems) === "function" ? this.props.selectedItems(displayedItems) :selectedItems;
         let selectedKeys;
         if(multiSelect) {
-            if(selectedItems) {
-                selectedKeys = isArray(selectedItems) ? (selectedItems as T[]).map(i => i[keyProperty].toString()) : [(selectedItems as T)[keyProperty].toString()]; 
+            if(selected) {
+                selectedKeys = isArray(selected) ? (selected as T[]).map(i => i[keyProperty].toString()) : [(selected as T)[keyProperty].toString()]; 
             }
             else {
                 selectedKeys = [];
             }
         }
         else {
-            if(selectedItems) {
-                selectedKeys = (selectedItems as T)[keyProperty].toString();
+            if(selected) {
+                selectedKeys = (selected as T)[keyProperty].toString();
             }
             else {
                 selectedKeys = "";

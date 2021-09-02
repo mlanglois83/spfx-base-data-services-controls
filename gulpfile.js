@@ -68,6 +68,7 @@ gulp.task('generate-translation', function () {
         'moduleFile': "mystrings.d.ts",
         'keyColumnName': "key",
         'langMap': langMap,
+        'default': 'en-us',
         'interfaceName': "IControlsStrings",
         'moduleName': "ControlsStrings",
         'separator': ';'
