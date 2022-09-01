@@ -1,6 +1,5 @@
 'use strict';
 
-const configure = require('spfx-base-data-services/gulp');
 const gulp = require('gulp');
 const build = require('@microsoft/sp-build-web');
 const localization = require('gulp-spfx-localization');
@@ -16,8 +15,6 @@ const _root = path.resolve(__dirname,"..");
 function root(args) {
   return path.join.apply(path, [_root].concat(args));
 }
-
-configure(__dirname, true, [root('node_modules/@pnp'), root('node_modules/spfx-base-data-services/node_modules/@pnp'), root("/node_modules/typescript-collections")]);
 
 build.tslintCmd.enabled = false;
 
@@ -88,10 +85,6 @@ gulp.task('ts-beautify', gulp.series('generate-translation', function (done) {
   
   gulp.task('localization', gulp.series('generate-translation', 'ts-beautify'));
 
-/* fast-serve */
-const { addFastServe } = require("spfx-fast-serve-helpers");
-addFastServe(build);
-/* end of fast-serve */
 
 build.initialize(require('gulp'));
 

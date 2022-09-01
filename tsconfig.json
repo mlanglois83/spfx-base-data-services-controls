@@ -30,8 +30,6 @@
     ],
     "baseUrl": "./src",
     "paths": {
-      "@services": [ "services" ],
-      "@models": [ "models" ],
       "@controls": [ "." ]
     }
   },

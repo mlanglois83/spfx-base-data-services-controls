@@ -1,5 +1,5 @@
 
-import { cloneDeep, find, findIndex } from '@microsoft/sp-lodash-subset';
+import { cloneDeep, find, findIndex } from 'lodash';
 import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from "ControlsStrings";
 import { Checkbox, css, DefaultButton, IconButton, ITag, Panel, PanelType, PrimaryButton, TagPicker } from '@fluentui/react';

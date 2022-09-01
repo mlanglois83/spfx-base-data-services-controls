@@ -1,4 +1,4 @@
-import { assign } from '@microsoft/sp-lodash-subset';
+import { assign } from 'lodash';
 import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from 'ControlsStrings';
 import { css, DefaultButton, Dialog, Icon, PrimaryButton, ResponsiveMode } from '@fluentui/react';

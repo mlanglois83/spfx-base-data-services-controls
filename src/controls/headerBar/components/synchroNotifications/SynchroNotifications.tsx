@@ -1,5 +1,5 @@
 import { Callout, CommandBar, css, DetailsList, DetailsListLayoutMode, DetailsRow, DirectionalHint, IconButton, IDetailsRowProps, IDetailsRowStyles, List, SelectionMode } from '@fluentui/react';
-import { assign } from '@microsoft/sp-lodash-subset';
+import { assign } from 'lodash';
 import * as strings from 'ControlsStrings';
 import * as React from 'react';
 import { OfflineTransaction, ServiceFactory, ServicesConfiguration, SPFile, TransactionType } from 'spfx-base-data-services';

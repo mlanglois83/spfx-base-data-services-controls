@@ -1,5 +1,5 @@
 import { css, Dialog, IconButton, PrimaryButton, ResponsiveMode } from '@fluentui/react';
-import { assign, cloneDeep, find } from '@microsoft/sp-lodash-subset';
+import { assign, cloneDeep, find } from 'lodash';
 import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from 'ControlsStrings';
 import * as React from 'react';

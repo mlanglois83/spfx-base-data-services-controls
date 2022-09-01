@@ -1,5 +1,5 @@
 import { css, Icon, IconButton } from '@fluentui/react';
-import { cloneDeep } from '@microsoft/sp-lodash-subset';
+import { cloneDeep } from 'lodash';
 import { stringIsNullOrEmpty } from '@pnp/common';
 import { Semaphore, SemaphoreInterface } from "async-mutex";
 import * as strings from 'ControlsStrings';

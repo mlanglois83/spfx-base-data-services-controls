@@ -1,5 +1,5 @@
 
-import { cloneDeep, find } from '@microsoft/sp-lodash-subset';
+import { cloneDeep, find } from 'lodash';
 import { stringIsNullOrEmpty } from '@pnp/common/util';
 import * as strings from "ControlsStrings";
 import { css, ITag, TagPicker } from '@fluentui/react';
