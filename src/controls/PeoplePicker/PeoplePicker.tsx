@@ -12,33 +12,36 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
 
   public constructor(props: IPeoplePickerProps) {
     super(props);
-    this.state = {
-      selectedItems: props.selectedItems.map((u) => {
-        return {
-          text: u.title,
-          secondaryText: u.mail,
-          tertiaryText: u.id.toString(),
-          optionalText: u.userPrincipalName,
-          imageUrl: UserService.getPictureUrl(u)
-        };
-      })
-    };
+    this.state = {};
   }
 
-  public componentDidUpdate(prevProps: IPeoplePickerProps): void {
-    if (JSON.stringify(this.props.selectedItems) !== JSON.stringify(prevProps.selectedItems)) {
-      this.setState({
-        selectedItems: this.props.selectedItems.map((u) => {
-          return {
-            text: u.title,
-            secondaryText: u.mail,
-            tertiaryText: u.id.toString(),
-            optionalText: u.userPrincipalName,
-            imageUrl: UserService.getPictureUrl(u)
-          };
-        })
-      });
+  private getPersona(user: User): IPersonaProps {
+    if(this.props.populatePersona) {
+      return this.props.populatePersona(user);
     }
+    else {
+      return {
+        text: user.title,
+        secondaryText: user.mail,
+        tertiaryText: user.id.toString(),
+        optionalText: user[UserService.userField],
+        imageUrl: UserService.getPictureUrl(user)
+      };
+    }    
+  }
+
+  private getUser(persona: IPersonaProps): User {
+    if(this.props.populateUser) {
+      return this.props.populateUser(persona);
+    }
+    else {
+      const user = new User();
+      user.id = Number(persona.tertiaryText);
+      user.title = persona.text;
+      user.mail = persona.secondaryText;
+      user[UserService.userField] = persona.optionalText;
+      return user;
+    }    
   }
 
   private suggestionProps: IBasePickerSuggestionsProps = {
@@ -72,23 +75,17 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
           .then(async (users: User[]) => {
             const personas: IPersonaProps[] = new Array<IPersonaProps>();
             await Promise.all(users.map(async (user) => {
-              let pictureUrl = UserService.getPictureUrl(user);
-              if (!stringIsNullOrEmpty(pictureUrl)) {
+              const persona = this.getPersona(user);
+              if (!stringIsNullOrEmpty(persona.imageUrl)) {
                 let isInCache = false;
                 if(!stringIsNullOrEmpty(this.props.cacheKey)) {
-                  isInCache = await UtilsService.isUrlInCache(pictureUrl, this.props.cacheKey);
+                  isInCache = await UtilsService.isUrlInCache(persona.imageUrl, this.props.cacheKey);
                 }  
                 if (!ServicesConfiguration.configuration.lastConnectionCheckResult && !isInCache) {
-                  pictureUrl = null;
+                  persona.imageUrl = undefined;
                 }
               }
-              personas.push({
-                text: user.title,
-                secondaryText: user.mail,
-                tertiaryText: user.id.toString(),
-                optionalText: user.userPrincipalName,
-                imageUrl: stringIsNullOrEmpty(pictureUrl) ? undefined : pictureUrl
-              });
+              personas.push(persona);
             }));
             const filteredPersonas = this.removeDuplicates(
               personas,
@@ -119,20 +116,13 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
               className={"ms-PeoplePicker"}
               pickerSuggestionsProps={this.suggestionProps}
               key={"peoplepicker"}
-              selectedItems={this.state.selectedItems}
+              selectedItems={this.props.selectedItems?.map(u => this.getPersona(u))}
 
               onChange={(items?: IPersonaProps[]) => {
                 if (this.props.onChange) {
                   let users: User[] = [];
                   if (items) {
-                    users = items.map((item) => {
-                      const user = new User();
-                      user.id = Number(item.tertiaryText);
-                      user.title = item.text;
-                      user.mail = item.secondaryText;
-                      user.userPrincipalName = item.optionalText;
-                      return user;
-                    });
+                    users = items.map((item) => this.getUser(item));
                   }
 
                   let error = null;
@@ -141,8 +131,7 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
                   }
 
                   this.setState({
-                    error: error,
-                    selectedItems: items
+                    error: error
                   }, () => { this.props.onChange(users); });
                 }
               }}

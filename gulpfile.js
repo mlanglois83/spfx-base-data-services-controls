@@ -16,27 +16,20 @@ function root(args) {
   return path.join.apply(path, [_root].concat(args));
 }
 
-build.tslintCmd.enabled = false;
 
 const tsProject = ts.createProject('tsconfig.json');
 
-function isFixed(file) {
-	return file.eslint != null && file.eslint.fixed;
-}
-
 let eslint = build.subTask('eslint', function (gulp, buildOptions, done) {
-    const hasFixFlag = process.argv.slice(2).includes('--fix');
-    tsProject.src()
+    return tsProject.src()
         // eslint() attaches the lint output to the "eslint" property
         // of the file object so it can be used by other modules.
-        .pipe(gulpeslint({fix: hasFixFlag}))
+        .pipe(gulpeslint())
         // eslint.format() outputs the lint results to the console.
         // Alternatively use eslint.formatEach() (see Docs).
         .pipe(gulpeslint.format())
         // To have the process exit with an error code (1) on
         // lint error, return the stream and pipe to failAfterError last.
-        .pipe(gulpIf(isFixed, gulp.dest("./src")));
-      done();
+        .pipe(gulpeslint.failAfterError());
 });
 
 build.rig.addPreBuildTask(eslint)
@@ -85,6 +78,6 @@ gulp.task('ts-beautify', gulp.series('generate-translation', function (done) {
   
   gulp.task('localization', gulp.series('generate-translation', 'ts-beautify'));
 
-
-build.initialize(require('gulp'));
+build.tslintCmd.enabled = false;
+build.initialize(gulp);
 

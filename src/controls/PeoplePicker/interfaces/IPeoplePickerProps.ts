@@ -1,3 +1,4 @@
+import { IPersonaProps } from "@fluentui/react";
 import { User } from "spfx-base-data-services";
 
 export interface IPeoplePickerProps {
@@ -8,5 +9,7 @@ export interface IPeoplePickerProps {
   itemLimit?: number;
   required?: boolean;
   label?: string;
+  populatePersona?: (user: User)=>  IPersonaProps;
+  populateUser?: (persona: IPersonaProps) => User;
 }
 

@@ -5,6 +5,7 @@ export interface IHeaderBarProps {
     className?: string;  
     homeButtonHideUrls?: Array<string>;
     homeUrl?: string;
+    logoUrl?: string;
     disableOfflineActions?: boolean;
     isConnected?: boolean;
     transactions?: Array<OfflineTransaction>;

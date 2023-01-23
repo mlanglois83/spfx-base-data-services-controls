@@ -1,8 +1,8 @@
 /* tslint:disable */
 require("./TaxonomyFilter.module.css");
 const styles = {
-  dropdownContainer: 'dropdownContainer_839ded93',
-  container: 'container_839ded93'
+  dropdownContainer: 'dropdownContainer_0106b0b4',
+  container: 'container_0106b0b4'
 };
 
 export default styles;

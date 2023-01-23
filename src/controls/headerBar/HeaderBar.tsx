@@ -148,25 +148,35 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     const actions = this.orderedActionGroups;
     return <div className={css(styles.stickyHeader, this.state.className, this.props.className)}>
       <div className={styles.headerLeftPanel}>
-        {!stringIsNullOrEmpty(this.props.homeUrl) && <HashRouter>
-          <Switch>
-            {this.props.homeButtonHideUrls && this.props.homeButtonHideUrls.map((url) => {
+        {!stringIsNullOrEmpty(this.props.homeUrl) ? <HashRouter key="headerbar-hashrouter">
+          <Switch key="headerbar-switch">
+            {this.props.homeButtonHideUrls && this.props.homeButtonHideUrls.map((url, idx) => {
               return <Route
+                key={"ignored-" + idx}
                 path={url}
                 component={() => <></>}
               />;
             })}   
-            <Route
+            <Route 
+              key="headerbar-homebutton"
               component={({ history }) => <>
               <div className={styles.panelItem}>
-                <IconButton iconProps={{ iconName: "Home" }} title={strings.NavHomeText} onClick={() => { history.push(this.props.homeUrl); }} />
+                <IconButton iconProps={stringIsNullOrEmpty(this.props.logoUrl) ? { iconName: "Home" } : {imageProps: {src:this.props.logoUrl}}} title={strings.NavHomeText} onClick={() => { history.push(this.props.homeUrl); }} />:
               </div>
               {!stringIsNullOrEmpty(title) && 
                 <div className={styles.separator}></div>
               }
               </>} />
           </Switch>
-        </HashRouter>}
+        </HashRouter> :
+          !stringIsNullOrEmpty(this.props.logoUrl) && 
+          <>
+            <img src={this.props.logoUrl} />
+            {!stringIsNullOrEmpty(title) && 
+              <div className={styles.separator}></div>
+            }
+          </>
+        }
         {!stringIsNullOrEmpty(title) && <>
           <div className={css(styles.panelItem, styles.titleBlock)}>          
             <div className={styles.headerTitle}>
@@ -178,13 +188,13 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
       <div className={styles.headerRightPanel}>    
         {actions && actions.length > 0 &&
           <>
-            {actions.map(ag=> {
+            {actions.map((ag, groupIdx)=> {
               const agControls = ag();
               if(agControls && agControls.length > 0) {
-                return <>
-                  {agControls.map(a => {
+                return <React.Fragment key={`header-action-group-${groupIdx}`}>
+                  {agControls.map((a, actionIdx) => {
                     return  a ? 
-                    <>
+                    <React.Fragment key={`header-action-${groupIdx}-${actionIdx}`}>
                       {a === "separator" ?
                         <div className={styles.separator}></div>
                       :
@@ -192,11 +202,11 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
                           {a}
                         </div>
                       }
-                    </>
+                    </React.Fragment>
                     : null;
                   })}
                   <div className={styles.separator}></div>
-                </>;
+                </React.Fragment>;
               }
               else {
                 return null;
