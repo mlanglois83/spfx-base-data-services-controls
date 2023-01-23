@@ -83,7 +83,7 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
                 if(!stringIsNullOrEmpty(this.props.cacheKey)) {
                   isInCache = await UtilsService.isUrlInCache(persona.imageUrl, this.props.cacheKey);
                 }  
-                if (!ServicesConfiguration.configuration.lastConnectionCheckResult && !isInCache) {
+                if (ServicesConfiguration.configuration.checkOnline && !ServicesConfiguration.configuration.lastConnectionCheckResult && !isInCache) {
                   persona.imageUrl = undefined;
                 }
               }
