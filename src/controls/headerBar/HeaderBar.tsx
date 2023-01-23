@@ -171,7 +171,9 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         </HashRouter> :
           !stringIsNullOrEmpty(this.props.logoUrl) && 
           <>
-            <img src={this.props.logoUrl} />
+            <div className={styles.panelItem}>
+              <img src={this.props.logoUrl} />            
+            </div>
             {!stringIsNullOrEmpty(title) && 
               <div className={styles.separator}></div>
             }

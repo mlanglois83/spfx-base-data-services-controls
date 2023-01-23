@@ -62,7 +62,8 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
     if (!personas || !personas.length || personas.length === 0) {
       return false;
     }
-    return personas.filter(item => item.optionalText === persona.optionalText).length > 0;
+    const field: keyof IPersonaProps = this.props.filterField || "optionalText"
+    return personas.some(item => item[field] === persona[field]);
   }
 
   private onFilterPeopleChanged = (
@@ -71,7 +72,8 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
   ): IPersonaProps[] | Promise<IPersonaProps[]> => {
     if (filterText) {
       return new Promise<IPersonaProps[]>((resolve, reject) => {
-        ServiceFactory.getService(User, 0).cast<UserService>().getByDisplayName(filterText)
+        const userService = ServiceFactory.getService(User, 0).cast<UserService>();
+        userService.getByDisplayName(filterText)
           .then(async (users: User[]) => {
             const personas: IPersonaProps[] = new Array<IPersonaProps>();
             await Promise.all(users.map(async (user) => {

@@ -11,5 +11,6 @@ export interface IPeoplePickerProps {
   label?: string;
   populatePersona?: (user: User)=>  IPersonaProps;
   populateUser?: (persona: IPersonaProps) => User;
+  filterField?: keyof IPersonaProps;
 }
 
