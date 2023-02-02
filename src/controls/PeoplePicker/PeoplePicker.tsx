@@ -15,8 +15,11 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
     this.state = {};
   }
 
-  private getPersona(user: User): IPersonaProps {
-    if(this.props.populatePersona) {
+  private getPersona(user: User, isSuggestion?: boolean): IPersonaProps {
+    if(isSuggestion && this.props.populateSuggestionPersona) {
+      return this.props.populateSuggestionPersona(user);
+    }
+    else if(this.props.populatePersona) {
       return this.props.populatePersona(user);
     }
     else {
@@ -77,7 +80,7 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
           .then(async (users: User[]) => {
             const personas: IPersonaProps[] = new Array<IPersonaProps>();
             await Promise.all(users.map(async (user) => {
-              const persona = this.getPersona(user);
+              const persona = this.getPersona(user, true);
               if (!stringIsNullOrEmpty(persona.imageUrl)) {
                 let isInCache = false;
                 if(!stringIsNullOrEmpty(this.props.cacheKey)) {
@@ -119,7 +122,6 @@ export class PeoplePicker extends React.Component<IPeoplePickerProps, IPeoplePic
               pickerSuggestionsProps={this.suggestionProps}
               key={"peoplepicker"}
               selectedItems={this.props.selectedItems?.map(u => this.getPersona(u))}
-
               onChange={(items?: IPersonaProps[]) => {
                 if (this.props.onChange) {
                   let users: User[] = [];

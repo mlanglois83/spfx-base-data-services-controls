@@ -10,6 +10,7 @@ export interface IPeoplePickerProps {
   required?: boolean;
   label?: string;
   populatePersona?: (user: User)=>  IPersonaProps;
+  populateSuggestionPersona?: (user: User)=>  IPersonaProps;
   populateUser?: (persona: IPersonaProps) => User;
   filterField?: keyof IPersonaProps;
 }
