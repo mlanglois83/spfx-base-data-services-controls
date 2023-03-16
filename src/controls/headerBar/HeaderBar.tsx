@@ -11,8 +11,8 @@ import { IHeaderBarProps } from "./interfaces/IHeaderBarProps";
 import { IActionsGroup, IHeaderBarState } from "./interfaces/IHeaderBarState";
 export interface IActionsEvent {
   key: string;
-  actions: () => Array<JSX.Element | "separator">; 
-  order?:number;
+  actions: () => Array<JSX.Element | "separator">;
+  order?: number;
 }
 /**
  * Control to select disable state and associated dates of a risk
@@ -23,29 +23,31 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
   private semaphore = new Semaphore(1);
   private semacq: [number, SemaphoreInterface.Releaser] = null;
 
-  public static setTitle(newTitle: string): void{
-    const event = new CustomEvent<string>('setHeaderTitle', {detail: newTitle});
+  private headerRef: React.RefObject<HTMLDivElement>;
+
+  public static setTitle(newTitle: string): void {
+    const event = new CustomEvent<string>('setHeaderTitle', { detail: newTitle });
     document.dispatchEvent(event);
   }
 
-  public static setAdditionnalClassName(className?: string): void{
-    const event = new CustomEvent<string>('setHeaderClassName', {detail: className});
+  public static setAdditionnalClassName(className?: string): void {
+    const event = new CustomEvent<string>('setHeaderClassName', { detail: className });
     document.dispatchEvent(event);
   }
 
-  public static setActions(...actionsGroups: IActionsEvent[]): void{
-    const event = new CustomEvent<Array<IActionsGroup>>('setHeaderActions', {detail: actionsGroups});
+  public static setActions(...actionsGroups: IActionsEvent[]): void {
+    const event = new CustomEvent<Array<IActionsGroup>>('setHeaderActions', { detail: actionsGroups });
     document.dispatchEvent(event);
   }
-  public static removeActions(...keys: string[]): void{
-    const event = new CustomEvent<Array<string>>('removeHeaderActions', {detail: keys});
+  public static removeActions(...keys: string[]): void {
+    const event = new CustomEvent<Array<string>>('removeHeaderActions', { detail: keys });
     document.dispatchEvent(event);
   }
 
   private get orderedActionGroups(): Array<() => Array<JSX.Element | "separator">> {
     const groups: Array<IActionsGroup> = [];
     this.state.actions?.forEach(value => { groups.push(value); });
-    groups.sort((a: IActionsGroup, b: IActionsGroup) =>{ 
+    groups.sort((a: IActionsGroup, b: IActionsGroup) => {
       const anum = (a.order === undefined || a.order === null ? -1 : a.order);
       const bnum = (b.order === undefined || b.order === null ? -1 : b.order);
       return bnum - anum; // reverse order (right to left)
@@ -64,11 +66,12 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
       fullscreen: this.isFullScreen(),
       title: ""
     };
+    this.headerRef = React.createRef<HTMLDivElement>();
     this.adaptDomElements(this.state.fullscreen);
   }
 
   public componentDidUpdate(prevprops: IHeaderBarProps): void {
-    if(prevprops.contentContainer !== this.props.contentContainer) {
+    if (prevprops.contentContainer !== this.props.contentContainer) {
       this.adaptDomElements(this.state.fullscreen);
     }
   }
@@ -85,7 +88,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
     document.addEventListener("setHeaderActions", this.setActions);
     document.addEventListener("removeHeaderActions", this.removeActions);
   }
-  public componentWillUnmount(): void {    
+  public componentWillUnmount(): void {
     document.removeEventListener("fullscreenchange", this.onFullScreenChanged);
     document.removeEventListener("mozfullscreenchange", this.onFullScreenChanged);
     document.removeEventListener("webkitfullscreenchange", this.onFullScreenChanged);
@@ -100,14 +103,14 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
 
   private setTitle = async (event: CustomEvent<string>) => {
     this.semacq = await this.semaphore.acquire();
-    this.setState({title: event.detail}, () => {
+    this.setState({ title: event.detail }, () => {
       this.semacq[1]();
     });
   }
 
   private setAdditionnalClassName = async (event: CustomEvent<string>) => {
     this.semacq = await this.semaphore.acquire();
-    this.setState({className: event.detail}, () => {
+    this.setState({ className: event.detail }, () => {
       this.semacq[1]();
     });
   }
@@ -115,27 +118,27 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
   private setActions = async (event: CustomEvent<Array<IActionsEvent>>) => {
     this.semacq = await this.semaphore.acquire();
     const actions: Map<string, IActionsGroup> = this.state.actions ? cloneDeep(this.state.actions) : new Map<string, IActionsGroup>();
-    if(event.detail) {
+    if (event.detail) {
       event.detail.forEach(ag => {
-          actions.set(ag.key, {
+        actions.set(ag.key, {
           actions: ag.actions,
           order: ag.order
         });
       });
     }
-    this.setState({actions: actions}, () => {
+    this.setState({ actions: actions }, () => {
       this.semacq[1]();
     });
   }
-  private removeActions = async (event: CustomEvent<Array<string>>) => {   
-    this.semacq = await this.semaphore.acquire(); 
+  private removeActions = async (event: CustomEvent<Array<string>>) => {
+    this.semacq = await this.semaphore.acquire();
     const actions: Map<string, IActionsGroup> = this.state.actions ? cloneDeep(this.state.actions) : new Map<string, IActionsGroup>();
-    if(event.detail) {
+    if (event.detail) {
       event.detail.forEach(key => {
         actions.delete(key);
       });
-    }    
-    this.setState({actions: actions}, () => {
+    }
+    this.setState({ actions: actions }, () => {
       this.semacq[1]();
     });
   }
@@ -144,9 +147,9 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
    * Render control
    */
   public render(): React.ReactElement<IHeaderBarProps> {
-    const {title} = this.state;
+    const { title } = this.state;
     const actions = this.orderedActionGroups;
-    return <div className={css(styles.stickyHeader, this.state.className, this.props.className)}>
+    return <div ref={this.headerRef} className={css(styles.stickyHeader, this.state.className, this.props.className)}>
       <div className={styles.headerLeftPanel}>
         {!stringIsNullOrEmpty(this.props.homeUrl) ? <HashRouter key="headerbar-hashrouter">
           <Switch key="headerbar-switch">
@@ -156,68 +159,68 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
                 path={url}
                 component={() => <></>}
               />;
-            })}   
-            <Route 
+            })}
+            <Route
               key="headerbar-homebutton"
               component={({ history }) => <>
-              <div className={styles.panelItem}>
-                <IconButton iconProps={stringIsNullOrEmpty(this.props.logoUrl) ? { iconName: "Home" } : {imageProps: {src:this.props.logoUrl}}} title={strings.NavHomeText} onClick={() => { history.push(this.props.homeUrl); }} />:
-              </div>
-              {!stringIsNullOrEmpty(title) && 
-                <div className={styles.separator}></div>
-              }
+                <div className={styles.panelItem}>
+                  <IconButton iconProps={stringIsNullOrEmpty(this.props.logoUrl) ? { iconName: "Home" } : { imageProps: { src: this.props.logoUrl } }} title={strings.NavHomeText} onClick={() => { history.push(this.props.homeUrl); }} />:
+                </div>
+                {!stringIsNullOrEmpty(title) &&
+                  <div className={styles.separator}></div>
+                }
               </>} />
           </Switch>
         </HashRouter> :
-          !stringIsNullOrEmpty(this.props.logoUrl) && 
+          !stringIsNullOrEmpty(this.props.logoUrl) &&
           <>
             <div className={styles.panelItem}>
-              <img src={this.props.logoUrl} />            
+              <img src={this.props.logoUrl} />
             </div>
-            {!stringIsNullOrEmpty(title) && 
+            {!stringIsNullOrEmpty(title) &&
               <div className={styles.separator}></div>
             }
           </>
         }
         {!stringIsNullOrEmpty(title) && <>
-          <div className={css(styles.panelItem, styles.titleBlock)}>          
+          <div className={css(styles.panelItem, styles.titleBlock)}>
             <div className={styles.headerTitle}>
               {title}
             </div>
           </div>
         </>}
       </div>
-      <div className={styles.headerRightPanel}>    
+      <div className={styles.headerRightPanel}>
         {actions && actions.length > 0 &&
           <>
-            {actions.map((ag, groupIdx)=> {
+            {actions.map((ag, groupIdx) => {
               const agControls = ag();
-              if(agControls && agControls.length > 0) {
+              if (agControls && agControls.length > 0) {
                 return <React.Fragment key={`header-action-group-${groupIdx}`}>
                   {agControls.map((a, actionIdx) => {
-                    return  a ? 
-                    <React.Fragment key={`header-action-${groupIdx}-${actionIdx}`}>
-                      {a === "separator" ?
-                        <div className={styles.separator}></div>
-                      :
-                        <div className={styles.panelItem}>
-                          {a}
-                        </div>
-                      }
-                    </React.Fragment>
-                    : null;
+                    return a ?
+                      <React.Fragment key={`header-action-${groupIdx}-${actionIdx}`}>
+                        {a === "separator" ?
+                          <div className={styles.separator}></div>
+                          :
+                          <div className={styles.panelItem}>
+                            {a}
+                          </div>
+                        }
+                      </React.Fragment>
+                      : null;
                   })}
                   <div className={styles.separator}></div>
                 </React.Fragment>;
               }
               else {
                 return null;
-              }   
+              }
             })}
-            
+
           </>
         }
-        {!this.props.disableOfflineActions && <>          
+        {!this.props.disableOfflineActions && <>
           <div className={styles.panelItem}>
             <SynchroNotifications syncErrors={this.props.syncErrors} transactions={this.props.transactions} syncRunning={this.props.syncRuning} />
           </div>
@@ -227,7 +230,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         </>}
         <div className={styles.panelItem}>
           <IconButton
-            title={this.state.fullscreen ? strings.AbortFullScreenLabel: strings.FullscreenLabel}
+            title={this.state.fullscreen ? strings.AbortFullScreenLabel : strings.FullscreenLabel}
             iconProps={{ iconName: this.state.fullscreen ? "BackToWindow" : "FullScreen" }}
             onClick={this.onToggleFullscreenClick} />
         </div>
@@ -259,37 +262,37 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         document["mozCancelFullScreen"]();
       } else if (document["msExitFullscreen"]) {
         document["msExitFullscreen"]();
-      }      
+      }
     }
   }
 
   private isFullScreen = () => {
-    return (document["fullscreenElement"] !== null && document["fullscreenElement"] !== undefined)|| /* Standard syntax */
-    (document['webkitFullscreenElement'] !== null && document["webkitFullscreenElement"] !== undefined)|| /* Chrome, Safari and Opera syntax */
-    (document['mozFullScreenElement'] !== null && document["mozFullScreenElement"] !== undefined) ||/* Firefox syntax */
-    (document['msFullscreenElement'] !== null && document["msFullscreenElement"] !== undefined);/* IE/Edge syntax */
+    return (document["fullscreenElement"] !== null && document["fullscreenElement"] !== undefined) || /* Standard syntax */
+      (document['webkitFullscreenElement'] !== null && document["webkitFullscreenElement"] !== undefined) || /* Chrome, Safari and Opera syntax */
+      (document['mozFullScreenElement'] !== null && document["mozFullScreenElement"] !== undefined) ||/* Firefox syntax */
+      (document['msFullscreenElement'] !== null && document["msFullscreenElement"] !== undefined);/* IE/Edge syntax */
   }
-  private onWindowResize = async () => {    
+  private onWindowResize = async () => {
     const fullscreen = this.isFullScreen();
-    if(fullscreen !== this.state.fullscreen) {      
-      this.semacq = await this.semaphore.acquire(); 
+    if (fullscreen !== this.state.fullscreen) {
+      this.semacq = await this.semaphore.acquire();
       this.adaptDomElements(fullscreen);
-      this.setState({fullscreen: fullscreen}, () =>{        
+      this.setState({ fullscreen: fullscreen }, () => {
         this.semacq[1]();
-        if(this.props.onFullscreenChanged) {
+        if (this.props.onFullscreenChanged) {
           this.props.onFullscreenChanged(fullscreen);
         }
       });
     }
   }
-  private onFullScreenChanged = async () => {    
+  private onFullScreenChanged = async () => {
     const fullscreen = this.isFullScreen();
-    if(fullscreen !== this.state.fullscreen) {      
-      this.semacq = await this.semaphore.acquire(); 
+    if (fullscreen !== this.state.fullscreen) {
+      this.semacq = await this.semaphore.acquire();
       this.adaptDomElements(fullscreen);
-      this.setState({fullscreen: fullscreen}, () =>{
+      this.setState({ fullscreen: fullscreen }, () => {
         this.semacq[1]();
-        if(this.props.onFullscreenChanged) {
+        if (this.props.onFullscreenChanged) {
           this.props.onFullscreenChanged(fullscreen);
         }
       });
@@ -298,7 +301,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
 
   private onWindowKeypress = (event) => {
     // override f11
-    if(event.which === 122) {
+    if (event.which === 122) {
       event.preventDefault();
       this.onToggleFullscreenClick();
     }
@@ -306,7 +309,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
 
   private adaptDomElements = (fullscreen: boolean) => {
     if (fullscreen) {
-      const appBar  = document.getElementById("sp-appBar");
+      const appBar = document.getElementById("sp-appBar");
       if (appBar) {
         appBar.style.display = "none";
       }
@@ -315,7 +318,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         suiteNavWrapper.style.display = "none";
       }
       const headerHost = document.querySelector("div[data-sp-feature-tag='Site header host']");
-      if(headerHost) {
+      if (headerHost) {
         headerHost['style'].display = 'none';
       }
       const banner = document.querySelector('[role=banner]');
@@ -349,24 +352,26 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
       document.body.className = this.addClass(document.body.className, "fullscreen");
       if (this.props.contentContainer) {
         let element: HTMLElement;
-        if(this.props instanceof(HTMLElement)){
+        if (this.props.contentContainer instanceof (HTMLElement)) {
           element = this.props.contentContainer as HTMLElement;
         }
         else {
           element = (this.props.contentContainer as React.RefObject<HTMLElement>).current;
         }
-        if(element) {
-          element.style.height = "calc(100vh - 52px)";
-          element.style.overflow = "auto";
-          const scrollDiv = document.querySelector("div[data-is-scrollable='true']") as HTMLDivElement;
-          if (scrollDiv) {
-            scrollDiv.style.overflow = "hidden";
+        if (element) {
+          if (this.headerRef.current) {
+            element.style.height = `calc(100vh - ${this.headerRef.current.clientHeight}px)`;
+            element.style.overflow = "auto";
+            const scrollDiv = document.querySelector("div[data-is-scrollable='true']") as HTMLDivElement;
+            if (scrollDiv) {
+              scrollDiv.style.overflow = "hidden";
+            }
           }
         }
       }
     }
     else {
-      const appBar  = document.getElementById("sp-appBar");
+      const appBar = document.getElementById("sp-appBar");
       if (appBar) {
         appBar.style.display = "block";
       }
@@ -375,7 +380,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         suiteNavWrapper.style.display = "block";
       }
       const headerHost = document.querySelector("div[data-sp-feature-tag='Site header host']");
-      if(headerHost) {
+      if (headerHost) {
         headerHost['style'].display = 'block';
       }
       const banner = document.querySelector('[role=banner]');
@@ -408,15 +413,15 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
         ControlZone[0]['style'].margin = null;
       }
       document.body.className = this.removeClass(document.body.className, "fullscreen");
-      if (this.props.contentContainer) {     
+      if (this.props.contentContainer) {
         let element: HTMLElement;
-        if(this.props instanceof(HTMLDivElement)){
+        if (this.props.contentContainer instanceof (HTMLDivElement)) {
           element = this.props.contentContainer as HTMLElement;
         }
         else {
           element = (this.props.contentContainer as React.RefObject<HTMLElement>).current;
         }
-        if(element) {
+        if (element) {
           element.style.height = "auto";
           element.style.overflow = null;
           const scrollDiv = document.querySelector("div[data-is-scrollable='true']") as HTMLDivElement;
@@ -429,7 +434,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
   }
   private addClass(classProperty: string, className: string) {
     className = className.trim();
-    if(stringIsNullOrEmpty(classProperty)) {
+    if (stringIsNullOrEmpty(classProperty)) {
       return className;
     }
     else {
@@ -438,17 +443,16 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
   }
   private removeClass(classProperty: string, className: string) {
     className = className.trim();
-    if(stringIsNullOrEmpty(classProperty)) {
+    if (stringIsNullOrEmpty(classProperty)) {
       return classProperty;
     }
     else {
       classProperty = classProperty.replace(/\s+/g, " ");
-      const splited = classProperty.split(" ");      
+      const splited = classProperty.split(" ");
       let idx = splited.indexOf(className);
-      while(idx !== -1)
-      {
-          splited.splice(idx, 1);
-          idx = splited.indexOf(className);
+      while (idx !== -1) {
+        splited.splice(idx, 1);
+        idx = splited.indexOf(className);
       }
       return splited.join(" ");
     }
