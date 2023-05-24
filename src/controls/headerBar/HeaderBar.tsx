@@ -164,7 +164,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps, IHeaderBarState>
               key="headerbar-homebutton"
               component={({ history }) => <>
                 <div className={styles.panelItem}>
-                  <IconButton iconProps={stringIsNullOrEmpty(this.props.logoUrl) ? { iconName: "Home" } : { imageProps: { src: this.props.logoUrl } }} title={strings.NavHomeText} onClick={() => { history.push(this.props.homeUrl); }} />:
+                  <IconButton iconProps={stringIsNullOrEmpty(this.props.logoUrl) ? { iconName: "Home" } : { imageProps: { src: this.props.logoUrl } }} title={strings.NavHomeText} onClick={() => { history.push(this.props.homeUrl); }} />
                 </div>
                 {!stringIsNullOrEmpty(title) &&
                   <div className={styles.separator}></div>

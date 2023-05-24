@@ -23,16 +23,20 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
         return this.loadItems();
     }
 
-    private async loadItems() {
-        const service = ServiceFactory.getService(this.props.model);
+    private async loadItems() {        
         let items: T[];
-        if(this.props.getItemsQuery) {
-            items = await service.get(this.props.getItemsQuery);
+        if(this.props.items) {
+            items = this.props.items;
         }
         else {
-            items = await service.getAll();
-        }
-        
+            const service = ServiceFactory.getService(this.props.model);
+            if(this.props.getItemsQuery) {
+                items = await service.get(this.props.getItemsQuery);
+            }
+            else {
+                items = await service.getAll();
+            }
+        }        
         if (!this.props.showDeprecated) {
             items = items.filter((t) => { 
                 return ((t instanceof TaxonomyTerm)  && !t.isDeprecated) || (!(t instanceof TaxonomyTerm)); 
@@ -46,7 +50,11 @@ export class ItemDropdown<T extends BaseItem, K extends keyof T> extends React.C
        * @param nextProps New props object
        */
     public componentWillReceiveProps(nextProps: IItemDropdownProps<T, K>): void {        
-        if(JSON.stringify(nextProps.getItemsQuery) !== JSON.stringify(this.props.getItemsQuery)) {
+        if(
+            JSON.stringify(nextProps.getItemsQuery) !== JSON.stringify(this.props.getItemsQuery) 
+            ||
+            JSON.stringify(nextProps.items) !== JSON.stringify(this.props.items)
+        ) {
             this.loadItems();
         }
         else if (JSON.stringify(nextProps.selectedItems) !== JSON.stringify(this.props.selectedItems)) {

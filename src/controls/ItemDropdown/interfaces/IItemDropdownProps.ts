@@ -5,6 +5,7 @@ export interface IItemDropdownProps<T extends BaseItem, K extends keyof T> {
     displayControl?: "Combobox" | "Dropdown";
     controlProps?: Partial<IDropdownProps> | Partial<IComboBoxProps>;
     model: new (data?: any) => T;
+    items?: T[];
     getItemsQuery?: IQuery<T>;
     onFilterItems?: (allItems: Array<T>) => Array<T>;
     selectedItems?: T[] | T | ((allItems: Array<T>) => (Array<T> | T));
