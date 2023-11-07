@@ -12,6 +12,10 @@ export interface ITaxonomyFilterProps<T extends TaxonomyTerm> {
     baseLevel?: number;
     classNames?: ITaxonomyFilterClassNames;
     overrideContainers?: ITaxonomyFilterContainers;
+
+    selectedTerms?: T[];
+    multiSelect?: boolean;
+    onFiltersChanged?: (terms: T[]) => void;
 }
 export interface ITaxonomyFilterClassNames {
     containerClassname?: string;
