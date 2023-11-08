@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import { ITaxonomyFilterProps } from './interfaces/ITaxonomyFilterProps';
 import { ITaxonomyFilterState } from './interfaces/ITaxonomyFilterState';
@@ -141,7 +140,7 @@ export class TaxonomyFilter<T extends TaxonomyTerm> extends React.Component<ITax
                     if (option.selected === true)
                         terms.push(term);
                     else
-                        terms = terms.filter(_term => _term.path !== option.key);
+                        terms = terms.filter(_term => _term.path.indexOf(option.key) === -1);
 
                     this.setState({ selectedTerms: terms }, () => {
                         if (this.props.onFiltersChanged) {
